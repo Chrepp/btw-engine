@@ -1,0 +1,414 @@
+[{
+    "name":"Bacon",
+    "id":0,
+    "use":[[{
+        "message":"takeItem",  "id":0,"duration":1000
+    },{ "message":"removeItem","id":0,"duration":1
+    }]],
+    "look":[[{
+        "type":"heroTalks", "message":"Bacon Strips and Bacon Strips and Bacon Strips", "duration":3000,"sound":"Bacon-Strips-and-Bacon-Strips-and-Bacon-Strips"
+    },{ "type":"heroTalks", "message":" ", "duration":300
+    },{ "type":"heroTalks", "message":"and Bacon Strips!", "duration":1000,"sound":"and-Bacon-Strips"
+    }]]
+},{
+    "name":"Buch",
+    "id":1,
+    "use":[[{
+        "message":"takeItem",  "id":1,"duration":1000
+    },{ "message":"removeItem","id":1,"duration":1
+    }]],
+    "look":[[{
+        "type":"heroTalks", "message":"Mein Mathebuch!", "duration":2000,"sound":"Mein-Mathebuch"
+    },{ "type":"heroTalks", "message":"Jippie...", "duration":1000,"sound":"Jippie"
+    }]]
+},{
+    "name":"Chilli",
+    "id":2,
+    "use":[[{
+        "message":"takeItem",  "id":2,"duration":1000
+    },{ "message":"removeItem","id":2,"duration":1
+    }]],
+    "look":[[{
+        "type":"heroTalks", "message":"Echt scharf!","duration":1000,"sound":"Echt-scharf"
+    }]]
+},{
+    "name":"Chillipflanze",
+    "id":3,
+    "use":[[
+            {"message":"Ich nehme mal eine Schote!", "duration":2000,"sound":"Ich-nehme-mal-eine-Schote"},
+            {"message":"takeItem","id":2,"duration":1000}
+           ],
+           [
+            {"type":"heroTalks", "message":"Ich hab schon genug!","duration":1500,"sound":"Ich-hab-schon-genug"}
+          ]],
+    "look":[
+        [{
+            "type":"heroTalks", "message":"Echt scharf!","duration":1500,"sound":"Echt-scharf"
+        }],
+        [{
+            "type":"heroTalks", "message":"Also wirklich richtig scharf!","duration":2500,"sound":"Also-wirklich-richtig-scharf"
+        }]
+    ]
+},{
+    "name":"Tape",
+    "id":4,
+    "use":[[{
+        "message":"takeItem",  "id":4,"duration":1000
+    },{ "message":"removeItem","id":4,"duration":1
+    }]],
+    "look":[[{
+        "message":"Das sollte in keinem Haushalt fehlen!", "duration":1000,"sound":"Das-sollte-in-keinem-Haushalt-fehlen"
+    }]]
+},{
+    "name":"Kopfhörer",
+    "id":5,
+    "use":[[{
+        "message":"takeItem",  "id":5,"duration":1000
+    },{ "message":"removeItem","id":5,"duration":1
+    }]],
+    "look":[[{
+        "message":"Ach, da sind die ja!", "duration":1000,"sound":"Ach-da-sind-die-ja"
+    }]]
+},{
+    "name":"Mett",
+    "id":6,
+    "use":[[{
+        "message":"takeItem",  "id":6,"duration":1000
+    },{ "message":"removeItem","id":6,"duration":1
+    }]],
+    "look":[[{
+        "message":"Mett!", "duration":1000,"sound":"Mett"
+    }]]
+},{
+    "name":"Schlüssel",
+    "id":7,
+    "use":[[{
+    }]],
+    "look":[[{
+    }]]
+},{
+    "name":"Schlüsselbart",
+    "id":8,
+    "use":[[{
+        "message":"takeItem",  "id":8,"duration":1000
+    },{ "message":"removeItem","id":8,"duration":1
+    }]],
+    "look":[[{
+    }]]
+},{
+    "name":"Schlüsselgriff",
+    "id":9,
+    "use":[[{
+        "message":"takeItem",  "id":9,"duration":1000
+    },{ "message":"removeItem","id":9,"duration":1
+    }]],
+    "look":[[{
+    }]]
+},{
+    "name":"Marmelade",
+    "id":10,
+    "use":[[{
+        "message":"takeItem",  "id":10,"duration":1000
+    },{ "message":"removeItem","id":10,"duration":1
+    }]],
+    "look":[[{
+        "message":"Hm...","duration":700
+    },{ "message":"Quittengeschmack!","duration":1000
+    }]]
+},{
+    "name":"Majonäse",
+    "id":11,
+    "use":[[{
+        "message":"takeItem",  "id":11,"duration":1000
+    },{ "message":"removeItem","id":11,"duration":1
+    }]],
+    "look":[[{
+        "message":"Mhmm. Besonders viel Fett!","duration":1300,"sound":"Mhmm-Besonders-viel-Fett"
+    }]]
+},{
+    "name":"Frikadelle",
+    "id":12,
+    "use":[[{
+        "message":"takeItem",  "id":12,"duration":1000
+    },{ "message":"removeItem","id":12,"duration":1
+    }]],
+    "look":[[{
+        "message":"So ein Klops!","duration":1300,"sound":"So-ein-Klops"
+    }]]
+},{
+    "name":"Handy",
+    "id":13,
+    "use":[[{
+        "message":"takeItem",  "id":13,"duration":1000
+    },{ "message":"removeItem","id":13,"duration":1
+    }]],
+    "look":[[{
+        "message":"Wie kommt das denn hierhin?","duration":1300
+    }]]
+},{
+    "name":"Monster",
+    "id":14,
+    "use":[[{
+        "message":"takeItem",  "id":14,"duration":1000
+    },{ "message":"removeItem","id":14,"duration":1
+    }]],
+    "look":[[{
+        "message":"Mein Lebenselixir!", "duration":1000,"sound":"Mein-Lebenselixir"
+    },{ "message":"Das gibt +3 Ausdauer!","duration":1500,"sound":"Das-gibt-3Ausdauer"
+    }]]
+},{
+    "name":"Papier",
+    "id":15,
+    "use":[[{
+        "message":"takeItem",  "id":15,"duration":1000
+    },{ "message":"removeItem","id":15,"duration":1
+    }]],
+    "look":[[{
+        "message":"Papier!","duration":1000,"sound":"Papier"
+    }]]
+},{
+    "name":"Erdnussbutter",
+    "id":16,
+    "use":[[{
+        "message":"takeItem",  "id":16,"duration":1000
+    },{ "message":"removeItem","id":16,"duration":1
+    }]],
+    "look":[[{
+        "message":"Nur die feinsten Zutaten!", "duration":1500,"sound":"Nur-die-feinsten-Zutaten"
+    }]]
+},{
+    "name":"Stift",
+    "id":17,
+    "use":[[{
+        "message":"takeItem",  "id":17,"duration":1000
+    },{ "message":"removeItem","id":17,"duration":1
+    }]],
+    "look":[[]]
+},{
+    "name":"Rezept",
+    "id":18,
+    "use":[[{
+        "message":"takeItem",  "id":18,"duration":1000
+    },{ "message":"removeItem","id":18,"duration":1
+    }]],
+    "look":[[]]
+},{
+    "name":"Rucksack",
+    "id":19,
+    "use":[[{
+        "message":"takeItem",  "id":19,"duration":1000
+    },{ "message":"removeItem","id":19,"duration":1
+    }]],
+    "look":[[{
+        "message":"Mein Rucksack!", "duration":1000,"sound":"Mein-Rucksack"
+    }]]
+},{
+    "name":"Stundenplan",
+    "id":20,
+    "use":[[{
+        "message":"takeItem",  "id":20,"duration":1000
+    },{ "message":"removeItem","id":20,"duration":1
+    }]],
+    "look":[[{
+        "message":"Aha mein wichtiger Stundenplan!", "duration":1000,"sound":"Aha-mein-wichtiger-Stundenplan"
+    }]]
+},{
+    "name":"Toast",
+    "id":21,
+    "use":[[{
+        "message":"takeItem",  "id":21,"duration":1000
+    },{ "message":"removeItem","id":21,"duration":1
+    }]],
+    "look":[[{
+        "message":"Ein Stück Toast!", "duration":2000,"sound":"Ein-Stueck-Toast"
+    }]]
+},{
+    "name":"Zwei Stück Toast",
+    "id":22,
+    "use":[[{
+        "message":"takeItem",  "id":21,"duration":1000
+    },{ "message":"removeItem","id":21,"duration":1
+    }]],
+    "look":[[{
+        "message":"Zwei Stück Toast!", "duration":2000,"sound":"Zwei-Stueck-Toast"
+    }]]
+},{"name":"","id":23,"use":[[{}]],"look":[[{}]]
+},{"name":"","id":24,"use":[[{}]],"look":[[{}]]
+},{"name":"","id":25,"use":[[{}]],"look":[[{}]]
+},{"name":"","id":26,"use":[[{}]],"look":[[{}]]
+},{"name":"","id":27,"use":[[{}]],"look":[[{}]]
+},{"name":"","id":28,"use":[[{}]],"look":[[{}]]
+},{"name":"","id":29,"use":[[{}]],"look":[[{}]]
+},{"name":"","id":30,"use":[[{}]],"look":[[{}]]
+},{"name":"","id":31,"use":[[{}]],"look":[[{}]]
+},{"name":"","id":32,"use":[[{}]],"look":[[{}]]
+},{"name":"","id":33,"use":[[{}]],"look":[[{}]]
+},{"name":"","id":34,"use":[[{}]],"look":[[{}]]
+},{"name":"","id":35,"use":[[{}]],"look":[[{}]]
+},{"name":"","id":36,"use":[[{}]],"look":[[{}]]
+},{"name":"","id":37,"use":[[{}]],"look":[[{}]]
+},{"name":"","id":38,"use":[[{}]],"look":[[{}]]
+},{"name":"","id":39,"use":[[{}]],"look":[[{}]]
+},{"name":"","id":40,"use":[[{}]],"look":[[{}]]
+},{"name":"","id":41,"use":[[{}]],"look":[[{}]]
+},{"name":"","id":42,"use":[[{}]],"look":[[{}]]
+},{"name":"","id":43,"use":[[{}]],"look":[[{}]]
+},{"name":"","id":44,"use":[[{}]],"look":[[{}]]
+},{"name":"","id":45,"use":[[{}]],"look":[[{}]]
+},{"name":"","id":46,"use":[[{}]],"look":[[{}]]
+},{"name":"","id":47,"use":[[{}]],"look":[[{}]]
+},{"name":"","id":48,"use":[[{}]],"look":[[{}]]
+},{"name":"","id":49,"use":[[{}]],"look":[[{}]]
+},{"name":"","id":50,"use":[[{}]],"look":[[{}]]
+},{"name":"","id":51,"use":[[{}]],"look":[[{}]]
+},{"name":"","id":52,"use":[[{}]],"look":[[{}]]
+},{"name":"","id":53,"use":[[{}]],"look":[[{}]]
+},{"name":"","id":54,"use":[[{}]],"look":[[{}]]
+},{"name":"","id":55,"use":[[{}]],"look":[[{}]]
+},{"name":"","id":56,"use":[[{}]],"look":[[{}]]
+},{"name":"","id":57,"use":[[{}]],"look":[[{}]]
+},{"name":"","id":58,"use":[[{}]],"look":[[{}]]
+},{"name":"","id":59,"use":[[{}]],"look":[[{}]]
+},{"name":"","id":60,"use":[[{}]],"look":[[{}]]
+},{"name":"","id":61,"use":[[{}]],"look":[[{}]]
+},{"name":"","id":62,"use":[[{}]],"look":[[{}]]
+},{"name":"","id":63,"use":[[{}]],"look":[[{}]]
+},{"name":"","id":64,"use":[[{}]],"look":[[{}]]
+},{"name":"","id":65,"use":[[{}]],"look":[[{}]]
+},{"name":"","id":66,"use":[[{}]],"look":[[{}]]
+},{"name":"","id":67,"use":[[{}]],"look":[[{}]]
+},{"name":"","id":68,"use":[[{}]],"look":[[{}]]
+},{"name":"","id":69,"use":[[{}]],"look":[[{}]]
+},{"name":"","id":70,"use":[[{}]],"look":[[{}]]
+},{"name":"","id":71,"use":[[{}]],"look":[[{}]]
+},{"name":"","id":72,"use":[[{}]],"look":[[{}]]
+},{"name":"","id":73,"use":[[{}]],"look":[[{}]]
+},{"name":"","id":74,"use":[[{}]],"look":[[{}]]
+},{"name":"","id":75,"use":[[{}]],"look":[[{}]]
+},{"name":"","id":76,"use":[[{}]],"look":[[{}]]
+},{"name":"","id":77,"use":[[{}]],"look":[[{}]]
+},{"name":"","id":78,"use":[[{}]],"look":[[{}]]
+},{"name":"","id":79,"use":[[{}]],"look":[[{}]]
+},{"name":"","id":80,"use":[[{}]],"look":[[{}]]
+},{"name":"","id":81,"use":[[{}]],"look":[[{}]]
+},{"name":"","id":82,"use":[[{}]],"look":[[{}]]
+},{"name":"","id":83,"use":[[{}]],"look":[[{}]]
+},{"name":"","id":84,"use":[[{}]],"look":[[{}]]
+},{"name":"","id":85,"use":[[{}]],"look":[[{}]]
+},{"name":"","id":86,"use":[[{}]],"look":[[{}]]
+},{"name":"","id":87,"use":[[{}]],"look":[[{}]]
+},{"name":"","id":88,"use":[[{}]],"look":[[{}]]
+},{"name":"","id":89,"use":[[{}]],"look":[[{}]]
+},{"name":"","id":90,"use":[[{}]],"look":[[{}]]
+},{"name":"","id":91,"use":[[{}]],"look":[[{}]]
+},{"name":"","id":92,"use":[[{}]],"look":[[{}]]
+},{"name":"","id":93,"use":[[{}]],"look":[[{}]]
+},{"name":"","id":94,"use":[[{}]],"look":[[{}]]
+},{"name":"","id":95,"use":[[{}]],"look":[[{}]]
+},{"name":"","id":96,"use":[[{}]],"look":[[{}]]
+},{"name":"","id":97,"use":[[{}]],"look":[[{}]]
+},{"name":"","id":98,"use":[[{}]],"look":[[{}]]
+},{"name":"","id":99,"use":[[{}]],"look":[[{}]]
+},{
+    "name":"Tobis Bett",
+    "id":100,
+    "use":[[{
+        "message":"Nein!", "duration":1000,"sound":"Nein"
+        }],[{
+        "message":"Ich kann nicht!", "duration":1000,"sound":"Ich-kann-nicht"
+        }],[{
+           "message":"Ich muss doch die Welt retten!", "duration":2000,"sound":"Ich-muss-doch-die-Welt-retten"
+        },{"message":"Nagut, muss ich nicht!", "duration":2000,"sound":"Nagut-muss-ich-nicht"
+        }],[{
+        "message":"Hm...", "duration":1000,"sound":"Hm2"
+        }],[{
+        "message":"Ach komm schon!", "duration":2000,"sound":"Ach-komm-schon"
+        }],[{
+        "message":"Nein!", "duration":1000,"sound":"Nein2"
+        }]
+    ],
+    "look":[[{
+        "message":"Mein gemütliches Bett!", "duration":2000,"sound":"Mein-gemuetliches-Bett"
+    }]]
+},{
+    "name":"Tobis Tür von innen",
+    "id":101,
+    "use":[[{
+        "message":"loadRoom", "duration":1, "room":"Flur"
+    }]],
+    "look":[[{
+        "message":"Es ist meine Tür!!!", "duration":3000,"sound":"Es-ist-meine-Tuer-Wow"
+    }]]
+},{
+    "name":"Flur-rechts",
+    "id":102,
+    "use":[[{
+        "message":"loadRoom", "duration":1, "room":"Tobis Zimmer"
+    }]],
+    "look":[[{
+        "message":"Mein Zimmer ist dahinter!", "duration":2000,"sound":"Mein-Zimmer-ist-dahinter"
+    }]]
+},{
+    "name":"Flur-hinten",
+    "id":103,
+    "use":[[{
+        "message":"loadRoom", "duration":1, "room":"Bad"
+    }]],
+    "look":[[{
+        "message":"Da geht's zum Bad!","duration":1000,"sound":"Da-gehts-zum-Bad"
+    }]]
+},{
+    "name":"Flur-mitte",
+    "id":104,
+    "use":[[{
+        "message":"loadRoom", "duration":1, "room":"Küche"
+    }]],
+    "look":[[{
+        "message":"Küche!","duration":1000,"sound":"Kueche"
+    }]]
+},{
+    "name":"Flur-links",
+    "id":105,
+    "use":[[{
+        "message":"loadRoom", "duration":1, "room":"Monkey"
+    }]],
+    "look":[[{
+        "message":"Da geht's nach draußen!","duration":1000,"sound":"Da-gehts-nach-draussen"
+    }]]
+},{
+    "name":"Monkey-hinten",
+    "id":106,
+    "use":[[{
+        "message":"loadRoom", "duration":1, "room":"Flur"
+    }]],
+    "look":[[{
+        "message":"Da drin wohnen wir?","duration":2000,"sound":"Da-drin-wohnen-wir"
+    }]]
+},{
+    "name":"Badewanne",
+    "id":107,
+    "use":[[{
+        "message":"Ne, für ein Bad hab ich keine Zeit!","duration":3000,"sound":"Ne-fuer-ein-Bad-hab-ich-keine-Zeit"
+    }]],
+    "look":[[{
+        "message":"Die Badewanne!","duration":1000,"sound":"Die-Badewanne"
+    }]]
+},{
+    "name":"Küche-Ausgang",
+    "id":108,
+    "use":[[{
+        "message":"loadRoom", "duration":1, "room":"Flur"
+    }]],
+    "look":[[{
+        "message":"Die Küchentür! Hui!","duration":3000,"sound":"Die-Kuechentuer-hui"
+    }]]
+},{
+    "name":"Bad-Ausgang",
+    "id":109,
+    "use":[[{
+        "message":"loadRoom", "duration":1, "room":"Flur"
+    }]],
+    "look":[[{
+        "message":"Wahnsinnig interessante Tür!","duration":3000,"sound":"Wahnsinnig-interessante-Tuer"
+    }]]
+}]

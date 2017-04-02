@@ -1,0 +1,12 @@
+body {
+	background: #fed ;
+	/*color: green;*/
+	font-size: 25px;
+}
+button {
+	/*background: #000;
+	color: green;*/
+	display: block;
+	margin: 10px 0;
+	font-size: 25px;
+}

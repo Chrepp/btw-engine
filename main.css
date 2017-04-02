@@ -1,0 +1,18 @@
+/* 
+    Document   : main
+    Created on : 22.02.2012, 14:40:06
+    Author     : Chrepp
+    Description: Stylesheet für alles :D
+*/
+
+body {
+    display: block;
+    text-align: center;
+    background: #111;
+    overflow:hidden;
+}
+
+.nonsense {
+    margin: 10px auto;
+    cursor: /*url('pix/cursor.png'),*/ crosshair;
+}

@@ -1,0 +1,274 @@
+[{
+    "name":"Pilz",
+    "id":0,
+    "use":[{
+        "type":"heroTalks", "message":"Wenn das Inventar fertig ist...", "duration":2000
+    },{ "type":"heroTalks", "message":"...können wir diesen Pilz vielleicht mitnehmen!", "duration":2000
+    }],
+    "look":[{
+        "type":"heroTalks", "message":"Kennste den mit dem Förster und dem Pils?", "duration":2400
+    },{ "type":"heroTalks", "message":"Der ist lustig!", "duration":1900
+    },{ "type":"heroTalks", "message":"Also:", "duration":900
+    },{ "type":"heroTalks", "message":"Steht ein Pilz im Wald.", "duration":2000
+    },{ "type":"heroTalks", "message":"Und das ist gar kein Pilz. Sondern ein Bier!", "duration":2500
+    },{ "type":"heroTalks", "message":"Hihihi", "duration":900
+    },{ "type":"heroTalks", "message":"Naja und dann kommt der Förster.", "duration":2500
+    },{ "type":"heroTalks", "message":"Und trinkt den Pilz! :D", "duration":2000
+    },{ "type":"heroTalks", "message":"Nein!", "duration":700
+    },{ "type":"heroTalks", "message":"DAS Pils. Also das Bier halt!", "duration":2500
+    },{ "type":"heroTalks", "message":"Hihihihihihi!", "duration":2000
+    },{ "type":"heroTalks", "message":" ", "duration":700
+    },{ "type":"heroTalks", "message":"Voll witzig, oder?", "duration":2500
+    }]
+},{
+    "name":"Abgrund",
+    "id":1,
+    "use":[{
+        "type":"heroTalks", "message":"Ne, ich springe nicht!", "duration":2000
+    }],
+    "look":[{
+        "type":"heroTalks", "message":"Da gehts tiefer runter als man zeichnen kann!", "duration":2500
+    },{ "type":"heroTalks", "message":"*Schauder*", "duration":700
+    }]
+},{
+    "name":"Baum",
+    "id":2,
+    "use":[{
+        "type":"heroTalks", "message":"Ich würde ja echt gerne da hochklettern...","duration":2000
+    },{ "type":"heroTalks", "message":"... aber dafür bräuchten wir eine Animation!", "duration":2000
+    }],
+    "look":[{
+        "type":"heroTalks", "message":"Baum, Baum, Baum!","duration":1000
+    },{ "type":"heroTalks", "message":"Baum!", "duration":900
+    },{ "type":"heroTalks", "message":"Baum, Baum!", "duration":1100
+    }]
+},{
+    "name":"Ampel",
+    "id":3,
+    "use":[{
+        "message":"Ich brauche keine Ampel!", "duration":1000
+    }],
+    "look":[{
+        "message":"Hier steht 'ne Ampel!", "duration":1000
+    },{ "message":" ", "duration":500
+    },{ "message":"Na und?", "duration":700
+    }]
+},{
+    "name":"Tür",
+    "id":4,
+    "use":[{
+        "message":"changePix", "duration":10, "src":"hintergrund-raum-tuer2.jpg"
+    },{ "message":"Ich gehe mal durch die Tuer!", "duration":1000
+    },{ "message":" ", "duration":1
+    },{ "message":"loadRoom", "duration":1, "room":"Flur"
+    }],
+    "look":[{
+        "message":"Da ist eine Tuer!", "duration":1000
+    },{ "message":" ", "duration":500
+    },{ "message":"Wahnsinn!", "duration":1000
+    },{ "message":" ", "duration":300
+    },{ "message":"Vielleicht solle ich mal durchgehen!", "duration":2000
+    }]
+},{
+    "name":"",
+    "id":5,
+    "use":[{
+    }],
+    "look":[{
+    }]
+},{
+    "name":"Zu Tobis Zimmer",
+    "id":6,
+    "use":[{
+        "message":"loadRoom", "duration":1, "room":"Tobis Zimmer"
+    }],
+    "look":[{
+        "message":"Da geht's komischerweise in mein Zimmer!", "duration":1000
+    }]
+},{
+    "name":"Schlucht links",
+    "id":7,
+    "use":[{
+        "message":"loadRoom", "duration":1, "room":"Test"
+    }],
+    "look":[{
+        "message":"Da geht's zum Testraum!", "duration":1000
+    }]
+},{
+    "name":"Weg zum Flur",
+    "id":8,
+    "use":[{
+        "message":"loadRoom", "duration":1, "room":"Flur"
+    }],
+    "look":[{
+        "message":"Da geht's doch zum Flur!", "duration":1000
+    }]
+},{
+    "name":"Taschentaucher",
+    "id":9,
+    "use":[{
+        "message":"Na dann her damit!", "duration":1000
+    },{ "message":"takeItem","id":9,"duration":1000
+    }],
+    "look":[{
+        "message":"Das ist eine Packung Tempos","duration":1300
+    },{ "message":"Oder eine andere Sorte Taschentücher","duration":1500
+    }]
+},{
+    "name":"Plektrum",
+    "id":10,
+    "use":[{
+        "message":"takeItem","id":10,"duration":1000
+    }],
+    "look":[{
+        "message":"Yay! Ein Plek","duration":700
+    },{ "message":"das passt in meine Sammlung!","duration":1000
+    }]
+},{
+    "name":"Klinge",
+    "id":11,
+    "use":[{
+        "message":"Ich nehm die mal vorsichtig!", "duration":1000
+    },{ "message":"takeItem","id":11,"duration":1000
+    }],
+    "look":[{
+        "message":"Eine lose Klinge!","duration":1300
+    }]
+},{
+    "name":"Messergriff",
+    "id":12,
+    "use":[{
+        "message":"takeItem","id":12,"duration":1000
+    }],
+    "look":[{
+        "message":"Ein Messergriff mit Fassung für eine Klinge","duration":1300
+    }]
+},{
+    "name":"Schraubenzieher",
+    "id":13,
+    "use":[],
+    "look":[{
+        "message":"Man sollte immer einen Schraubenzieher dabei haben!","duration":1300
+    }]
+},{
+    "name":"Tobis Bett",
+    "id":14,
+    "use":[{
+        "message":"hmmm!", "duration":1000
+    }],
+    "look":[{
+        "message":"Soll ich mich nochmal hinlegen?", "duration":1000
+    }]
+},{
+    "name":"Schlucht",
+    "id":15,
+    "use":[{ "message":"loadRoom", "duration":1, "room":"Schlucht"
+    }],
+    "look":[]
+},{
+    "name":"Raus",
+    "id":16,
+    "use":[{
+        "message":"Hinaus!", "duration":500
+    },{ "message":"loadRoom", "duration":1, "room":"Flur"
+    }],
+    "look":[{
+        "message":"Hinaus?", "duration":1000
+    }]
+},{
+    "name":"Test",
+    "id":17,
+    "use":[{
+        "message":"Hinaus?", "duration":1000
+    }],
+    "look":[]
+},{
+    "name":"Flur-rechts",
+    "id":18,
+    "use":[{
+        "message":"loadRoom", "duration":1, "room":"Tobis Zimmer"
+    }],
+    "look":[]
+},{
+    "name":"Flur-hinten",
+    "id":19,
+    "use":[{
+        "message":"loadRoom", "duration":1, "room":"Bad"
+    }],
+    "look":[{
+        "message":"Da geht's eigentlich zum Badezimmer!", "duration":50000
+    }]
+},{
+    "name":"Flur-mitte",
+    "id":20,
+    "use":[{
+        "message":"loadRoom", "duration":1, "room":"Küche"
+    }],
+    "look":[{
+        "message":"Die Küchentür!", "duration":1000
+    }]
+},{
+    "name":"Flur-links",
+    "id":21,
+    "use":[{
+        "message":"loadRoom", "duration":1, "room":"Monkey"
+    }],
+    "look":[{
+        "message":"Da geht's nach draußen", "duration":1000
+    }]
+},{
+    "name":"Monkey-hinten",
+    "id":22,
+    "use":[{
+        "message":"loadRoom", "duration":1, "room":"Flur"
+    }],
+    "look":[{
+        "message":"Jo, da drinnen wohnen wir :)", "duration":1000
+    }]
+},{
+    "name":"Test",
+    "id":23,
+    "use":[{
+        "message":"Ein Bad nehmen? Jetzt?", "duration":1000
+    }],
+    "look":[{
+        "message":"Nette Badewanne!", "duration":1000
+    }]
+},{
+    "name":"Küche-Ausgang",
+    "id":24,
+    "use":[{
+        "message":"loadRoom", "duration":1, "room":"Flur"
+    }],
+    "look":[{
+        "message":"Eine Küchentür!", "duration":1000
+    }]
+},{
+    "name":"Bad-Ausgang",
+    "id":25,
+    "use":[{
+        "message":"loadRoom", "duration":1, "room":"Flur"
+    }],
+    "look":[{
+        "message":"Die Tür halt...!", "duration":1000
+    }]
+},{
+    "name":"Flur-Bacon",
+    "id":26,
+    "use":[{
+        "message":"Yammy!", "duration":1000,
+        "message":"takeItem","id":26,"duration":1000
+    }],
+    "look":[{
+        "message":"Bacon! Lecker!","duration":1000
+    }]
+},{
+    "name":"Küche-Buch",
+    "id":27,
+    "use":[{
+        "message":"takeItem","id":27,"duration":1000
+    }],
+    "look":[{
+        "message":"Ah, das Mathebuch!","duration":1000
+    }]
+}]

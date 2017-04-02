@@ -1,0 +1,111 @@
+[{  "id":0,  "name":"Bacon",                "invImgSrc":"items/bacon.png"
+},{ "id":1,  "name":"Buch",                 "invImgSrc":"items/book.png"
+},{ "id":2,  "name":"Chilli",               "invImgSrc":"items/chilli.png"
+},{ "id":3,  "name":"Chillipflanze",        "invImgSrc":"items/chilliplant.png"
+},{ "id":4,  "name":"Tape",                 "invImgSrc":"items/ducttape.png"
+},{ "id":5,  "name":"Kopfhörer",            "invImgSrc":"items/earphone.png"
+},{ "id":6,  "name":"Mett",                 "invImgSrc":"items/groundpork.png"
+},{ "id":7,  "name":"Schlüssel",            "invImgSrc":"items/key.png"
+},{ "id":8,  "name":"Schlüsselbart",        "invImgSrc":"items/keybit.png"
+},{ "id":9,  "name":"Schlüsselgriff",       "invImgSrc":"items/keygrip.png"
+},{ "id":10, "name":"Marmelade",            "invImgSrc":"items/marmelade.png"
+},{ "id":11, "name":"Majonäse",             "invImgSrc":"items/mayonaise.png"
+},{ "id":12, "name":"Frikadelle",           "invImgSrc":"items/meatball.png"
+},{ "id":13, "name":"Handy",                "invImgSrc":"items/mobilephone.png"
+},{ "id":14, "name":"Monster",              "invImgSrc":"items/monster.png"
+},{ "id":15, "name":"Papier",               "invImgSrc":"items/paper.png"
+},{ "id":16, "name":"Erdnussbutter",        "invImgSrc":"items/peanutbutter.png"
+},{ "id":17, "name":"Stift",                "invImgSrc":"items/pen.png"
+},{ "id":18, "name":"Rezept",               "invImgSrc":"items/recipe.png"
+},{ "id":19, "name":"Rucksack",             "invImgSrc":"items/rucksack.png"
+},{ "id":20, "name":"Stundenplan",          "invImgSrc":"items/schedule.png"
+},{ "id":21, "name":"Toast",                "invImgSrc":"items/toast.png"
+},{ "id":22, "name":"Zwei Stück Toast",     "invImgSrc":"items/toast2slices.png"
+},{ "id":23, "name":"","invImgSrc":null
+},{ "id":24, "name":"","invImgSrc":null
+},{ "id":25, "name":"","invImgSrc":null
+},{ "id":26, "name":"","invImgSrc":null
+},{ "id":27, "name":"","invImgSrc":null
+},{ "id":28, "name":"","invImgSrc":null
+},{ "id":29, "name":"","invImgSrc":null
+},{ "id":30, "name":"","invImgSrc":null
+},{ "id":31, "name":"","invImgSrc":null
+},{ "id":32, "name":"","invImgSrc":null
+},{ "id":33, "name":"","invImgSrc":null
+},{ "id":34, "name":"","invImgSrc":null
+},{ "id":35, "name":"","invImgSrc":null
+},{ "id":36, "name":"","invImgSrc":null
+},{ "id":37, "name":"","invImgSrc":null
+},{ "id":38, "name":"","invImgSrc":null
+},{ "id":39, "name":"","invImgSrc":null
+},{ "id":40, "name":"","invImgSrc":null
+},{ "id":41, "name":"","invImgSrc":null
+},{ "id":42, "name":"","invImgSrc":null
+},{ "id":43, "name":"","invImgSrc":null
+},{ "id":44, "name":"","invImgSrc":null
+},{ "id":45, "name":"","invImgSrc":null
+},{ "id":46, "name":"","invImgSrc":null
+},{ "id":47, "name":"","invImgSrc":null
+},{ "id":48, "name":"","invImgSrc":null
+},{ "id":49, "name":"","invImgSrc":null
+},{ "id":50, "name":"","invImgSrc":null
+},{ "id":51, "name":"","invImgSrc":null
+},{ "id":52, "name":"","invImgSrc":null
+},{ "id":53, "name":"","invImgSrc":null
+},{ "id":54, "name":"","invImgSrc":null
+},{ "id":55, "name":"","invImgSrc":null
+},{ "id":56, "name":"","invImgSrc":null
+},{ "id":57, "name":"","invImgSrc":null
+},{ "id":58, "name":"","invImgSrc":null
+},{ "id":59, "name":"","invImgSrc":null
+},{ "id":60, "name":"","invImgSrc":null
+},{ "id":61, "name":"","invImgSrc":null
+},{ "id":62, "name":"","invImgSrc":null
+},{ "id":63, "name":"","invImgSrc":null
+},{ "id":64, "name":"","invImgSrc":null
+},{ "id":65, "name":"","invImgSrc":null
+},{ "id":66, "name":"","invImgSrc":null
+},{ "id":67, "name":"","invImgSrc":null
+},{ "id":68, "name":"","invImgSrc":null
+},{ "id":69, "name":"","invImgSrc":null
+},{ "id":70, "name":"","invImgSrc":null
+},{ "id":71, "name":"","invImgSrc":null
+},{ "id":72, "name":"","invImgSrc":null
+},{ "id":73, "name":"","invImgSrc":null
+},{ "id":74, "name":"","invImgSrc":null
+},{ "id":75, "name":"","invImgSrc":null
+},{ "id":76, "name":"","invImgSrc":null
+},{ "id":77, "name":"","invImgSrc":null
+},{ "id":78, "name":"","invImgSrc":null
+},{ "id":79, "name":"","invImgSrc":null
+},{ "id":80, "name":"","invImgSrc":null
+},{ "id":81, "name":"","invImgSrc":null
+},{ "id":82, "name":"","invImgSrc":null
+},{ "id":83, "name":"","invImgSrc":null
+},{ "id":84, "name":"","invImgSrc":null
+},{ "id":85, "name":"","invImgSrc":null
+},{ "id":86, "name":"","invImgSrc":null
+},{ "id":87, "name":"","invImgSrc":null
+},{ "id":88, "name":"","invImgSrc":null
+},{ "id":89, "name":"","invImgSrc":null
+},{ "id":90, "name":"","invImgSrc":null
+},{ "id":91, "name":"","invImgSrc":null
+},{ "id":92, "name":"","invImgSrc":null
+},{ "id":93, "name":"","invImgSrc":null
+},{ "id":94, "name":"","invImgSrc":null
+},{ "id":95, "name":"","invImgSrc":null
+},{ "id":96, "name":"","invImgSrc":null
+},{ "id":97, "name":"","invImgSrc":null
+},{ "id":98, "name":"","invImgSrc":null
+},{ "id":99, "name":"","invImgSrc":null
+},{ "id":100,"name":"Tobis Bett",           "invImgSrc":null
+},{ "id":101,"name":"Raus",                 "invImgSrc":null
+},{ "id":102,"name":"Flur-rechts",          "invImgSrc":null
+},{ "id":103,"name":"Flur-hinten",          "invImgSrc":null
+},{ "id":104,"name":"Flur-mitte",           "invImgSrc":null
+},{ "id":105,"name":"Flur-links",           "invImgSrc":null
+},{ "id":106,"name":"Monkey-hinten",        "invImgSrc":null
+},{ "id":107,"name":"Badewanne",            "invImgSrc":null
+},{ "id":108,"name":"Küche-Ausgang",        "invImgSrc":null
+},{ "id":109,"name":"Bad-Ausgang",          "invImgSrc":null
+}]

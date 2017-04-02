@@ -1,0 +1,173 @@
+[
+    {
+        "name": "Test",
+        "startX": 700,
+        "startY": 200,
+        "heroWidth": 200,
+        "heroHeight": 400,
+        "dimensionsOfHeroInTheBack": 0.1,
+        "background": "hintergrund-test.jpg",
+        "MovingArea": [{
+                "x": 50,"y":220
+            },{ "x":220,"y":250
+            },{ "x":380,"y":200
+            },{ "x":340,"y":100
+            },{ "x":640,"y":90    
+            },{ "x":440,"y":250
+            },{ "x":540,"y":290
+            },{ "x":742,"y":110
+            },{ "x":781,"y":110
+            },{ "x":970,"y":210
+            },{ "x":965,"y":510
+            },{ "x":841,"y":510
+            },{ "x":100,"y":550
+            },{ "x":500,"y":510
+            },{ "x":221,"y":410
+            },{ "x":841,"y":310
+            },{ "x":780,"y":235
+            },{ "x": 60,"y":425
+            },{ "x": 70,"y":290
+            }
+        ],
+        "items": [{
+            "name":"Schlucht",
+            "type":"exit",
+            "xPos":800,
+            "yPos":200,
+            "width":224,
+            "height":200,
+            "destX":900,
+            "destY":300,
+            "destination":"Schlucht"
+        }]
+    },
+    {
+        "name": "Schlucht",
+        "startX": 650,
+        "startY": 250,
+        "heroWidth": 100,
+        "heroHeight": 200,
+        "dimensionsOfHeroInTheBack": 0.7,
+        "background": "hintergrund.jpg",
+        "MovingArea": [{
+                "x": 130,"y":55
+            },{ "x":212,"y":55
+            },{ "x":178,"y":202
+            },{ "x":441,"y":190
+            },{ "x":727,"y":206
+            },{ "x":677,"y":55
+            },{ "x":788,"y":56
+            },{ "x":877,"y":148
+            },{ "x":999,"y":175
+            },{ "x":999,"y":540
+            },{ "x":792,"y":540
+            },{ "x":760,"y":330
+            },{ "x":160,"y":337
+            },{ "x":117,"y":547
+            },{ "x": 33,"y":522
+            },{ "x": 80,"y":411
+            },{ "x": 15,"y":355
+            },{ "x": 52,"y":147
+            },{ "x":129,"y":103
+            }
+        ],
+        "items": [{
+            "name":"Pilz",
+            "type":"background",
+            "xPos":856,"yPos":56,
+            "width":92,"height":92,
+            "destX":850,"destY":220
+        },{
+            "name":"Abgrund",
+            "type":"background",
+            "xPos":160,"yPos":340,
+            "width":600,"height":236,
+            "destX":500,"destY":300
+        },{
+            "name":"Baum",
+            "type":"background",
+            "xPos":1,"yPos":1,
+            "width":119,"height":119,
+            "destX":200,"destY":220
+        },{
+            "name":"Ampel",
+            "type":"foreground",
+            "xPos":800,"yPos":176,
+            "width":50,"height":400,
+            "destX":800,"destY":300,
+            "src":"ampel.png"
+        },{
+            "name":"Schlucht rechts",
+            "type":"exit",
+            "xPos":900,"yPos":200,
+            "width":224,"height":200,
+            "destX":900,"destY":300,
+            "destination":"Bahnhof"
+        },{
+            "name":"Schlucht links",
+            "type":"exit",
+            "xPos":0,"yPos":200,
+            "width":224,"height":200,
+            "destX":200,"destY":300,
+            "destination":"Bahnhof"
+        },{
+            "name":"Weg zum Flur",
+            "type":"exit",
+            "xPos":680,"yPos":0,
+            "width":200,"height":200,
+            "destX":720,"destY":60,
+            "destination":"Flur"
+        }]
+    },
+    {
+        "name": "Bahnhof",
+        "startX": 200,
+        "startY": 300,
+        "heroWidth": 100,
+        "heroHeight": 200,
+        "dimensionsOfHeroInTheBack": 0.9,
+        "background": "hintergrund-bahn.jpg",
+        "MovingArea": [{
+                "x":110,"y":220
+            },{ "x":940,"y":210
+            },{ "x":942,"y":310
+            },{ "x":101,"y":310
+            }
+        ],
+        "items": [{
+            "name":"Bahnhof links",
+            "type":"exit",
+            "xPos":0,"yPos":200,
+            "width":200,"height":200,
+            "destX":150,"destY":260,
+            "destination":"Schlucht"
+        }]
+    },
+    {
+        "name": "Flur",
+        "startX": 500,
+        "startY": 300,
+        "heroWidth": 220,
+        "heroHeight": 440,
+        "dimensionsOfHeroInTheBack": 0.1,
+        "background": "hintergrund-raum.jpg",
+        "MovingArea": [{
+                "x":288,"y":175
+            },{ "x":370,"y":173
+            },{ "x":710,"y":335
+            },{ "x":1024,"y":507
+            },{ "x":1024,"y":576
+            },{ "x":58,"y":576
+            }
+        ],
+        "items": [{
+            "name":"Tuer",
+            "type":"background",
+            "xPos":660,"yPos":75,
+            "width":150,"height":300,
+            "destX":710,"destY":335,
+            "message":"Tuer!",
+            "src":"hintergrund-raum-tuer.jpg"
+        }]
+    }
+]

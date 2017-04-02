@@ -1,0 +1,287 @@
+[{
+    "id":0,
+    "9":{  "name":"Pilz-Taschentaucher",
+           "action":[{"message":"Der hat keinen Schnupfen!","duration":900}]
+    },
+    "10":{ "name":"Pilz-Plektrum",
+           "action":[{"message":"Ömm! Das klingt unlogisch!","duration":1300}]
+    },
+    "11":{ "name":"Pilz-Klinge",
+           "action":[{"message":"Ich kann die Klinge so nicht halten!","duration":1300}]
+    },
+    "12":{ "name":"Pilz-Messergriff",
+           "action":[{"message":"Bam!","duration":1300}]
+    },
+    "13":{"name":"Pilz-Schraubenzieher",
+          "action":[{"message":"Da sind keine Schrauben!","duration":1300}]
+    },
+    "17":{ "name":"Pilz-Messer",
+           "action":[{"message":"So ich probier mal ein Stück!","duration":1300},
+                     {"message":"Huiiiiiiiiii...","duration":1000}]
+    }
+},{
+    "id":1,
+    "9":{  "name":"Abgrund-Taschentaucher",
+           "action":[{"message":"Ich behalte die lieber!","duration":900}]
+    },
+    "10":{ "name":"Abgrund-Plektrum",
+           "action":[{
+            "message":"Ich behalte das lieber!","duration":900
+        }]
+    },
+    "11":{
+        "name":"Abgrund-Klinge",
+        "action":[{
+            "message":"Ich behalte die lieber!","duration":900
+        }]
+    },
+    "12":{
+        "name":"Abgrund-Messergriff",
+        "action":[{
+            "message":"Ich behalte den lieber.","duration":900
+        }]
+    },
+    "13":{
+        "name":"Abgrund-Schraubenzieher",
+        "action":[{
+            "message":"Ich behalte den lieber.","duration":900
+        }]
+    },
+    "17":{
+        "name":"Abgrund-Messer",
+        "action":[{
+            "message":"Ich behalte den lieber.","duration":900
+        }]
+    }
+},{
+    "id":2,
+    "9":{ "name":"Baum-Taschentaucher",
+          "action":[{"message":"Der hat keinen Schnupfen!","duration":900}]
+    },
+    "10":{ "name":"Baum-Plektrum",
+           "action":[{"message":"Ich lass mir das lieber erst zu ner Gitarre schnitzen!","duration":1500}]
+    },
+    "11":{ "name":"Baum-Klinge",
+           "action":[{"message":"Ich kann die Klinge so nicht halten!","duration":1300}]
+    },
+    "12":{ "name":"Baum-Messergriff",
+           "action":[{"message":"Bam!","duration":1300}]
+    },
+    "13":{ "name":"Baum-Schraubenzieher",
+           "action":[{"message":"Da sind keine Schrauben!","duration":1300}]
+    },
+    "17":{ "name":"Baum-Messer",
+           "action":[{"message":"Ach ne, der gefällt mir so!","duration":1300}]
+    },
+    "21":{ "name":"Chilli-Toast",
+           "action":[{"message":"Einfach drauflegen?","duration":1300}]
+    }
+},{
+    "id":3,
+    "9":{ "name":"Ampel-Taschentaucher",
+          "action":[{"message":"Sieht sauber aus!","duration":900}]
+    },
+    "10":{ "name":"Ampel-Plektrum",
+           "action":[{"message":"Ach nee!","duration":1500}]
+    },
+    "11":{ "name":"Ampel-Klinge",
+           "action":[{"message":"Ich kann die Klinge so nicht halten!","duration":1300}]
+    },
+    "12":{ "name":"Ampel-Messergriff",
+           "action":[{"message":"Bam!","duration":1300}]
+    },
+    "13":{ "name":"Ampel-Schraubenzieher",
+           "action":[{"message":"Ist eine Überlegung wert!","duration":1300}]
+    },
+    "17":{ "name":"Ampel-Messer",
+           "action":[{"message":"Ach ne, die gefällt mir so!","duration":1300}]
+    }
+},{
+    "id":4,
+    "9":{ "name":"Tür-Taschentaucher",
+          "action":[{"message":"Sieht sauber aus!","duration":900},
+                    {"message":"Ich könnte die auch aufmachen!","duration":1300}]
+    },
+    "10":{ "name":"Tür-Plektrum",
+           "action":[{"message":"Ach nee!","duration":1500},
+                    {"message":"Ich könnte die auch aufmachen!","duration":1300}]
+    },
+    "11":{ "name":"Tür-Klinge",
+           "action":[{"message":"Dödöö!","duration":700},
+                    {"message":"Ich könnte die auch aufmachen!","duration":1300}]
+    },
+    "12":{ "name":"Tür-Messergriff",
+           "action":[{"message":"Die hat schon nen Griff!","duration":1300},
+                    {"message":"Ich könnte die auch aufmachen!","duration":1300}]
+    },
+    "13":{ "name":"Tür-Schraubenzieher",
+           "action":[{"message":"Die ist doch gar nicht abgeschlossen!","duration":1300},
+                    {"message":"Ich könnte die auch aufmachen!","duration":1300}]
+    },
+    "17":{ "name":"Tür-Messer",
+           "action":[{"message":"Achja, das ist ... keine gute Idee!","duration":1300},
+                    {"message":"Ich könnte die auch aufmachen!","duration":1300}]
+    }
+},{
+    "id":5
+},{
+    "id":6,
+    "9":{ "name":"Schlucht rechts-Taschentaucher",
+          "action":[{"message":"._.","duration":900}]
+    },
+    "10":{ "name":"Schlucht rechts-Plektrum",
+           "action":[{"message":":|","duration":1500}]
+    },
+    "11":{ "name":"Schlucht rechts-Klinge",
+           "action":[{"message":">:]","duration":1300}]
+    },
+    "12":{ "name":"Schlucht rechts-Messergriff",
+           "action":[{"message":"x]","duration":1300}]
+    },
+    "13":{ "name":"Schlucht rechts-Schraubenzieher",
+           "action":[{"message":":/","duration":1300}]
+    },
+    "17":{ "name":"Schlucht rechts-Messer",
+           "action":[{"message":"#)","duration":1300}]
+    }
+},{
+    "id":7,
+    "9":{ "name":"Schlucht links-Taschentaucher",
+          "action":[{"message":"._.","duration":900}]
+    },
+    "10":{ "name":"Schlucht links-Plektrum",
+           "action":[{"message":":|","duration":1500}]
+    },
+    "11":{ "name":"Schlucht links-Klinge",
+           "action":[{"message":">:]","duration":1300}]
+    },
+    "12":{ "name":"Schlucht links-Messergriff",
+           "action":[{"message":"x]","duration":1300}]
+    },
+    "13":{ "name":"Schlucht links-Schraubenzieher",
+           "action":[{"message":":/","duration":1300}]
+    },
+    "17":{ "name":"Schlucht links-Messer",
+           "action":[{"message":"#)","duration":1300}]
+    }
+},{
+    "id":8,
+    "9":{ "name":"Weg zum Flur-Taschentaucher",
+          "action":[{"message":"D:","duration":900}]
+    },
+    "10":{ "name":"Weg zum Flur-Plektrum",
+           "action":[{"message":"D:","duration":1500}]
+    },
+    "11":{ "name":"Weg zum Flur-Klinge",
+           "action":[{"message":"D:","duration":1300}]
+    },
+    "12":{ "name":"Weg zum Flur-Messergriff",
+           "action":[{"message":"D:","duration":1300}]
+    },
+    "13":{ "name":"Weg zum Flur-Schraubenzieher",
+           "action":[{"message":"D:","duration":1300}]
+    },
+    "17":{ "name":"Weg zum Flur-Messer",
+           "action":[{"message":"D:","duration":1300}]
+    }
+},{
+    "id":9,
+    "10":{ "name":"Taschentaucher-Plektrum",
+           "action":[{"message":"Unlogisch, oder?","duration":1500}]
+    },
+    "11":{ "name":"Taschentaucher-Klinge",
+           "action":[{"message":"Vielleicht mache ich mir einen Griff aus Tüchern...","duration":1300},
+                     {"message":" ","duration":300},
+                     {"message":"...nicht!","duration":700}]
+    },
+    "12":{ "name":"Taschentaucher-Messergriff",
+           "action":[{"message":"Sieht sauber aus!","duration":1300}]
+    },
+    "13":{ "name":"Taschentaucher-Schraubenzieher",
+           "action":[{"message":"Keine Lust, das zu polieren!","duration":1300}]
+    },
+    "17":{ "name":"Taschentaucher-Messer",
+           "action":[{"message":"Nehmt dies, böse Taschentücher!!!","duration":1300},
+                     {"message":"loseItem","id":9,"duration":1},
+                     {"message":"Oh!","duration":600}]
+    }
+},{
+    "id":10,
+    "11":{ "name":"Plektrum-Klinge",
+           "action":[{"message":"Kann ich nicht kombinieren!","duration":1300}]
+    },
+    "12":{ "name":"Plektrum-Messergriff",
+           "action":[{"message":"Das lässt sich nicht spielen!","duration":1300}]
+    },
+    "13":{ "name":"Plektrum-Schraubenzieher",
+           "action":[{"message":"Wie soll ich an dem Plektrum rumschrauben?","duration":1300}]
+    },
+    "14":{ "name":"Plektrum-Tobis Bett",
+           "action":[{"message":"Ok, ich schieb das mal unter mein Kissen!","duration":1300},
+                     {"message":"loseItem","id":10,"duration":1}]
+    }
+},{
+    "id":11,
+    "12":{ "name":"Klinge-Messergriff",
+           "action":[{"message":"Ja, die passen wirklich super zusammen!", "duration":1000},
+                     {"message":"loseItem","id":12,"duration":1},
+                     {"message":"loseItem","id":11,"duration":1},
+                     {"message":"takeItem","id":17,"duration":1},
+                     {"message":"Yeah, ich hab ein Messer...","duration":1300},
+                     {"message":"Hm...","duration":600}]
+    },
+    "13":{ "name":"Klinge-Schraubenzieher",
+           "action":[{"message":"Wie soll ich an der Klinge rumschrauben?","duration":1300}]
+    },
+    "14":{ "name":"Klinge-Tobis Bett",
+           "action":[{"message":"Geht nicht!","duration":1300}]
+    },
+    "15":{ "name":"Klinge-Schlucht",
+           "action":[{"message":"Und denn?","duration":700}]
+    },
+    "16":{ "name":"Klinge-Raus",
+           "action":[{"message":"Und dann?","duration":700}]
+    }
+},{
+    "id":12,
+    "13":{ "name":"Messergriff-Schraubenzieher",
+           "action":[{"message":"Der hat schon einen Griff!","duration":700}]
+    },
+    "14":{ "name":"Messergriff-Tobis Bett",
+           "action":[{"message":"Vielleicht sollte ich das nicht machen!","duration":1300}]
+    },
+    "15":{ "name":"Messergriff-Schlucht",
+           "action":[{"message":"Und denn?","duration":700}]
+    },
+    "16":{ "name":"Messergriff-Raus",
+           "action":[{"message":"Und dann?","duration":700}]
+    }
+},{
+    "id":13,
+    "14":{ "name":"Schraubenzieher-Tobis Bett",
+           "action":[{"message":"Soll ich das Bett auseinanderschrauben?","duration":1300},
+                     {"message":"Ach, nö!","duration":700}]
+    },
+    "15":{ "name":"Schraubenzieher-Schlucht",
+           "action":[{"message":":C","duration":1300}]
+    },
+    "16":{ "name":"Schraubenzieher-Raus",
+           "action":[{"message":"Ich brauche die Tür nicht aufzubrechen!","duration":1300}]
+    },
+    "17":{ "name":"Schraubenzieher-Messer",
+           "action":[{"message":"Das würde sich zu einem Schraubenmesser warpen!","duration":1300}]
+    }
+},{
+    "id":14,
+    "17":{ "name":"Tobis Bett-Messer",
+           "action":[{"message":"Ich will mein Bett nicht aufschlitzen!","duration":1300}]
+    }
+},{
+    "id":15
+},{
+    "id":16
+},{
+    "id":17
+},{
+    "id":18
+}]

@@ -1,0 +1,138 @@
+{
+    "Tobis Zimmer": {
+        "startFrom": {
+            "Flur": {"x":119,"y":522}
+        },
+        "heroWidth": 230,
+        "heroHeight": 460,
+        "dimensionsOfHeroInTheBack": 0.9,
+        "backgroundSrc": "bg/tobiszimmer.png",
+        "MovingArea": [{
+                "x":116,"y":498
+            },{ "x":271,"y":531
+            },{ "x":490,"y":515
+            },{ "x":680,"y":468
+            },{ "x":752,"y":510
+            },{ "x":910,"y":510
+            },{ "x":935,"y":540
+            },{ "x": 93,"y":541
+            }
+        ],
+        "Items": [{
+            "id":100,"name":"Tobis Bett", "xPos":545,"yPos":437,"width":479,"height":139,"dest":{"x":673,"y":533},"facing":"right","type":"foreground","src":"fg/tobis_bett.png"
+        },{ "id":101,"name":"Raus",       "xPos":14, "yPos":78, "width":60, "height":350,"dest":{"x":119,"y":522},"facing":"left", "type":"exit","destination":"Flur"
+        },{ "id":4,  "name":"Tape",       "xPos":353,"yPos":486,"width":40, "height":40, "dest":{"x":400,"y":500},"facing":"left", "type":"background","src":"items/ducttape.png"
+        }]
+    },
+    "Flur": {
+        "startFrom": {
+            "Tobis Zimmer": {"x":869,"y":448},
+            "Monkey":       {"x":151,"y":449},
+            "Küche":        {"x":669,"y":366},
+            "Bad":          {"x":686,"y":332}
+        },
+        "heroWidth": 250,
+        "heroHeight": 500,
+        "dimensionsOfHeroInTheBack": 0.55,
+        "backgroundSrc": "bg/flur.jpg",
+        "MovingArea": [{
+                "x": 84,"y":477
+            },{ "x":150,"y":435
+            },{ "x":530,"y":520
+            },{ "x":690,"y":320
+            },{ "x":825,"y":320
+            },{ "x":930,"y":549
+            },{ "x": 84,"y":549
+            }
+        ],
+        "Items": [{
+            "id":102,"name":"Tobis Zimmer", "xPos":909,"yPos":68, "width":60, "height":350,"dest":{"x":869,"y":448},"facing":"right","type":"exit","destination":"Tobis Zimmer"
+        },{ "id":103,"name":"Bad",          "xPos":721,"yPos":95, "width":80, "height":200,"dest":{"x":686,"y":332},"facing":"right","type":"exit","destination":"Bad"
+        },{ "id":104,"name":"Küche",        "xPos":568,"yPos":34, "width":58, "height":240,"dest":{"x":669,"y":366},"facing":"left", "type":"exit","destination":"Küche"
+        },{ "id":105,"name":"Raus",         "xPos":4,  "yPos":12, "width":118,"height":380,"dest":{"x":150,"y":435},"facing":"left", "type":"exit","destination":"Treppenhaus"
+        },{ "id":3,  "name":"Chillipflanze","xPos":308,"yPos":297,"width":50, "height":50, "dest":{"x":240,"y":464},"facing":"right","type":"background","src":"items/chilliplant.png"    
+        },{ "id":21, "name":"Toast",        "xPos":264,"yPos":286,"width":40, "height":40, "dest":{"x":181,"y":447},"facing":"right","type":"background","src":"items/toast.png"
+        }]
+    },
+    "Monkey": {
+        "startFrom": {
+            "Flur": {"x":380,"y":300}
+        },
+        "heroWidth": 110,
+        "heroHeight": 220,
+        "dimensionsOfHeroInTheBack": 0.3,
+        "backgroundSrc": "bg/huette.jpg",
+        "MovingArea": [{
+                "x": 84,"y":477
+            },{ "x":216,"y":478
+            },{ "x":341,"y":386
+            },{ "x":455,"y":393
+            },{ "x":481,"y":368
+            },{ "x":276,"y":341
+            },{ "x":289,"y":327
+            },{ "x":456,"y":330
+            },{ "x":453,"y":321
+            },{ "x":363,"y":311
+            },{ "x":367,"y":286
+            },{ "x":392,"y":288
+            },{ "x":392,"y":309
+            },{ "x":478,"y":318
+            },{ "x":503,"y":339
+            },{ "x":342,"y":333
+            },{ "x":535,"y":365
+            },{ "x":522,"y":367
+            },{ "x":480,"y":412
+            },{ "x":365,"y":396
+            },{ "x":319,"y":488
+            },{ "x":574,"y":522
+            },{ "x":568,"y":547
+            },{ "x": 84,"y":548
+            }
+        ],
+        "Items": [{
+            "id":106,"name":"Nach drinnen","xPos":410,"yPos":246,"width":20,"height":40,"dest":{"x":380,"y":300},"facing":"right","type":"exit","destination":"Flur"
+        }]
+    },
+    "Bad": {
+        "startFrom": {
+            "Flur": {"x":260,"y":500}
+        },
+        "heroWidth": 250,
+        "heroHeight": 500,
+        "dimensionsOfHeroInTheBack": 0.7,
+        "backgroundSrc": "bg/bad.png",
+        "foregroundSrc": "fg/bad.png",
+        "MovingArea": [{
+                "x":250,"y":421
+            },{ "x":531,"y":419
+            },{ "x":585,"y":520
+            },{ "x":245,"y":524
+            }
+        ],
+        "Items": [{
+            "id":107,"name":"Badewanne","xPos":319,"yPos":471,"width":705,"height":100,"dest":{"x":500,"y":500},"facing":"right","type":"foreground"
+        },{ "id":109,"name":"Zum Flur", "xPos":135,"yPos":70, "width":55, "height":370,"dest":{"x":260,"y":500},"facing":"right","type":"exit","destination":"Flur"
+        }]
+    },
+    "Küche": {
+        "startFrom": {
+            "Flur": {"x":564,"y":404}
+        },
+        "heroWidth": 250,
+        "heroHeight": 500,
+        "dimensionsOfHeroInTheBack": 0.7,
+        "backgroundSrc": "bg/kueche.png",
+        "MovingArea": [{
+                "x":440,"y":393
+            },{ "x":689,"y":402
+            },{ "x":714,"y":425
+            },{ "x":425,"y":424
+            }
+        ],
+        "Items": [{
+            "id":108,"name":"Zum Flur","xPos":496,"yPos":75, "width":140,"height":300,"dest":{"x":564,"y":404},"facing":"right","type":"exit","destination":"Flur"
+        },{ "id":0,  "name":"Bacon",   "xPos":308,"yPos":297,"width":50, "height":50, "dest":{"x":435,"y":423},"facing":"left", "type":"background","src":"items/bacon.png"
+        },{ "id":1,  "name":"Buch",    "xPos":796,"yPos":453,"width":50, "height":50, "dest":{"x":696,"y":419},"facing":"right","type":"background","src":"items/book.png"
+        }]
+    }
+}

@@ -1,0 +1,44 @@
+[
+    {
+        "id":0,
+        "name":"bowly",
+        "firstAction":{"type":"options","nr":0}
+        "options":[
+            [
+                [
+                    {"text":"Hallo Bowly!","nextAction":{"type":"talks","nr":0}},
+                    {"text":"Hi Bowly!","nextAction":{"type":"talks","nr":1}},
+                    {"text":"Oha, da liegt eine Bowlingkugel!","nextAction":{"type":"talks","nr":2}}
+                ],
+                [
+                    {"text":"Aha, na dann geh ich mal!","nextAction":{"type":"talks","nr":0}}
+                ]
+            ]
+        ]
+        "talks":[
+            {
+                {"hero":"Hallo Bowly!","duration":500},
+                {"bowly":"Hallo Tobi!","duration":500},
+                {"hero":"Huch, du kannst ja reden!","duration":800},
+                {"nextAction":{"type":"options","nr":1}}
+            },
+            {
+                {"hero":"Hi Bowly!","duration":500},
+                {"bowly":"Hi Tobi!","duration":500},
+                {"hero":"Huch, du kannst ja reden!","duration":800},
+                {"nextAction":{"type":"options","nr":1}}
+            },
+            {
+                {"hero":"Oha, da liegt eine Bowlingkugel!","duration":500},
+                {"bowly":"Hallo Tobi!","duration":500},
+                {"hero":"Huch, du kannst ja reden!","duration":800},
+                {"nextAction":{"type":"options","nr":1}}
+            },
+            {
+                {"hero":"Aha, na dann geh ich mal!","duration":500},
+                {"bowly":"Mach's gut!","duration":500},
+                {"nextAction":{"type":"end"}}
+            }
+        ]
+    }
+]
