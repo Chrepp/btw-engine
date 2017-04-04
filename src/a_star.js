@@ -1,31 +1,30 @@
 function heuristic(current_node, destination) { // is Pythagoras ohne Wurzel...
-	var x = current_node.x-destination.x;
-	var y = current_node.y-destination.y;
-	return Math.sqrt(x*x+y*y);
+    var x = current_node.x - destination.x;
+    var y = current_node.y - destination.y;
+    return Math.sqrt(x * x + y * y);
 }
 
-function node(id, x, y, parent_index, g, h, f)
-{
-        this.id = id;
-	this.x = x;
-	this.y = y;
-	this.parent_index = parent_index; // nötig nur bei closed
-	this.g = g; // Kosten vom start bis hier
-	this.h = h; // Schätzung von hier bis Ziel
-	this.f = f; // Gesamtkosten: g+h
+function node(id, x, y, parent_index, g, h, f) {
+    this.id = id;
+    this.x = x;
+    this.y = y;
+    this.parent_index = parent_index; // nötig nur bei closed
+    this.g = g; // Kosten vom start bis hier
+    this.h = h; // Schätzung von hier bis Ziel
+    this.f = f; // Gesamtkosten: g+h
 }
 
-function a_star(startId,startX,startY,destinationId,destinationX,destinationY, graph, points) {
+function a_star(startId, startX, startY, destinationId, destinationX, destinationY, graph, points) {
     //Create start and destination as true nodes
-    var start         = new node(startId,startX,startY, -1, -1, -1, -1);
-    var destination   = new node(destinationId,destinationX,destinationY, -1, -1, -1, -1);
-    
+    var start = new node(startId, startX, startY, -1, -1, -1, -1);
+    var destination = new node(destinationId, destinationX, destinationY, -1, -1, -1, -1);
+
     var open = []; //List of open nodes (nodes to be inspected)
     var closed = []; //List of closed nodes (nodes we've already inspected)
 
     var g = 0; //Cost from start to current node
     var h = heuristic(start, destination); //Cost from current node to destination
-    var f = g+h; //Cost from start to destination going through the current node
+    var f = g + h; //Cost from start to destination going through the current node
 
     //Push the start node onto the list of open nodes
     open.push(start);
@@ -44,43 +43,43 @@ function a_star(startId,startX,startY,destinationId,destinationX,destinationY, g
         }
         //Set it as our current node
         var current_node = open[best_node];
-        
+
         /*
-        console.log(test+">"+current_node.id);
-        test="closed:";
-        for (var i = 0; i < closed.length; i++) {
-            test+=closed[i].id+"-";
-        }
-        console.log(test);
-        */
-        
-        
+         console.log(test+">"+current_node.id);
+         test="closed:";
+         for (var i = 0; i < closed.length; i++) {
+         test+=closed[i].id+"-";
+         }
+         console.log(test);
+         */
+
+
         //Check if we've reached our destination
-        if (current_node.id == destination.id) {
+        if (current_node.id === destination.id) {
             var path = [destination]; //current_node.x == destination.x && current_node.y == destination.yInitialize the path with the destination node
             //Go up the chain to recreate the path 
-            while (current_node.parent_index != -1) {
+            while (current_node.parent_index !== -1) {
                 current_node = closed[current_node.parent_index];
                 path.unshift(current_node);
             }
             return path;
-            
+
         }
-        
+
         //Remove the current node from our open list
         open.splice(best_node, 1);
         //Push it onto the closed list
-        
+
         closed.push(current_node);
         // Expandieren heißt hier: Alle Nachbarknoten abklappern
-        test="";
-        for(var n=0;n<graph[current_node.id].length;n++) {
-            if(graph[current_node.id]) {
+        test = "";
+        for (var n = 0; n < graph[current_node.id].length; n++) {
+            if (graph[current_node.id]) {
                 var newId = graph[current_node.id][n];
-                
-                var newNodeX = newId==startId?startX:newId==destinationId?destinationX:points[newId].x;
-                var newNodeY = newId==startId?startY:newId==destinationId?destinationY:points[newId].y;
-                
+
+                var newNodeX = newId == startId ? startX : newId == destinationId ? destinationX : points[newId].x;
+                var newNodeY = newId == startId ? startY : newId == destinationId ? destinationY : points[newId].y;
+
                 //See if the node is already in our closed list. If so, skip it.
                 var found_in_closed = false;
                 for (var i in closed)
@@ -89,8 +88,7 @@ function a_star(startId,startX,startY,destinationId,destinationX,destinationY, g
                         break;
                     }
                 if (found_in_closed) continue;
-                
-                
+
                 //See if the node is in our open list. If not, use it.
                 var found_in_open = false;
                 for (var i in open)
@@ -100,17 +98,16 @@ function a_star(startId,startX,startY,destinationId,destinationX,destinationY, g
                     }
 
                 if (!found_in_open) {
-                    var new_node = new node(newId, newNodeX, newNodeY, closed.length-1, -1, -1, -1);
-                    
-                    new_node.g = current_node.g + Math.floor(Math.sqrt(Math.pow(new_node.x-current_node.x, 2)+Math.pow(new_node.y-current_node.y, 2)));
+                    var new_node = new node(newId, newNodeX, newNodeY, closed.length - 1, -1, -1, -1);
+
+                    new_node.g = current_node.g + Math.floor(Math.sqrt(Math.pow(new_node.x - current_node.x, 2) + Math.pow(new_node.y - current_node.y, 2)));
                     new_node.h = heuristic(new_node, destination);
-                    new_node.f = new_node.g+new_node.h;
-                    test+=newId+"(f="+new_node.f+",)";
+                    new_node.f = new_node.g + new_node.h;
+                    test += newId + "(f=" + new_node.f + ",)";
                     open.push(new_node);
                 }
             }
         }
-        //console.log("Expand:"+test);
     }
     return [];
 }

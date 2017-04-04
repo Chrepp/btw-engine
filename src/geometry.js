@@ -2,33 +2,33 @@
  * Wenn ein Punkt im Graphen zwischen den beiden Nachbarknoten von vertex
  * außerhalb der MovingArea liegt, gilt er als konkav X)
  */
-function isVertexConcave(vertex,MovingArea) {
-    // Bilde Graphen zwischen dan beiden Nachbarknoten
-    var next     = (vertex+1)%MovingArea.length;
-    var previous = vertex==0?MovingArea.length-1:(vertex-1);
-    var thisX = MovingArea[vertex].x;
-    var thisY = MovingArea[vertex].y;
-    var previousX = MovingArea[previous].x;
-    var previousY = MovingArea[previous].y;
-    var nextX = MovingArea[next].x;
-    var nextY = MovingArea[next].y;
+function isVertexConcave(vertex, MovingArea) {
+    // Bilde Graphen zwischen den beiden Nachbarknoten
+    let next     = (vertex+1)%MovingArea.length;
+    let previous = vertex===0?MovingArea.length-1:(vertex-1);
+    let thisX = MovingArea[vertex].x;
+    let thisY = MovingArea[vertex].y;
+    let previousX = MovingArea[previous].x;
+    let previousY = MovingArea[previous].y;
+    let nextX = MovingArea[next].x;
+    let nextY = MovingArea[next].y;
     // Math.abs( <-Betrag...
-    var leftX = thisX-previousX;
-    var leftY = thisY-previousY;
-    var rightX = nextX-thisX;
-    var rightY = nextY-thisY;
-    var cross = (leftX*rightY)-(leftY*rightX);
+    let leftX = thisX-previousX;
+    let leftY = thisY-previousY;
+    let rightX = nextX-thisX;
+    let rightY = nextY-thisY;
+    let cross = (leftX*rightY)-(leftY*rightX);
     return cross < 0;
 }
 
 function linesIntersect(aX,aY,bX,bY,cX,cY,dX,dY) {
-    var denominator = ((bX - aX) * (dY - cY)) - ((bY - aY) * (dX - cX));
-    if (denominator == 0) return false;
-    var numerator1 = ((aY - cY) * (dX - cX)) - ((aX - cX) * (dY - cY));
-    var numerator2 = ((aY - cY) * (bX - aX)) - ((aX - cX) * (bY - aY));
-    if (numerator1 == 0 || numerator2 == 0) return false;
-    var r = numerator1 / denominator;
-    var s = numerator2 / denominator;
+    let denominator = ((bX - aX) * (dY - cY)) - ((bY - aY) * (dX - cX));
+    if (denominator === 0) return false;
+    let numerator1 = ((aY - cY) * (dX - cX)) - ((aX - cX) * (dY - cY));
+    let numerator2 = ((aY - cY) * (bX - aX)) - ((aX - cX) * (bY - aY));
+    if (numerator1 === 0 || numerator2 === 0) return false;
+    let r = numerator1 / denominator;
+    let s = numerator2 / denominator;
     return (r > 0 && r < 1) && (s > 0 && s < 1);
 }
 
@@ -39,9 +39,9 @@ function linesIntersect(aX,aY,bX,bY,cX,cY,dX,dY) {
  * ungerade, befindet sich (x,y) in der Fläche.
  */
 function isInMovingArea(p,loc) {
-    var intersectionCount = 0;
-    for(var i=0;i<loc.MovingArea.length;i++) {
-        var line = {};
+    let intersectionCount = 0;
+    for(let i=0;i<loc.MovingArea.length;i++) {
+        let line = {};
         line.p1 = {};
         line.p1.x = loc.MovingArea[i].x;
         line.p1.y = loc.MovingArea[i].y;
@@ -50,20 +50,18 @@ function isInMovingArea(p,loc) {
         line.p2.y = loc.MovingArea[(i+1)%loc.MovingArea.length].y;
         if(linesIntersect(0,p.y,p.x,p.y,line.p1.x,line.p1.y,line.p2.x,line.p2.y) && !isPointOnLine(p,line)) intersectionCount++;
     }
-    //Debugger.log(intersectionCount);
-    return intersectionCount%2==0?false:true;
+    return intersectionCount%2!==0;
 }
 
 function isInRect(p,r,width,height) {
-    var b = {};
+    let b = {};
     b.x = r.x+width;
     b.y = r.y+height;
-    if(p.x>r.x && p.x<b.x && p.y>r.y && p.y<b.y) return true;
-    else return false;
+    return p.x > r.x && p.x < b.x && p.y > r.y && p.y < b.y;
 }
 
 function inLineOfSight(aX,aY,bX,bY,firstStep,MovingArea) {
-    var isInLineOfSight = true;
+    let isInLineOfSight = true;
     /*
     // Falls die Linie zwischen a und b außerhalb liegt, dann false - ansonsten schleife
     var m = (bY-aY)/(bX-aX);
@@ -75,13 +73,13 @@ function inLineOfSight(aX,aY,bX,bY,firstStep,MovingArea) {
         isInLineOfSight = false;
     }
     else*/
-        for(var k=0;k<MovingArea.length;k++) {
+        for(let k=0;k<MovingArea.length;k++) {
             //Debugger.log("Durchgang "+k);
             // Wahr, wenn sich die Strecke zwischen i und j mit der zwischen k und k+1 kreuzen
-            var cX = MovingArea[k].x;
-            var cY = MovingArea[k].y;
-            var dX = MovingArea[(k+1)%MovingArea.length].x;
-            var dY = MovingArea[(k+1)%MovingArea.length].y;
+            let cX = MovingArea[k].x;
+            let cY = MovingArea[k].y;
+            let dX = MovingArea[(k+1)%MovingArea.length].x;
+            let dY = MovingArea[(k+1)%MovingArea.length].y;
             if(linesIntersect(aX,aY,bX,bY,cX,cY,dX,dY)) {
                 isInLineOfSight = false;
                 /*
@@ -103,22 +101,22 @@ function inLineOfSight(aX,aY,bX,bY,firstStep,MovingArea) {
 }
 
 function buildVisibilityGraph(MovingArea) {
-    VG = new Array();
-    for(var i=0;i<MovingArea.length;i++) if(isVertexConcave(i,MovingArea)) {
-        VG[i] = new Array();
-        for(var j=0;j<VG.length;j++) {
+    VG = [];
+    for(let i=0;i<MovingArea.length;i++) if(isVertexConcave(i,MovingArea)) {
+        VG[i] = [];
+        for(let j=0;j<VG.length;j++) {
             if(VG[j]) {
-                var aX = MovingArea[i].x;
-                var aY = MovingArea[i].y;
-                var bX = MovingArea[j].x;
-                var bY = MovingArea[j].y;
-                if(inLineOfSight(aX,aY,bX,bY,false,MovingArea) && i!=j) {
+                let aX = MovingArea[i].x;
+                let aY = MovingArea[i].y;
+                let bX = MovingArea[j].x;
+                let bY = MovingArea[j].y;
+                if(inLineOfSight(aX,aY,bX,bY,false,MovingArea) && i !== j) {
                     VG[i][VG[i].length] = j;
                     //Debugger.log("Kein Hindernis zwischen "+i+" und "+j);
                     if(VG[j]) {
-                        var hasElem = false;
-                        for(var l=0;l<VG[j].length;l++) {
-                            if(VG[j][l] == i) hasElem = true;
+                        let hasElem = false;
+                        for(let l=0;l<VG[j].length;l++) {
+                            if(VG[j][l] === i) hasElem = true;
                         }
                         if(!hasElem) VG[j][VG[j].length] = i;
                     }
@@ -134,12 +132,12 @@ function buildVisibilityGraph(MovingArea) {
  * nächsten ist.
  */
 function getNextPointOnLine(p,line) {
-    var next = {};
-    if(line.m == "Infinity" || line.m == "-Infinity") {
+    let next = {};
+    if(line.m === "Infinity" || line.m === "-Infinity") {
         next.x = line.p1.x;
         next.y = p.y;
     }
-    else if(line.m == 0) {
+    else if(line.m === 0) {
         next.x = p.x;
         next.y = line.p1.y;
     }
@@ -159,8 +157,8 @@ function getNextPointOnLine(p,line) {
  * dist: die zu schiebende Entfernung
  */
 function moveIntoMovingArea(p,m,loc,dist) {
-    var tmp = {}
-    if(m == "Infinity" || m == "-Infinity") {
+    let tmp = {};
+    if(m === "Infinity" || m === "-Infinity") {
         tmp.x = p.x;
         tmp.y = p.y+dist;
         if(!isInMovingArea(tmp,loc)) {
@@ -172,7 +170,7 @@ function moveIntoMovingArea(p,m,loc,dist) {
             }
         }
     }
-    else if(m == 0) {
+    else if(m === 0) {
         tmp.x = p.x+dist;
         tmp.y = p.y;
         if(!isInMovingArea(tmp,loc)) {
@@ -185,7 +183,7 @@ function moveIntoMovingArea(p,m,loc,dist) {
         }
     }
     else {
-        var c = p.y-m*p.x;
+        let c = p.y-m*p.x;
         
         // Die eine Seite der Kante
         tmp.x = p.x+Math.sqrt(dist*dist/(1+m*m));
@@ -221,11 +219,11 @@ function moveIntoMovingArea(p,m,loc,dist) {
 }
 
 function isPointOnLine(p,line) {
-    var m = (line.p2.y-line.p1.y)/(line.p2.x-line.p1.x);
-    var c = line.p1.y-m*line.p1.x;
+    let m = (line.p2.y-line.p1.y)/(line.p2.x-line.p1.x);
+    let c = line.p1.y-m*line.p1.x;
     // Liegt p auf der Geraden?
-    var pOnLine = p.y == m*p.x+c;
-    var pBetweenPoints =
+    let pOnLine = p.y === m*p.x+c;
+    let pBetweenPoints =
         ((p.y <= line.p1.y && p.y >= line.p2.y) ||  (p.y >= line.p1.y && p.y <= line.p2.y)) 
      && ((p.x <= line.p1.x && p.x >= line.p2.x) ||  (p.x >= line.p1.x && p.x <= line.p2.x));
     
@@ -233,21 +231,20 @@ function isPointOnLine(p,line) {
 }
 
 /**
- * Setzt die Koordination für das nächste Endziel, wo der Held hingehen 
- * soll.
+ * Sets the coordinates for the next end goal the hero wants to go to.
  */
 function setDest(p,loc) {
     if(!isInMovingArea(p,loc)) {
-        var distance = 10000;
-        var result = {};
+        let distance = 10000;
+        let result = {};
         result.x = p.x;
         result.y = p.y;
         
-        for(var i=0;i<loc.MovingArea.length;i++) {
-            var distanceTemp = 0;
-            var next = {}; // Nähester Punkt auf der Kante zu p
-            var tmp;
-            var edge = {}; // Aktuelle Kante in der Schleife
+        for(let i=0; i < loc.MovingArea.length; i++) {
+            let distanceTemp = 0;
+            let next = {}; // Nähester Punkt auf der Kante zu p
+            let tmp;
+            let edge = {}; // Aktuelle Kante in der Schleife
             edge.p1 = loc.MovingArea[i];
             edge.p2 = loc.MovingArea[(i+1)%loc.MovingArea.length];
             edge.m = (edge.p2.y-edge.p1.y)/(edge.p2.x-edge.p1.x); // Steigung der Kanten-Geraden: m=(y2-y1)/(x2-x1)
@@ -258,10 +255,10 @@ function setDest(p,loc) {
             distanceTemp = Math.sqrt((next.x-p.x)*(next.x-p.x)+(next.y-p.y)*(next.y-p.y));
             
             // Nur wenn der Punkt (next) auf der Strecke (zwischen p1 und p2) liegt, sollen x und y geändert werden
-            var isOnLine = isPointOnLine(next,edge);
+            let isOnLine = isPointOnLine(next,edge);
             if(isOnLine) {
                 if(distanceTemp<distance) {
-                    var mTmp = (1/edge.m)*-1;
+                    let mTmp = (1/edge.m)*-1;
                     tmp = moveIntoMovingArea(next,mTmp,loc,2);
                     result.x = tmp.x;
                     result.y = tmp.y;
@@ -271,16 +268,16 @@ function setDest(p,loc) {
             }
             else {
                 //Debugger.log(distanceTemp+"<"+distance+"("+x+"|"+y+") next:("+nextX+"|"+nextY+") ");
-                var distanceTo1stPoint = Math.sqrt((edge.p1.x-p.x)*(edge.p1.x-p.x)+(edge.p1.y-p.y)*(edge.p1.y-p.y));
-                var distanceTo2ndPoint = Math.sqrt((edge.p2.x-p.x)*(edge.p2.x-p.x)+(edge.p2.y-p.y)*(edge.p2.y-p.y));
-                var neighbor;
-                var middle = {};
-                var line = {};
+                let distanceTo1stPoint = Math.sqrt((edge.p1.x-p.x)*(edge.p1.x-p.x)+(edge.p1.y-p.y)*(edge.p1.y-p.y)),
+                    distanceTo2ndPoint = Math.sqrt((edge.p2.x-p.x)*(edge.p2.x-p.x)+(edge.p2.y-p.y)*(edge.p2.y-p.y)),
+                    neighbor,
+                    middle = {},
+                    line = {};
                 
                 if (distanceTo1stPoint<distance) {
                     distance = distanceTo1stPoint;
                     
-                    neighbor = i==0?loc.MovingArea[loc.MovingArea.length-1]:loc.MovingArea[i-1];
+                    neighbor = i===0 ? loc.MovingArea[loc.MovingArea.length-1] : loc.MovingArea[i-1];
                     middle.x = (neighbor.x+edge.p2.x)/2;
                     middle.y = (neighbor.y+edge.p2.y)/2;
                     line.m = (middle.y-edge.p1.y)/(middle.x-edge.p1.x);
@@ -322,24 +319,24 @@ function setDest(p,loc) {
 }
 
 function setPath(currentX,currentY,destX,destY,loc) {
-    var path = new Array();
-    var VisibilityGraph = loc.VisibilityGraph;
+    let path,
+        VisibilityGraph = loc.VisibilityGraph;
     //Debugger.log("Berechne Pfad nach ("+destX+","+destY+")");
     // currentXY und destXY müssen dem VisibilityGraph hinzugefügt werden.
 
     // joinVisibilityGraph(currentId);
-    var currentId = VisibilityGraph.length;
-    VisibilityGraph[currentId] = new Array();
-    for(var j=0;j<VisibilityGraph.length-1;j++) {
+    let currentId = VisibilityGraph.length;
+    VisibilityGraph[currentId] = [];
+    for(let j=0;j<VisibilityGraph.length-1;j++) {
         if(VisibilityGraph[j]) {
-            var bX = loc.MovingArea[j].x;
-            var bY = loc.MovingArea[j].y;
+            let bX = loc.MovingArea[j].x;
+            let bY = loc.MovingArea[j].y;
             if(inLineOfSight(currentX,currentY,bX,bY,true,loc.MovingArea)) {
                 VisibilityGraph[currentId][VisibilityGraph[currentId].length] = j;
                 if(VisibilityGraph[j]) {
-                    var hasElem = false;
-                    for(var l=0;l<VisibilityGraph[j].length;l++) {
-                        if(VisibilityGraph[j][l] == currentId) hasElem = true;
+                    let hasElem = false;
+                    for(let l=0;l<VisibilityGraph[j].length;l++) {
+                        if(VisibilityGraph[j][l] === currentId) hasElem = true;
                     }
                     if(!hasElem) VisibilityGraph[j][VisibilityGraph[j].length] = currentId;
                 }
@@ -347,18 +344,18 @@ function setPath(currentX,currentY,destX,destY,loc) {
         }
     }
     //joinVisibilityGraph(destId);
-    var destId = VisibilityGraph.length;
-    VisibilityGraph[destId] = new Array();
-    for(var j=0;j<VisibilityGraph.length-1;j++) {
+    let destId = VisibilityGraph.length;
+    VisibilityGraph[destId] = [];
+    for(let j=0; j < VisibilityGraph.length - 1; j++) {
         if(VisibilityGraph[j]) {
-            var bX = j==currentId?currentX:loc.MovingArea[j].x;
-            var bY = j==currentId?currentY:loc.MovingArea[j].y;
+            let bX = j===currentId ? currentX : loc.MovingArea[j].x;
+            let bY = j===currentId ? currentY : loc.MovingArea[j].y;
             if(inLineOfSight(destX,destY,bX,bY,false,loc.MovingArea)) {
                 VisibilityGraph[destId][VisibilityGraph[destId].length] = j;
                 if(VisibilityGraph[j]) {
-                    var hasElem = false;
-                    for(var l=0;l<VisibilityGraph[j].length;l++) {
-                        if(VisibilityGraph[j][l] == destId) hasElem = true;
+                    let hasElem = false;
+                    for(let l=0; l < VisibilityGraph[j].length; l++) {
+                        if(VisibilityGraph[j][l] === destId) hasElem = true;
                     }
                     if(!hasElem) VisibilityGraph[j][VisibilityGraph[j].length] = destId;
                 }
@@ -385,11 +382,11 @@ function setPath(currentX,currentY,destX,destY,loc) {
 
     // Temporäre Knoten (start und ziel) wieder entfernen
     VisibilityGraph.length -= 2;
-    for(var i=0;i<VisibilityGraph.length;i++) {
+    for(let i=0; i < VisibilityGraph.length; i++) {
         if(VisibilityGraph[i]) {
-            var toDel = 0;
-            for(var j=0;j<VisibilityGraph.length;j++) {
-                if(VisibilityGraph[i][j] == currentId || VisibilityGraph[i][j] == destId) {
+            let toDel = 0;
+            for(let j=0; j < VisibilityGraph.length; j++) {
+                if(VisibilityGraph[i][j] === currentId || VisibilityGraph[i][j] === destId) {
                     toDel++;
                 }
             }

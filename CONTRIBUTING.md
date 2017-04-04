@@ -3,12 +3,17 @@
 The engine is in an early stage. If you really want to contribute, please just contact me so I can help you with it.
 
 ---
+
+## Requirements
+
+- Node.js and Grunt
+- ECMAScript6
   
 ## Basics for developing the engine
 
 I will eventually be doing some refactoring, so the following might be untrue in the future.
 
-The game engine is stored in five different JS files.  
+The game engine is stored in five different JS files. They are all stored in  
 
 * **a_star.js** (The a star algorithm for pathfinding)
 * **drawing.js** (all functions for drawing things on the screen)
@@ -26,6 +31,5 @@ It uses the following frameworks:
 
 Only the most urgent todos will be listed here:
 
-* add grunt/bower to build a single game_engine.js (or something) file
-* remove \/dialogue and \/sim
 * translate comments into english
+* Refactoring into proper ES6

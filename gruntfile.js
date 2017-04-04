@@ -17,6 +17,7 @@ module.exports = function(grunt) {
             }
         },
 
+        // Doesn't support ES6?
         uglify: {
             options: {
                 // the banner is inserted at the top of the output
@@ -59,6 +60,6 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-concat');
 
     grunt.registerTask('test', ['jshint'/*, 'qunit'*/]);
-    grunt.registerTask('default', [/*'jshint',*/ /*'qunit',*/ 'concat', 'uglify']);
+    grunt.registerTask('default', [/*'jshint',*/ /*'qunit',*/ 'concat' /*, 'uglify'*/]);
 
 };
