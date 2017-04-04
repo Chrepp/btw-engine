@@ -1,0 +1,26 @@
+{
+  "name": "btw-engine",
+  "version": "0.1.0",
+  "devDependencies": {
+    "grunt": "^1.0.1"
+  },
+  "description": "A simple 2D point and click adventure game engine in JavaScript.",
+  "main": "gruntfile.js",
+  "dependencies": {
+    "grunt-contrib-concat": "^1.0.1",
+    "grunt": "^1.0.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Chrepp/btw-engine.git"
+  },
+  "author": "Christian Epp",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Chrepp/btw-engine/issues"
+  },
+  "homepage": "https://github.com/Chrepp/btw-engine#readme"
+}

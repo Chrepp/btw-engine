@@ -9,11 +9,7 @@
         <link href="main.css" type="text/css" rel="stylesheet" /> 
         <script src="js-lib/modernizr.js"></script>
         <script src="js-lib/prototype.js"></script>
-        <script src="gameLogic.js"></script>
-        <script src="geometry.js"></script>
-        <script src="drawing.js"></script>
-        <script src="a_star.js"></script>
-        <script src="functions.js"></script>
+        <script src="dist/btw-engine.js"></script>
     </head>
     <body>
         <canvas id="canvas" width="1024" height="576" >
