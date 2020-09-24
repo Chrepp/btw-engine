@@ -544,7 +544,7 @@ else {
     }
 
     function changeCursor(img) {
-        $('canvas').style.cursor="url(pix/"+img+"),pointer";
+        document.getElementById('canvas').style.cursor="url(pix/"+img+"),pointer";
     }
 
     function leftClick(p) {
@@ -586,10 +586,10 @@ else {
         if(!actionStarted) {
             if (!e) e = window.event;
             let point = {};
-            let canvas = $('#canvas');
+            let canvas = document.getElementById('canvas');
             point.x = e.clientX - canvas.offsetLeft;
             point.y = e.clientY - canvas.offsetTop;
-            if (e.type && e.type === "contextmenu" || (e.button && e.button === 2) || (e.which && e.which === 3)) rightClick(p);
+            if (e.type && e.type === "contextmenu" || (e.button && e.button === 2) || (e.which && e.which === 3)) rightClick(point);
             else if((e.button && e.button === 4) || (e.which && e.which === 2)) middleClick();
             else leftClick(point);
             return false;
@@ -603,7 +603,7 @@ else {
     function mouseMove(e) {
         if(!actionStarted && currentGameState === GAME_STATE_PLAY) {
             let p = {};
-            let canvas = $('#canvas');
+            let canvas = document.getElementById('canvas');
             p.x = e.clientX - canvas.offsetLeft;
             p.y = e.clientY - canvas.offsetTop;
             if(inventoryOpen) checkInv(p,"",inventory);
@@ -623,7 +623,7 @@ else {
 
     function initGame() {
         switchGameState(GAME_STATE_LOAD);
-        let canvas = $('#canvas');
+        let canvas = document.getElementById('canvas');
         canvas.addEventListener("mouseup", eventClick, true);
         //canvas.addEventListener("contextmenu", eventClick, true);
         canvas.oncontextmenu = function(e) {return false;};
