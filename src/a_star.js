@@ -34,7 +34,7 @@ function a_star(startId, startX, startY, destinationId, destinationX, destinatio
         var best_cost = open[0].f;
         var best_node = 0;
         //var test="open:"+open[0].id+"-";
-        for (var i = 1; i < open.length; i++) {
+        for (let i = 1; i < open.length; i++) {
             //test+=open[i].id+"-";
             if (open[i].f < best_cost) {
                 best_cost = open[i].f;
@@ -73,7 +73,7 @@ function a_star(startId, startX, startY, destinationId, destinationX, destinatio
         closed.push(current_node);
         // Expandieren heißt hier: Alle Nachbarknoten abklappern
         test = "";
-        for (var n = 0; n < graph[current_node.id].length; n++) {
+        for (let n = 0; n < graph[current_node.id].length; n++) {
             if (graph[current_node.id]) {
                 var newId = graph[current_node.id][n];
 
@@ -91,7 +91,7 @@ function a_star(startId, startX, startY, destinationId, destinationX, destinatio
 
                 //See if the node is in our open list. If not, use it.
                 var found_in_open = false;
-                for (var i in open)
+                for (let i in open)
                     if (open[i].id == newId) {
                         found_in_open = true;
                         break;

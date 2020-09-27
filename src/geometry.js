@@ -224,8 +224,8 @@ function isPointOnLine(p,line) {
     // Liegt p auf der Geraden?
     let pOnLine = p.y === m*p.x+c;
     let pBetweenPoints =
-        ((p.y <= line.p1.y && p.y >= line.p2.y) ||  (p.y >= line.p1.y && p.y <= line.p2.y)) 
-     && ((p.x <= line.p1.x && p.x >= line.p2.x) ||  (p.x >= line.p1.x && p.x <= line.p2.x));
+        ((p.y <= line.p1.y && p.y >= line.p2.y) ||  (p.y >= line.p1.y && p.y <= line.p2.y)) &&
+        ((p.x <= line.p1.x && p.x >= line.p2.x) ||  (p.x >= line.p1.x && p.x <= line.p2.x));
     
     return pOnLine && pBetweenPoints;
 }

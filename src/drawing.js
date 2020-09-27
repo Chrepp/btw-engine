@@ -23,10 +23,10 @@ function drawBackground(context,locations,game,Talkables,debug) {
     context.textAlign ="center";
     context.fillText(game.mainMessage,game.canvasWidth/2,20);
     context.strokeText(game.mainMessage,game.canvasWidth/2,20);
-    context.restore;
+    context.restore();
 
     // Talkables ################################################### TODO
-    for(var i=0;i<Talkables.length;i++) {
+    for(let i=0;i<Talkables.length;i++) {
         var t = Talkables[i];
         if(game.currentLoc == "Tobis Zimmer") context.drawImage(t.img,t.pos.x,t.pos.y,t.width,t.height);
     }
@@ -37,7 +37,7 @@ function drawBackground(context,locations,game,Talkables,debug) {
     context.strokeStyle = "#000000";
     context.beginPath();
     context.moveTo(loc.MovingArea[0].x,loc.MovingArea[0].y);
-    for(var i=0;i<loc.MovingArea.length;i++) {
+    for(let i=0;i<loc.MovingArea.length;i++) {
         context.lineTo(loc.MovingArea[i].x,loc.MovingArea[i].y);
     }
     context.lineTo(loc.MovingArea[0].x,loc.MovingArea[0].y);
@@ -46,7 +46,7 @@ function drawBackground(context,locations,game,Talkables,debug) {
     // VisibilityGraph:
     context.strokeStyle = "#ff0000";
     context.beginPath();
-    for(var i=0;i<loc.VisibilityGraph.length;i++) {
+    for(let i=0;i<loc.VisibilityGraph.length;i++) {
         if(loc.VisibilityGraph[i]) {
             var id = loc.VisibilityGraph[i];
             for(var j=0;j<loc.VisibilityGraph[i].length;j++) {
@@ -60,9 +60,9 @@ function drawBackground(context,locations,game,Talkables,debug) {
 
 function drawForeground(context,locations,game,mousePos,inventoryOpen,InvRect,Inventory) {
     var loc = locations[game.currentLoc];
-    for(var i=0;i<loc.Items.length;i++) {
+    for(let i=0;i<loc.Items.length;i++) {
         if(loc.Items[i].type=="foreground" && loc.Items[i].img) {
-            var item = loc.Items[i];
+            let item = loc.Items[i];
             context.drawImage(item.img,item.xPos,item.yPos,item.width,item.height);
         }
     }
@@ -101,7 +101,7 @@ function drawForeground(context,locations,game,mousePos,inventoryOpen,InvRect,In
         var border   = 10;
         var rows     = 3;
         var cols     = 8;
-        var item     = 0;
+        let item     = 0;
         for(var y=border;y<(itemSide+border)*rows;y+=border+itemSide) {
             for(var x=border;x<(itemSide+border)*cols;x+=border+itemSide) {
                 if(Inventory[item]) context.drawImage(Inventory[item].invImg,x,y,itemSide,itemSide);
@@ -118,7 +118,7 @@ function drawHero(context,locations,game,hero,current,dest,heroStep,actionStarte
     if(current.x != dest.x || current.y != dest.y) hero = movingHero(hero,current,nextDest,game);
     else hero.isMoving = false;
     // Höhenverhaltnis berechnen
-    var m = (1-locations[game.currentLoc].dimensionsOfHeroInTheBack)/(locations[game.currentLoc].nearestPoint-locations[game.currentLoc].furthestPoint); // Steigung der Geraden m=(y2-y1)/(x2-x1)
+    const m = (1-locations[game.currentLoc].dimensionsOfHeroInTheBack)/(locations[game.currentLoc].nearestPoint-locations[game.currentLoc].furthestPoint); // Steigung der Geraden m=(y2-y1)/(x2-x1)
     var c = 1-m*locations[game.currentLoc].nearestPoint; // Schnittpunkt mit der y-Achse: c=y2-m*x2
     var percentageOfHeroHeight = m*current.y+c;
     // Die Gehgeschwindigkeit wird auch verhältnismäßig geändert.
@@ -131,7 +131,7 @@ function drawHero(context,locations,game,hero,current,dest,heroStep,actionStarte
         //context.strokeStyle  = "#7777dd";
 
         //context.font = game.talkFont;
-        context.font = "bolder 22px sans-serif"
+        context.font = "bolder 22px sans-serif";
 
         context.shadowColor   = "#000000";
         context.shadowOffsetX = 1;
@@ -225,15 +225,16 @@ function movingHero(hero,current,nextDest,game) {
 
     if(game.mPath<=0) game.mPath = nextDest.x==current.x?-1:(nextDest.y-current.y)/(nextDest.x-current.x);
 
-    var m=game.mPath;
+    const m = game.mPath;
     // Die ultimative Formel!
     var tempX = Math.sqrt((1/(1+m*m))*hero.lengthOfMove*hero.lengthOfMove); 
     var tempY = Math.abs(m*tempX);
 
-    if(current.x == nextDest.x && current.y == nextDest.y) game.setNextDest(nextDest);
-    else {
+    if(current.x == nextDest.x && current.y == nextDest.y) {
+        game.setNextDest(nextDest);
+    } else {
         var slope = (nextDest.y-current.y)/(nextDest.x-current.x);
-        var m = 1;
+        const m = 1;
         if(current.x < nextDest.x) { // Reise nach rechts
             hero.movesToTheRight = true;
             

@@ -69,7 +69,7 @@ function getMessages(t) {
             let iMessages=0; // Schleifenvariable für die Nachrichten
             if(!messages[0]) moreMessages = false; // Für den Fall, dass er gar keine Nachrichten gibt                        
             while(moreMessages) { // Durchlaufe alle Nachrichten innerhalb eines Typs
-                MessagesArray[messagesList[iList].name][messageTypes[iTypes].type][iMessages] = messages[iMessages] // Tadaaa!
+                MessagesArray[messagesList[iList].name][messageTypes[iTypes].type][iMessages] = messages[iMessages];
                 iMessages++;
                 if(!messages[iMessages]) moreMessages = false;
             }

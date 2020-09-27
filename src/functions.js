@@ -1,19 +1,10 @@
 window.addEventListener("load", eventWindowLoaded, false);
 
-function supportedAudioFormat(audio) {
-    let returnExtension = "";
-    if     (audio.canPlayType("audio/mp3") ==="probably" || audio.canPlayType("audio/mp3") === "maybe") { returnExtension = "mp3"; }
-    else if(audio.canPlayType("audio/ogg") ==="probably" || audio.canPlayType("audio/ogg") === "maybe") { returnExtension = "ogg"; }
-    //else if(audio.canPlayType("audio/wav") ==="probably" || audio.canPlayType("audio/wav") === "maybe") { returnExtension = "wav"; }
-    return returnExtension;
-}
-
 function eventWindowLoaded() {game();}
 
-function canvasSupport() {return Modernizr.canvas;}
-
 let Debugger = function() {};
-Debugger.log = function(message) {try {console.log(message);} catch(exception){return;}};
+Debugger.log   = function(message) {try {console.log(message);} catch(exception){return;}};
+Debugger.error = function(message) {try {console.error(message);} catch(exception){return;}};
 
 function Point(x,y) {
     this.x = x;
@@ -21,8 +12,7 @@ function Point(x,y) {
 }
 
 function game() {
-if (!canvasSupport()) {return;}
-else {
+
     //####################### ENTWICKLUNGS-Variablen ###############################
 
     let debug     = false;
@@ -47,7 +37,6 @@ else {
 
     let nextObject = -1;
     let activeItem = -1; // Wenn es leer ist, zeigt sich nur der Cursor
-
 
     let actionStarted = false;
     let inventoryOpen = false;
@@ -95,7 +84,7 @@ else {
                 this.nextDestCounter++;
             }
         }
-    }
+    };
     /*
     function GameData() {
         this.rooms = "json/rooms.json";
@@ -127,7 +116,7 @@ else {
         "lengthOfMove":LENGTH_OF_STEP, // NICHT GENUTZT!!!!!!!!!!!!!!!!!!!!
         "currentFrame":0,
         "img": []
-    }
+    };
     //hero.img.src = "pix/tobi_sprites.png";
 
     let invRect = {};
@@ -311,7 +300,7 @@ else {
         else if(next[clickNum].message === "changePix") {
             for(let i=0;i<loc.Items.length;i++) {
                 if(loc.Items[i].id === nextObject) {
-                    loc.Items[i]["img"].src="pix/"+next[clickNum].src;
+                    loc.Items[i].img.src="pix/"+next[clickNum].src;
                     break;
                 }
             }
@@ -336,7 +325,7 @@ else {
                 loaded();
             })
             .catch(error => {
-                console.error('Could noch fetch locations. ', error)
+                console.error('Could noch fetch locations. ', error);
             });
     }
 
@@ -361,7 +350,7 @@ else {
                 loaded();
             })
             .catch(error => {
-                console.error('Could noch fetch actions. ', error)
+                console.error('Could noch fetch actions. ', error);
             });
     }
 
@@ -405,7 +394,7 @@ else {
                 loaded();
             })
             .catch(error => {
-                console.error('Could noch fetch items. ', error)
+                console.error('Could noch fetch items. ', error);
             });
     }
 
@@ -422,7 +411,7 @@ else {
                 loaded();
             })
             .catch(error => {
-                console.error('Could noch fetch combinations. ', error)
+                console.error('Could noch fetch combinations. ', error);
             });
     }
 
@@ -438,13 +427,7 @@ else {
                 let audioElement;
                 audioElement = document.createElement("audio");
                 document.body.appendChild(audioElement);
-                let audioType = supportedAudioFormat(audioElement);
-                if (audioType === "") {
-                    alert("no audio support");
-                    return;
-                }
-                //audioElement.setAttribute("src", "sound/Ein-Stück-Toast." + audioType);
-                //audioElement.addEventListener("canplaythrough",audioLoaded,false);
+                const audioType = "mp3";
                 for(let i=0;i<42;i++) {
                     sounds[fileNames[i]] = document.createElement("audio");
                     document.body.appendChild(sounds[fileNames[i]]);
@@ -453,7 +436,7 @@ else {
                 }
             })
             .catch(error => {
-                console.error('Could noch fetch sounds. ', error)
+                console.error('Could noch fetch sounds. ', error);
             });
     }
 
@@ -655,5 +638,4 @@ else {
         setInterval(runGame,interval);
     }
     initGame();
-}
 }
