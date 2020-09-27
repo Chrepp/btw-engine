@@ -148,7 +148,7 @@ else {
     let context = theCanvas.getContext("2d");
     // Die Item-Bilder sind im Array. Die anderen?
     let background = new Image();
-    background.src = "pix/hg-tobiszimmerskizze.png";
+    background.src = "pix/bg/tobiszimmer.png";
 
     //######################### Funktionen ###########################################################
     function runGame() {
@@ -324,17 +324,20 @@ else {
     }
 
     function loadLocations() {
-        let now = new Date().getTime(); // gegen das Chachen des Browsers
+        let now = new Date().getTime(); // force empty cache
         let url = "json/locations.json?" + now;
-        new Ajax.Request(url, {
-            method: 'get',
-            onSuccess: function (t) {
-                locations = getLocations(t);
+        
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                console.log('Got locations: ', data);
+                locations = getLocations(data);
                 //Debugger.log(locations["Tobis Zimmer"].Items[0].name);
                 loaded();
-            },
-            onFailure: function() {alert("Fehler beim Laden der Orte");}
-        });
+            })
+            .catch(error => {
+                console.error('Could noch fetch locations. ', error)
+            });
     }
 
     function enterRoom(room) {
@@ -346,29 +349,35 @@ else {
     }
 
     function loadActions() {
-        let now = new Date().getTime(); // gegen das Chachen des Browsers
+        let now = new Date().getTime(); // force empty cache 
         let url = "json/actions.json?" + now;
-        new Ajax.Request(url, {
-            method: 'get',
-            onSuccess: function (t) {
-                actions = t.responseText.evalJSON();
+
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                console.log('Got actions: ', data);
+                actions = data;
                 //Debugger.log(actions["Pilz"].look[0].type);
                 loaded();
-            },
-            onFailure: function() {alert("Fehler beim Laden der Interactionen!");}
-        });
+            })
+            .catch(error => {
+                console.error('Could noch fetch actions. ', error)
+            });
     }
 
     function loadItems() {
         let now = new Date(); // gegen das Chachen des Browsers
         let url = "json/items.json?"+now.getTime();
-        new Ajax.Request(url, {
-            method: 'get',
-            onSuccess: function (t) {
-                items = getItems(t);
+
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                console.log('Got items: ', data);
+                items = getItems(data);
                 //inventory.push(items[13]);
                 hero.img[0]  = new Image();
-                hero.img[0].src  = "pix/tobi_sprites.png";
+                //hero.img[0].src  = "pix/tobi_sprites.png";
+                hero.img[0].src  = "";
 
                 hero.ani = {};
                 hero.ani.walkfront  = [];
@@ -394,32 +403,38 @@ else {
                     hero.ani.take[i].src = "pix/ani-tobi/tobi_take_0"+tmp+".png";
                 }
                 loaded();
-            },
-            onFailure: function() {alert("Fehler beim Laden der Gegenstände!");}
-        });
+            })
+            .catch(error => {
+                console.error('Could noch fetch items. ', error)
+            });
     }
 
     function loadcombinations() {
         let now = new Date(); // gegen das Chachen des Browsers
         let url = "json/combinations.json?"+now.getTime();
-        new Ajax.Request(url, {
-            method: 'get',
-            onSuccess: function (t) {
-                combinations = t.responseText.evalJSON();
+
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                console.log('Got combinations: ', data);
+                combinations = data;
                 //Debugger.log(combinations[11]["12"]);
                 loaded();
-            },
-            onFailure: function() {alert("Fehler beim Laden der Gegenstände!");}
-        });
+            })
+            .catch(error => {
+                console.error('Could noch fetch combinations. ', error)
+            });
     }
 
     function loadSounds() {
         let now = new Date(); // gegen das Chachen des Browsers
         let url = "json/sounds.json?"+now.getTime();
-        new Ajax.Request(url, {
-            method: 'get',
-            onSuccess: function (t) {
-                let fileNames = t.responseText.evalJSON();
+
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                console.log('Got sounds: ', data);
+                let fileNames = data;
                 let audioElement;
                 audioElement = document.createElement("audio");
                 document.body.appendChild(audioElement);
@@ -436,10 +451,10 @@ else {
                     sounds[fileNames[i]].setAttribute("src", "sound/"+fileNames[i]+"." + audioType);
                     sounds[fileNames[i]].addEventListener("canplaythrough",audioLoaded,false);
                 }
-
-            },
-            onFailure: function() {alert("Fehler beim Laden der Gegenstände!");}
-        });
+            })
+            .catch(error => {
+                console.error('Could noch fetch sounds. ', error)
+            });
     }
 
     /**

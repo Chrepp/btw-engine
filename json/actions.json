@@ -411,4 +411,13 @@
     "look":[[{
         "message":"Wahnsinnig interessante Tür!","duration":3000,"sound":"Wahnsinnig-interessante-Tuer"
     }]]
+},{
+    "name":"Klo",
+    "id":110,
+    "use":[[{
+        "message":"Nein!","duration":1000,"sound":"Nein"
+    }]],
+    "look":[[{
+        "message":"Hm", "duration":1000, "sound":"Hm"
+    }]]
 }]

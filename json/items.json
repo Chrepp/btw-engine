@@ -9,7 +9,7 @@
 },{ "id":8,  "name":"Schlüsselbart",        "invImgSrc":"items/keybit.png"
 },{ "id":9,  "name":"Schlüsselgriff",       "invImgSrc":"items/keygrip.png"
 },{ "id":10, "name":"Marmelade",            "invImgSrc":"items/marmelade.png"
-},{ "id":11, "name":"Majonäse",             "invImgSrc":"items/mayonaise.png"
+},{ "id":11, "name":"Majonäse",             "invImgSrc":"items/mayonnaise.png"
 },{ "id":12, "name":"Frikadelle",           "invImgSrc":"items/meatball.png"
 },{ "id":13, "name":"Handy",                "invImgSrc":"items/mobilephone.png"
 },{ "id":14, "name":"Monster",              "invImgSrc":"items/monster.png"
@@ -108,4 +108,5 @@
 },{ "id":107,"name":"Badewanne",            "invImgSrc":null
 },{ "id":108,"name":"Küche-Ausgang",        "invImgSrc":null
 },{ "id":109,"name":"Bad-Ausgang",          "invImgSrc":null
+},{ "id":110,"name":"Klo",          		"invImgSrc":null
 }]

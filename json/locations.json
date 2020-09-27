@@ -109,10 +109,15 @@
             },{ "x":245,"y":524
             }
         ],
-        "Items": [{
-            "id":107,"name":"Badewanne","xPos":319,"yPos":471,"width":705,"height":100,"dest":{"x":500,"y":500},"facing":"right","type":"foreground"
-        },{ "id":109,"name":"Zum Flur", "xPos":135,"yPos":70, "width":55, "height":370,"dest":{"x":260,"y":500},"facing":"right","type":"exit","destination":"Flur"
-        }]
+        "Items": [
+            {
+                "id":107,"name":"Badewanne","xPos":319,"yPos":471,"width":705,"height":100,"dest":{"x":500,"y":500},"facing":"right","type":"foreground"
+            },{ 
+                "id":110,"name":"Klo",      "xPos":519,"yPos":271,"width":305,"height":200,"dest":{"x":500,"y":500},"facing":"right","type":"foreground"
+            },{ 
+                "id":109,"name":"Zum Flur", "xPos":135,"yPos":70, "width":55, "height":370,"dest":{"x":260,"y":500},"facing":"right","type":"exit","destination":"Flur"
+            }
+        ]
     },
     "Küche": {
         "startFrom": {

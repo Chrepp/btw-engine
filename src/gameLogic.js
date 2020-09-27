@@ -13,8 +13,7 @@ function getLocationsNew(t) {
 }
 */
 
-function getLocations(t) {
-    let locations = t.responseText.evalJSON();
+function getLocations(locations) {
     for(let i in locations) {
         let furthestPoint = 2000;
         let nearestPoint = 0;
@@ -83,14 +82,13 @@ function getMessages(t) {
     return MessagesArray;
 }
 
-function getItems(t) {
-    let Items = t.responseText.evalJSON();
-    for(let i=0;i<Items.length;i++) {
-        if(Items[i].invImgSrc) {
-            Items[i].invImg = new Image();
-            Items[i].invImg.src = "pix/"+Items[i].invImgSrc;
-            //Debugger.log(Items[i].invImgSrc);
+function getItems(data) {
+    for(let i=0;i<data.length;i++) {
+        if(data[i].invImgSrc) {
+            data[i].invImg = new Image();
+            data[i].invImg.src = "pix/"+data[i].invImgSrc;
+            //Debugger.log(data[i].invImgSrc);
         }
     }
-    return Items;
+    return data;
 }
