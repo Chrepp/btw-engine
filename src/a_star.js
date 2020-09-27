@@ -14,7 +14,7 @@ function node(id, x, y, parent_index, g, h, f) {
     this.f = f; // Gesamtkosten: g+h
 }
 
-function a_star(startId, startX, startY, destinationId, destinationX, destinationY, graph, points) {
+export function a_star(startId, startX, startY, destinationId, destinationX, destinationY, graph, points) {
     //Create start and destination as true nodes
     var start = new node(startId, startX, startY, -1, -1, -1, -1);
     var destination = new node(destinationId, destinationX, destinationY, -1, -1, -1, -1);
@@ -72,7 +72,7 @@ function a_star(startId, startX, startY, destinationId, destinationX, destinatio
 
         closed.push(current_node);
         // Expandieren heißt hier: Alle Nachbarknoten abklappern
-        test = "";
+        let test = "";
         for (let n = 0; n < graph[current_node.id].length; n++) {
             if (graph[current_node.id]) {
                 var newId = graph[current_node.id][n];

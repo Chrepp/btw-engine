@@ -1,3 +1,4 @@
+import { a_star } from "./a_star.js";
 /**
  * Wenn ein Punkt im Graphen zwischen den beiden Nachbarknoten von vertex
  * außerhalb der MovingArea liegt, gilt er als konkav X)
@@ -53,7 +54,7 @@ function isInMovingArea(p,loc) {
     return intersectionCount%2!==0;
 }
 
-function isInRect(p,r,width,height) {
+export function isInRect(p,r,width,height) {
     let b = {};
     b.x = r.x+width;
     b.y = r.y+height;
@@ -100,8 +101,8 @@ function inLineOfSight(aX,aY,bX,bY,firstStep,MovingArea) {
     return isInLineOfSight;
 }
 
-function buildVisibilityGraph(MovingArea) {
-    VG = [];
+export function buildVisibilityGraph(MovingArea) {
+    let VG = [];
     for(let i=0;i<MovingArea.length;i++) if(isVertexConcave(i,MovingArea)) {
         VG[i] = [];
         for(let j=0;j<VG.length;j++) {
@@ -233,7 +234,7 @@ function isPointOnLine(p,line) {
 /**
  * Sets the coordinates for the next end goal the hero wants to go to.
  */
-function setDest(p,loc) {
+export function setDest(p,loc) {
     if(!isInMovingArea(p,loc)) {
         let distance = 10000;
         let result = {};
@@ -318,9 +319,9 @@ function setDest(p,loc) {
     }
 }
 
-function setPath(currentX,currentY,destX,destY,loc) {
-    let path,
-        VisibilityGraph = loc.VisibilityGraph;
+export function setPath(currentX,currentY,destX,destY,loc) {
+    let path;
+    let VisibilityGraph = loc.VisibilityGraph;
     //Debugger.log("Berechne Pfad nach ("+destX+","+destY+")");
     // currentXY und destXY müssen dem VisibilityGraph hinzugefügt werden.
 

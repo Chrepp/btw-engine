@@ -4,19 +4,6 @@ module.exports = function(grunt) {
 
         pkg: grunt.file.readJSON('package.json'),
 
-        concat: {
-            options: {
-                // define a string to put between each file in the concatenated output
-                separator: ';'
-            },
-            dist: {
-                // the files to concatenate
-                src: ['src/**/*.js'],
-                // the location of the resulting JS file
-                dest: 'dist/<%= pkg.name %>.js'
-            }
-        },
-
         // Doesn't support ES6?
         uglify: {
             options: {
@@ -66,7 +53,6 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-connect');
 
-    grunt.registerTask('test', ['jshint'/*, 'qunit'*/]);
-    grunt.registerTask('default', [/*'jshint',*/ /*'qunit',*/ 'concat' /*, 'uglify'*/]);
+    grunt.registerTask('default', ['connect']);
 
 };

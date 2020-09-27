@@ -1,3 +1,7 @@
+import { getLocations, getItems } from "./gameLogic.js";
+import { drawBackground, drawHero, drawForeground } from "./drawing.js";
+import { isInRect, setDest, setPath } from "./geometry.js";
+
 window.addEventListener("load", eventWindowLoaded, false);
 
 function eventWindowLoaded() {game();}
@@ -240,7 +244,7 @@ function game() {
                     clickNum++;
                     if(next[clickNum]) {
                         //Debugger.log("actionStarted:nextAction "+next);
-                        theTime = date.getTime();
+                        let theTime = date.getTime();
                         goalTime = theTime+next[clickNum].duration;
                         doAction(next);
                     }

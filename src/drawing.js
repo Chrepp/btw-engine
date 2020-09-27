@@ -1,4 +1,4 @@
-function drawBackground(context,locations,game,Talkables,debug) {
+export function drawBackground(context,locations,game,Talkables,debug) {
     context.drawImage(locations[game.currentLoc].backgroundImg,0,0,game.canvasWidth,game.canvasHeight);
     //context.fillStyle = "#aaaaaa";
     //context.fillRect(0,0,canvasWidth,canvasHeight);
@@ -58,7 +58,7 @@ function drawBackground(context,locations,game,Talkables,debug) {
     if(debug) context.stroke();
 }
 
-function drawForeground(context,locations,game,mousePos,inventoryOpen,InvRect,Inventory) {
+export function drawForeground(context,locations,game,mousePos,inventoryOpen,InvRect,Inventory) {
     var loc = locations[game.currentLoc];
     for(let i=0;i<loc.Items.length;i++) {
         if(loc.Items[i].type=="foreground" && loc.Items[i].img) {
@@ -114,7 +114,7 @@ function drawForeground(context,locations,game,mousePos,inventoryOpen,InvRect,In
     }
 }
 
-function drawHero(context,locations,game,hero,current,dest,heroStep,actionStarted,useAnimationStep,nextDest,debug) {
+export function drawHero(context,locations,game,hero,current,dest,heroStep,actionStarted,useAnimationStep,nextDest,debug) {
     if(current.x != dest.x || current.y != dest.y) hero = movingHero(hero,current,nextDest,game);
     else hero.isMoving = false;
     // Höhenverhaltnis berechnen

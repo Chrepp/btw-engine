@@ -1,3 +1,5 @@
+import { buildVisibilityGraph } from "./geometry.js";
+
 /*
 class Location {
     constructor() {
@@ -13,7 +15,7 @@ function getLocationsNew(t) {
 }
 */
 
-function getLocations(locations) {
+export function getLocations(locations) {
     for(let i in locations) {
         let furthestPoint = 2000;
         let nearestPoint = 0;
@@ -26,9 +28,7 @@ function getLocations(locations) {
         }
         locations[i].furthestPoint = furthestPoint;
         locations[i].nearestPoint  = nearestPoint;
-
-        VisibilityGraph = buildVisibilityGraph(locations[i].MovingArea);
-        locations[i].VisibilityGraph  = VisibilityGraph;
+        locations[i].VisibilityGraph  = buildVisibilityGraph(locations[i].MovingArea);
 
         for(let k in locations[i].Items) {
             if(locations[i].Items[k].src) {
@@ -82,7 +82,7 @@ function getMessages(t) {
     return MessagesArray;
 }
 
-function getItems(data) {
+export function getItems(data) {
     for(let i=0;i<data.length;i++) {
         if(data[i].invImgSrc) {
             data[i].invImg = new Image();
