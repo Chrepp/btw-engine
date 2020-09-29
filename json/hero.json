@@ -1,0 +1,21 @@
+{
+    "sWidth": 262,
+    "sHeight": 514,
+    "idleRow": 0,
+    "idleFrames": 8,
+    "useRow": 4,
+    "useFrames": 8,
+    "talkRow": 3,
+    "talkFrames": 8,
+    "walkRightRow": 1,
+    "walkRightFrames": 8,
+    "walkFrontRow": 2,
+    "walkFrontFrames": 6,
+    "isMoving": false,
+    "isUsing": false,
+    "movesToTheRight": false,
+    "movesToTheFront": false,
+    "movesToTheBack": false,
+    "currentFrame":0,
+    "img": []
+}

@@ -1,20 +1,5 @@
 import { buildVisibilityGraph } from "./geometry.js";
 
-/*
-class Location {
-    constructor() {
-
-    }
-}
-
-function getLocationsNew(t) {
-    var locations = t.responseText.evalJSON();
-    for(var i in locations) {
-
-    }
-}
-*/
-
 export function getLocations(locations) {
     for(let i in locations) {
         let furthestPoint = 2000;

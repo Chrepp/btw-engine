@@ -1,6 +1,6 @@
-import { getLocations, getItems } from "./gameLogic.js";
 import { drawBackground, drawHero, drawForeground } from "./drawing.js";
 import { isInRect, setDest, setPath } from "./geometry.js";
+import { loadActions, loadLocations, loadItems, loadCombinations, loadSounds, loadHero } from "./loading.js";
 
 window.addEventListener("load", eventWindowLoaded, false);
 
@@ -19,7 +19,7 @@ function game() {
 
     //####################### ENTWICKLUNGS-Variablen ###############################
 
-    let debug     = false;
+    let debug     = true;
     let startRoom = "Flur";
     let startx    = 700; // Startpunkt
     let starty    = 500; // Startpunkt
@@ -32,9 +32,6 @@ function game() {
     let dest         = new Point(startx,starty); // Zielposition
     let nextDest     = new Point(startx,starty);
     let mousePos     = new Point(0,0);
-
-    let loadingCounter  = 0;
-    let audioLoadingCounter  = 0;
 
     let useAnimationStep = 0;
     let heroStep = 0;
@@ -99,30 +96,7 @@ function game() {
         this.heroTalkRow = 0;
     }*/
 
-    let hero = {
-        "sWidth": 262,
-        "sHeight": 514,
-        "idleRow": 0,
-        "idleFrames": 8,
-        "useRow": 4,
-        "useFrames": 8,
-        "talkRow": 3,
-        "talkFrames": 8,
-        "walkRightRow": 1,
-        "walkRightFrames": 8,
-        "walkFrontRow": 2,
-        "walkFrontFrames": 6,
-        "isMoving": false,
-        "isUsing": false,
-        "movesToTheRight": false,
-        "movesToTheFront": false,
-        "movesToTheBack": false,
-        "lengthOfMove":LENGTH_OF_STEP, // NICHT GENUTZT!!!!!!!!!!!!!!!!!!!!
-        "currentFrame":0,
-        "img": []
-    };
-    //hero.img.src = "pix/tobi_sprites.png";
-
+    let hero = {};
     let invRect = {};
     invRect.pos = {};
     invRect.pos.x = 200;
@@ -171,23 +145,12 @@ function game() {
     }
 
     function gameStatePlay() {
-
         drawBackground(context,locations,game,talkables,debug);
         let heroReturn = drawHero(context,locations,game,hero,current,dest,heroStep,actionStarted,useAnimationStep,nextDest,debug);
         heroStep = heroReturn[0];
         useAnimationStep = heroReturn[1];
         drawForeground(context,locations,game,mousePos,inventoryOpen,invRect,inventory);
         action(); // !
-    }
-
-    function audioLoaded() {
-        audioLoadingCounter++;
-        if(audioLoadingCounter >= 42) loaded();
-    }
-
-    function loaded() {
-        loadingCounter++;
-        if(loadingCounter >= 5) switchGameState(GAME_STATE_PLAY);
     }
 
     let clickNum = 0;
@@ -207,8 +170,10 @@ function game() {
             else next = actions[nextObject]?using?actions[nextObject].use[0]:actions[nextObject].look[0]:null;
             let date = new Date();
 
-            if(!actionStarted) { // Hier wird die Aktionenkette gestartet, falls keine Aktion läuft
-                if(activeItem>=0) { // Ein Item ist aktiv
+            // Hier wird die Aktionenkette gestartet, falls keine Aktion läuft
+            if(!actionStarted) { 
+                // Ein Item ist aktiv
+                if(activeItem >= 0) {
 
                     combiInProgress=null;
                     if(activeItem<nextObject && combinations[activeItem] && combinations[activeItem][nextObject])
@@ -316,132 +281,12 @@ function game() {
         }
     }
 
-    function loadLocations() {
-        let now = new Date().getTime(); // force empty cache
-        let url = "json/locations.json?" + now;
-        
-        fetch(url)
-            .then(response => response.json())
-            .then(data => {
-                console.log('Got locations: ', data);
-                locations = getLocations(data);
-                //Debugger.log(locations["Tobis Zimmer"].Items[0].name);
-                loaded();
-            })
-            .catch(error => {
-                console.error('Could noch fetch locations. ', error);
-            });
-    }
-
     function enterRoom(room) {
         let oldRoom = game.currentLoc; // "Tobis Zimmer"
         game.currentLoc = room;
         let loc = locations[game.currentLoc];
         current = new Point(loc.startFrom[oldRoom].x,loc.startFrom[oldRoom].y);
         dest    = new Point(loc.startFrom[oldRoom].x,loc.startFrom[oldRoom].y);
-    }
-
-    function loadActions() {
-        let now = new Date().getTime(); // force empty cache 
-        let url = "json/actions.json?" + now;
-
-        fetch(url)
-            .then(response => response.json())
-            .then(data => {
-                console.log('Got actions: ', data);
-                actions = data;
-                //Debugger.log(actions["Pilz"].look[0].type);
-                loaded();
-            })
-            .catch(error => {
-                console.error('Could noch fetch actions. ', error);
-            });
-    }
-
-    function loadItems() {
-        let now = new Date(); // gegen das Chachen des Browsers
-        let url = "json/items.json?"+now.getTime();
-
-        fetch(url)
-            .then(response => response.json())
-            .then(data => {
-                console.log('Got items: ', data);
-                items = getItems(data);
-                //inventory.push(items[13]);
-                hero.img[0]  = new Image();
-                //hero.img[0].src  = "pix/tobi_sprites.png";
-                hero.img[0].src  = "";
-
-                hero.ani = {};
-                hero.ani.walkfront  = [];
-                hero.ani.walkback   = [];
-                hero.ani.walk       = [];
-                hero.ani.idle       = [];
-                hero.ani.talk       = [];
-                hero.ani.take       = [];
-
-                for(let i=0;i<8;i++) {
-                    let tmp = i+1;
-                    hero.ani.walkback[i] = new Image();
-                    hero.ani.walkback[i].src = "pix/ani-tobi/tobi_walkback_0"+tmp+".png";
-                    hero.ani.walkfront[i] = new Image();
-                    hero.ani.walkfront[i].src = "pix/ani-tobi/tobi_walkfront_0"+tmp+".png";
-                    hero.ani.walk[i] = new Image();
-                    hero.ani.walk[i].src = "pix/ani-tobi/tobi_walk_0"+tmp+".png";
-                    hero.ani.idle[i] = new Image();
-                    hero.ani.idle[i].src = "pix/ani-tobi/tobi_idle_0"+tmp+".png";
-                    hero.ani.talk[i] = new Image();
-                    hero.ani.talk[i].src = "pix/ani-tobi/tobi_speak1_0"+tmp+".png";
-                    hero.ani.take[i] = new Image();
-                    hero.ani.take[i].src = "pix/ani-tobi/tobi_take_0"+tmp+".png";
-                }
-                loaded();
-            })
-            .catch(error => {
-                console.error('Could noch fetch items. ', error);
-            });
-    }
-
-    function loadcombinations() {
-        let now = new Date(); // gegen das Chachen des Browsers
-        let url = "json/combinations.json?"+now.getTime();
-
-        fetch(url)
-            .then(response => response.json())
-            .then(data => {
-                console.log('Got combinations: ', data);
-                combinations = data;
-                //Debugger.log(combinations[11]["12"]);
-                loaded();
-            })
-            .catch(error => {
-                console.error('Could noch fetch combinations. ', error);
-            });
-    }
-
-    function loadSounds() {
-        let now = new Date(); // gegen das Chachen des Browsers
-        let url = "json/sounds.json?"+now.getTime();
-
-        fetch(url)
-            .then(response => response.json())
-            .then(data => {
-                console.log('Got sounds: ', data);
-                let fileNames = data;
-                let audioElement;
-                audioElement = document.createElement("audio");
-                document.body.appendChild(audioElement);
-                const audioType = "mp3";
-                for(let i=0;i<42;i++) {
-                    sounds[fileNames[i]] = document.createElement("audio");
-                    document.body.appendChild(sounds[fileNames[i]]);
-                    sounds[fileNames[i]].setAttribute("src", "sound/"+fileNames[i]+"." + audioType);
-                    sounds[fileNames[i]].addEventListener("canplaythrough",audioLoaded,false);
-                }
-            })
-            .catch(error => {
-                console.error('Could noch fetch sounds. ', error);
-            });
     }
 
     /**
@@ -545,6 +390,31 @@ function game() {
         return -1;
     }
 
+    async function loadGameData() {
+        const promiseActions = await loadActions();
+        const promiseLocations = await loadLocations();
+        const promiseItems = await loadItems();
+        const promiseCombinations = await loadCombinations();
+        const promiseSounds = await loadSounds();
+        const promiseHero = await loadHero();
+        
+        const promisesArray = [promiseActions,promiseLocations,promiseItems,promiseCombinations,promiseSounds,promiseHero];
+        
+        return await Promise.all(promisesArray).then(values => {
+            console.log('values',values);
+            actions = values[0];
+            locations = values[1];
+            items = values[2];
+            combinations = values[3];
+            sounds = values[4];
+            hero = values[5];
+            return true;
+        }).catch(reason => {
+            console.error(reason);
+            return false;
+        });
+    }
+
     function changeCursor(img) {
         document.getElementById('canvas').style.cursor="url(pix/"+img+"),pointer";
     }
@@ -632,14 +502,14 @@ function game() {
         canvas.addEventListener("mousemove", mouseMove, true);
         canvas.addEventListener("dblclick", doubleClick, true);
 
-        loadActions();
-        loadLocations();
-        loadItems();
-        loadcombinations();
-        loadSounds();
-        game.currentLoc = startRoom;
-        changeCursor("cursor.png");
-        setInterval(runGame,interval);
+        loadGameData().then(gameDataLoaded => {
+            console.log("gameDataLoaded: ", gameDataLoaded)
+            if(gameDataLoaded) {
+                switchGameState(GAME_STATE_PLAY);
+                game.currentLoc = startRoom;
+                changeCursor("cursor.png");
+                setInterval(runGame,interval);
+        }});
     }
     initGame();
 }

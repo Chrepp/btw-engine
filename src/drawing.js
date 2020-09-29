@@ -13,9 +13,7 @@ export function drawBackground(context,locations,game,Talkables,debug) {
     context.fillStyle = "#9999ff";
     context.strokeStyle  = "#000000";
 
-    context.font = game.talkFont;
-
-    context.shadowColor   = "#000000";
+    context.font = game.talkFont;    context.shadowColor   = "#000000";
     context.shadowOffsetX = 0;
     context.shadowOffsetY = 0;
     //context.shadowBlur    = 3;
@@ -154,7 +152,6 @@ export function drawHero(context,locations,game,hero,current,dest,heroStep,actio
         if(actionStarted && hero.isUsing) {
             if(useAnimationStep < hero.useFrames) {
                 //useAnimationStep++;
-                //
             }
         }
         else if(actionStarted && game.heroMessage != " ") {

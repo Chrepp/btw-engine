@@ -314,7 +314,7 @@ export function setDest(p,loc) {
         return result;
     }
     else {
-        //Debugger.log("Neues Ziel: ("+p.x+","+p.y+")");
+        // Debugger.log("Neues Ziel: ("+p.x+","+p.y+")");
         return p;
     }
 }

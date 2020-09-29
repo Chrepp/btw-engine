@@ -1,6 +1,7 @@
-function heuristic(current_node, destination) { // is Pythagoras ohne Wurzel...
-    var x = current_node.x - destination.x;
-    var y = current_node.y - destination.y;
+// Pythagoras 
+function heuristic(current_node, destination) {
+    const x = current_node.x - destination.x;
+    const y = current_node.y - destination.y;
     return Math.sqrt(x * x + y * y);
 }
 
@@ -19,8 +20,10 @@ export function a_star(startId, startX, startY, destinationId, destinationX, des
     var start = new node(startId, startX, startY, -1, -1, -1, -1);
     var destination = new node(destinationId, destinationX, destinationY, -1, -1, -1, -1);
 
-    var open = []; //List of open nodes (nodes to be inspected)
-    var closed = []; //List of closed nodes (nodes we've already inspected)
+    // List of open nodes (nodes to be inspected)
+    var open = [];
+    //List of closed nodes (nodes we've already inspected)
+    var closed = [];
 
     var g = 0; //Cost from start to current node
     var h = heuristic(start, destination); //Cost from current node to destination
@@ -33,25 +36,27 @@ export function a_star(startId, startX, startY, destinationId, destinationX, des
         //Find the best open node (lowest f value)
         var best_cost = open[0].f;
         var best_node = 0;
-        //var test="open:"+open[0].id+"-";
+        var test="open:"+open[0].id+"-";
+
         for (let i = 1; i < open.length; i++) {
-            //test+=open[i].id+"-";
+
+            test+=open[i].id+"-";
             if (open[i].f < best_cost) {
                 best_cost = open[i].f;
                 best_node = i;
             }
         }
-        //Set it as our current node
+        // Set it as our current node
         var current_node = open[best_node];
 
-        /*
-         console.log(test+">"+current_node.id);
-         test="closed:";
-         for (var i = 0; i < closed.length; i++) {
-         test+=closed[i].id+"-";
-         }
-         console.log(test);
-         */
+        
+        console.log(test+">"+current_node.id);
+        test="closed:";
+        for (var i = 0; i < closed.length; i++) {
+            test+=closed[i].id+"-";
+        }
+        console.log(test);
+         
 
 
         //Check if we've reached our destination
@@ -68,11 +73,11 @@ export function a_star(startId, startX, startY, destinationId, destinationX, des
 
         //Remove the current node from our open list
         open.splice(best_node, 1);
-        //Push it onto the closed list
 
+        //Push it onto the closed list
         closed.push(current_node);
         // Expandieren heißt hier: Alle Nachbarknoten abklappern
-        let test = "";
+        test = "";
         for (let n = 0; n < graph[current_node.id].length; n++) {
             if (graph[current_node.id]) {
                 var newId = graph[current_node.id][n];
