@@ -66,7 +66,7 @@ export function drawForeground(context,locations,game,mousePos,inventoryOpen,Inv
     }
     if(locations[game.currentLoc].foregroundImg) context.drawImage(locations[game.currentLoc].foregroundImg,0,0,game.canvasWidth,game.canvasHeight);
     // Tooltip
-    if(game.mouseMessage!="") {
+    if(game.mouseMessage!=="") {
         context.fillStyle = "#000000";
         context.font = game.talkFont;
         context.textBaseline = "top";
@@ -74,18 +74,29 @@ export function drawForeground(context,locations,game,mousePos,inventoryOpen,Inv
         context.fillText(game.mouseMessage,mousePos.x,mousePos.y-20);
     }
     context.save();
-    if(game.actionMessage!="") {
+    if(game.actionMessage !== "") {
         context.fillStyle     = "#ffffff";
         context.strokeStyle   = "#555555";
         context.font          = "normal bold 25px sans-serif";
         context.shadowColor   = "#000000";
         context.shadowOffsetX = 0;
         context.shadowOffsetY = 0;
-        //context.shadowBlur    = 3;
         context.textBaseline  = "top";
         context.textAlign     = "left";
         context.fillText(game.actionMessage,50,500);
         context.strokeText(game.actionMessage,50,500);
+    }
+    if(game.debugMessage !== "") {
+        context.fillStyle     = "#ffffff";
+        context.strokeStyle   = "#555555";
+        context.font          = "normal bold 22px sans-serif";
+        context.shadowColor   = "#000000";
+        context.shadowOffsetX = 0;
+        context.shadowOffsetY = 0;
+        context.textBaseline  = "top";
+        context.textAlign     = "right";
+        context.fillText(game.debugMessage,850,500);
+        context.strokeText(game.debugMessage,850,500);
     }
     context.restore();
 
@@ -113,8 +124,11 @@ export function drawForeground(context,locations,game,mousePos,inventoryOpen,Inv
 }
 
 export function drawHero(context,locations,game,hero,current,dest,heroStep,actionStarted,useAnimationStep,nextDest,debug) {
-    if(current.x != dest.x || current.y != dest.y) hero = movingHero(hero,current,nextDest,game);
-    else hero.isMoving = false;
+    if(current.x !== dest.x || current.y !== dest.y) {
+        hero = movingHero(hero,current,nextDest,game);
+    } else {
+        hero.isMoving = false;
+    }
     // Höhenverhaltnis berechnen
     const m = (1-locations[game.currentLoc].dimensionsOfHeroInTheBack)/(locations[game.currentLoc].nearestPoint-locations[game.currentLoc].furthestPoint); // Steigung der Geraden m=(y2-y1)/(x2-x1)
     var c = 1-m*locations[game.currentLoc].nearestPoint; // Schnittpunkt mit der y-Achse: c=y2-m*x2
@@ -190,8 +204,9 @@ export function drawHero(context,locations,game,hero,current,dest,heroStep,actio
     
     if(hero.movesToTheBack)       context.drawImage(hero.ani.walkback[heroStep%8],posX,height*yShift,width,height);
     else if(hero.movesToTheFront) context.drawImage(hero.ani.walkfront[heroStep%8],posX,height*yShift,width,height);
-    else if(hero.isMoving)        context.drawImage(hero.ani.walk[heroStep%8],posX,height*yShift,width,height);
-    else if(actionStarted && hero.isUsing && useAnimationStep < 8) {
+    else if(hero.isMoving)        {
+        context.drawImage(hero.ani.walk[heroStep%8],posX,height*yShift,width,height);
+    } else if(actionStarted && hero.isUsing && useAnimationStep < 8) {
         context.drawImage(hero.ani.take[useAnimationStep],posX,height*yShift,width,height);
         useAnimationStep++;
         //Debugger.log(useAnimationStep);
@@ -209,25 +224,33 @@ export function drawHero(context,locations,game,hero,current,dest,heroStep,actio
     if(debug) context.stroke();
 
     heroStep++;
-    if(heroStep > 100) heroStep = 0;
+    if(heroStep >= 8) {
+        heroStep = 0;
+    }
     
     return [heroStep,useAnimationStep];
 }
 
 
-function movingHero(hero,current,nextDest,game) {
+function movingHero(hero, current, nextDest, game) {
     hero.isMoving = true;
     
-    if(current.x == nextDest.x && current.y == nextDest.y) game.setNextDest(nextDest);
+    if(current.x === nextDest.x && current.y === nextDest.y) {
+        game.setNextDest(nextDest);
+    }
 
-    if(game.mPath<=0) game.mPath = nextDest.x==current.x?-1:(nextDest.y-current.y)/(nextDest.x-current.x);
+    if(game.mPath <= 0) {
+        if(nextDest.x !== current.x) {
+            game.mPath = (nextDest.y - current.y) / (nextDest.x - current.x);
+        }
+    }
 
     const m = game.mPath;
     // Die ultimative Formel!
     var tempX = Math.sqrt((1/(1+m*m))*hero.lengthOfMove*hero.lengthOfMove); 
     var tempY = Math.abs(m*tempX);
 
-    if(current.x == nextDest.x && current.y == nextDest.y) {
+    if(current.x === nextDest.x && current.y === nextDest.y) {
         game.setNextDest(nextDest);
     } else {
         var slope = (nextDest.y-current.y)/(nextDest.x-current.x);

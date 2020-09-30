@@ -7,12 +7,15 @@ window.addEventListener("load", eventWindowLoaded, false);
 function eventWindowLoaded() {game();}
 
 let Debugger = function() {};
-Debugger.log   = function(message) {try {console.log(message);} catch(exception){return;}};
-Debugger.error = function(message) {try {console.error(message);} catch(exception){return;}};
+Debugger.log   = function(...message) {try {console.log(...message);} catch(exception){return;}};
+Debugger.error = function(...message) {try {console.error(...message);} catch(exception){return;}};
 
 function Point(x,y) {
     this.x = x;
     this.y = y;
+    this.toString = function (){
+        return '(' + x + ',' + y + ')';
+    };
 }
 
 function game() {
@@ -28,10 +31,10 @@ function game() {
 
     //####################### Globale Variablen (nicht gut) #########################
 
-    let current      = new Point(startx,starty); // Momentane Position
-    let dest         = new Point(startx,starty); // Zielposition
-    let nextDest     = new Point(startx,starty);
-    let mousePos     = new Point(0,0);
+    let current       = new Point(startx,starty); // Momentane Position
+    let dest          = new Point(startx,starty); // Zielposition
+    let nextDest      = new Point(startx,starty);
+    let mousePosition = new Point(0,0);
 
     let useAnimationStep = 0;
     let heroStep = 0;
@@ -67,19 +70,19 @@ function game() {
         "mainMessage": "Schmiere dir ein Butterbrot!", // Mitteilungen am oberen Bildschirmrand
         "mouseMessage": "",
         "actionMessage": "",
+        "debugMessage": "",
         "talkFont": "bold 20px sans-serif",
         "canvasWidth": 1024, // Breite der Spielfläche
         "canvasHeight": 576, // Höhe der Spielfläche
         "currentLoc": startRoom,
         "nextDestCounter": 0,
         "mPath":-1,
-        "setNextDest":function(nextDest) {
+        "setNextDest": function(nextDest) {
             if(path[this.nextDestCounter]) {
-                let tempX = path[this.nextDestCounter].x;
-                let tempY = path[this.nextDestCounter].y;
-                //Debugger.log("nächste loc: "+tempX+","+tempY);
-                nextDest.x = tempX;
-                nextDest.y = tempY;
+                nextDest.x = path[this.nextDestCounter].x;
+                nextDest.y = path[this.nextDestCounter].y;
+
+                Debugger.log("Next destination: " + nextDest.x + "," + nextDest.y);
 
                 this.mPath = -1;
                 this.nextDestCounter++;
@@ -149,7 +152,7 @@ function game() {
         let heroReturn = drawHero(context,locations,game,hero,current,dest,heroStep,actionStarted,useAnimationStep,nextDest,debug);
         heroStep = heroReturn[0];
         useAnimationStep = heroReturn[1];
-        drawForeground(context,locations,game,mousePos,inventoryOpen,invRect,inventory);
+        drawForeground(context,locations,game,mousePosition,inventoryOpen,invRect,inventory);
         action(); // !
     }
 
@@ -196,7 +199,8 @@ function game() {
                     doAction(next);
                 }
             }
-            else { // Aktionenkette fortsetzen, falls Aktion bereits gestartet
+            else {
+                // Aktionenkette fortsetzen, falls Aktion bereits gestartet
 
                 if(new Date().getTime()>=goalTime || skip) {
                     skip = false;
@@ -262,7 +266,6 @@ function game() {
             }
         }
         else if(next[clickNum].message === "loadRoom") {
-
             game.heroMessage = " ";
             enterRoom(next[clickNum].room);
         }
@@ -275,14 +278,13 @@ function game() {
             }
         }
         else {
-
             if(inventoryOpen) game.mainMessage = next[clickNum].message;
             else game.heroMessage = next[clickNum].message;
         }
     }
 
     function enterRoom(room) {
-        let oldRoom = game.currentLoc; // "Tobis Zimmer"
+        let oldRoom = game.currentLoc;
         game.currentLoc = room;
         let loc = locations[game.currentLoc];
         current = new Point(loc.startFrom[oldRoom].x,loc.startFrom[oldRoom].y);
@@ -420,16 +422,18 @@ function game() {
     }
 
     function leftClick(p) {
-        Debugger.log("("+p.x+","+p.y+") geklickt. current=("+current.x+","+current.y+")");
-        if(inventoryOpen) nextObject = checkInv(p,"leftClick",inventory);
-        else {
-            let destination = setDest(p,locations[game.currentLoc]);
+        Debugger.log(p.toString(), " clicked; current=(" + current.x + "," + current.y + ")");
+        if(inventoryOpen) {
+            nextObject = checkInv(p,"leftClick", inventory);
+        } else {
+            let destination = setDest(p, locations[game.currentLoc]);
             dest.x = destination.x;
             dest.y = destination.y;
-            nextObject = checkDest(p,"leftClick",locations[game.currentLoc]);
-            path = setPath(current.x,current.y,dest.x,dest.y,locations[game.currentLoc]);
-            game.nextDestCounter=0;
-
+            nextObject = checkDest(p, "leftClick", locations[game.currentLoc]);
+            path = setPath(current.x, current.y, dest.x, dest.y, locations[game.currentLoc]);
+            path.shift();
+            Debugger.log("path:", path);
+            game.nextDestCounter = 0;
             game.setNextDest(nextDest);
         }
         return false;
@@ -454,16 +458,25 @@ function game() {
         return false;
     }
 
-    function eventClick(e) {
+    function isRightClick(e) {
+        return e.type && e.type === "contextmenu" || (e.button && e.button === 2) || (e.which && e.which === 3);
+    }
+
+    function isMiddleClick(e) {
+        return (e.button && e.button === 4) || (e.which && e.which === 2);
+    }
+
+    function eventClick(event) {
         if(!actionStarted) {
-            if (!e) e = window.event;
-            let point = {};
-            let canvas = document.getElementById('canvas');
-            point.x = e.clientX - canvas.offsetLeft;
-            point.y = e.clientY - canvas.offsetTop;
-            if (e.type && e.type === "contextmenu" || (e.button && e.button === 2) || (e.which && e.which === 3)) rightClick(point);
-            else if((e.button && e.button === 4) || (e.which && e.which === 2)) middleClick();
-            else leftClick(point);
+            const canvas = document.getElementById('canvas');
+            const clickPosition = new Point(event.clientX - canvas.offsetLeft, event.clientY - canvas.offsetTop);
+            if (isRightClick(event)) {
+                rightClick(clickPosition);
+            } else if(isMiddleClick(event)) {
+                middleClick();
+            } else {
+                leftClick(clickPosition);
+            }
             return false;
         }
         else {
@@ -474,14 +487,17 @@ function game() {
 
     function mouseMove(e) {
         if(!actionStarted && currentGameState === GAME_STATE_PLAY) {
-            let p = {};
-            let canvas = document.getElementById('canvas');
-            p.x = e.clientX - canvas.offsetLeft;
-            p.y = e.clientY - canvas.offsetTop;
-            if(inventoryOpen) checkInv(p,"",inventory);
-            else if(locations) checkDest(p,"",locations[game.currentLoc]);
-            mousePos.x = p.x;
-            mousePos.y = p.y;
+            const canvas = document.getElementById('canvas');
+            const currentMousePosition = new Point(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
+
+            if(inventoryOpen) {
+                checkInv(currentMousePosition,"",inventory);
+            } else if(locations) {
+                checkDest(currentMousePosition,"",locations[game.currentLoc]);
+            }
+            mousePosition = currentMousePosition;
+
+            game.debugMessage = currentMousePosition.toString();
         }
     }
 
@@ -509,7 +525,8 @@ function game() {
                 game.currentLoc = startRoom;
                 changeCursor("cursor.png");
                 setInterval(runGame,interval);
-        }});
+            }
+        });
     }
     initGame();
 }

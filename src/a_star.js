@@ -50,12 +50,12 @@ export function a_star(startId, startX, startY, destinationId, destinationX, des
         var current_node = open[best_node];
 
         
-        console.log(test+">"+current_node.id);
+        //console.log(test+">"+current_node.id);
         test="closed:";
         for (var i = 0; i < closed.length; i++) {
             test+=closed[i].id+"-";
         }
-        console.log(test);
+        //console.log(test);
          
 
 
