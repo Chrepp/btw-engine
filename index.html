@@ -4,20 +4,31 @@
         <meta charset="UTF-8">
         <meta http-equiv="cache-control" content="no-cache"> 
         <meta http-equiv="pragma" content="no-cache" />
-        <meta http-equiv="expires" content="0"> 
+        <meta http-equiv="expires" content=hero"0">
         <title>BTW Game</title>
         <link href="main.css" type="text/css" rel="stylesheet" />
         <script type="module" src="src/functions.js"></script>
+        <style>
+            #canvasTemp {
+                display: none;
+            }
+            #makeDark {
+                position: absolute;
+                right: 0;
+            }
+        </style>
     </head>
     <body>
         <canvas id="canvas" width="1024" height="576" >
             This browser doesn't know HTML5 Canvas :(
         </canvas>
+        <canvas id="canvasTemp" width="250" height="500">TEMP</canvas>
         <div style="color:#fff">
+            <button id="makeDark">THE DARKNESS</button>
             <h1>Steuerung:</h1>
-            <p>Linksklick: Benutzen, Nehmen</p>
-            <p>Mittelklick: Inventar öffnen/schließen</p>
-            <p>Rechtsklick: Anschauen, Aktion abbrechen</p>
+            <p>Linksklick: Benutzen, Nehmen<br>
+            Mittelklick: Inventar öffnen/schließen<br>
+            Rechtsklick: Anschauen, Aktion abbrechen</p>
         </div>
     </body>
 </html>

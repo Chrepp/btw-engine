@@ -90,38 +90,110 @@ export async function loadHero() {
     return await fetch(url)
         .then(response => response.json())
         .then(data => {
-			const hero = data;
-		    hero.img[0]  = new Image();
-		    hero.img[0].src  = "";
-		    hero.ani = {};
-		    hero.ani.walkfront  = [];
-		    hero.ani.walkback   = [];
-		    hero.ani.walk       = [];
-		    hero.ani.idle       = [];
-		    hero.ani.talk       = [];
-		    hero.ani.take       = [];
+            const hero = data;
+            hero.img[0] = new Image();
+            hero.img[0].src = "";
+            hero.ani = {};
+            hero.ani.walkfront = [];
+            hero.ani.walkback = [];
+            hero.ani.walk = [];
+            hero.ani.idle = [];
+            hero.ani.talk = [];
+            hero.ani.take = [];
 
-		    for(let i=0;i<8;i++) {
-		        let tmp = i+1;
-		        hero.ani.walkback[i] = new Image();
-		        hero.ani.walkback[i].src = "pix/ani-tobi/tobi_walkback_0"+tmp+".png";
-		        hero.ani.walkfront[i] = new Image();
-		        hero.ani.walkfront[i].src = "pix/ani-tobi/tobi_walkfront_0"+tmp+".png";
-		        hero.ani.walk[i] = new Image();
-		        hero.ani.walk[i].src = "pix/ani-tobi/tobi_walk_0"+tmp+".png";
-		        hero.ani.idle[i] = new Image();
-		        hero.ani.idle[i].src = "pix/ani-tobi/tobi_idle_0"+tmp+".png";
-		        hero.ani.talk[i] = new Image();
-		        hero.ani.talk[i].src = "pix/ani-tobi/tobi_speak1_0"+tmp+".png";
-		        hero.ani.take[i] = new Image();
-		        hero.ani.take[i].src = "pix/ani-tobi/tobi_take_0"+tmp+".png";
-		    }
-		    return hero;
-	    })
-    .catch(error => {
-        console.error('Could noch fetch sounds. ', error);
-        return {};
+            for (let i = 0; i < 8; i++) {
+                let tmp = i + 1;
+                hero.ani.walkback[i] = new Image();
+                hero.ani.walkback[i].src = "pix/ani-tobi/tobi_walkback_0" + tmp + ".png";
+                hero.ani.walkfront[i] = new Image();
+                hero.ani.walkfront[i].src = "pix/ani-tobi/tobi_walkfront_0" + tmp + ".png";
+                hero.ani.walk[i] = new Image();
+                hero.ani.walk[i].src = "pix/ani-tobi/tobi_walk_0" + tmp + ".png";
+                hero.ani.idle[i] = new Image();
+                hero.ani.idle[i].src = "pix/ani-tobi/tobi_idle_0" + tmp + ".png";
+                hero.ani.talk[i] = new Image();
+                hero.ani.talk[i].src = "pix/ani-tobi/tobi_speak1_0" + tmp + ".png";
+                hero.ani.take[i] = new Image();
+                hero.ani.take[i].src = "pix/ani-tobi/tobi_take_0" + tmp + ".png";
+            }
+            return generateShadowImages(hero).then(() => {
+                return hero;
+            });
+        })
+        .catch(error => {
+            console.error('Could noch fetch hero. ', error);
+            return {};
+        });
+}
+
+async function generateShadowImages(hero) {
+    hero.ani.shadow = [];
+    hero.ani.shadow.idle = [];
+    hero.ani.shadow.walk = [];
+    hero.ani.shadow.walkback = [];
+    hero.ani.shadow.walkfront = [];
+    hero.ani.shadow.take = [];
+    hero.ani.shadow.talk = [];
+    const promisesArray = [];
+
+    promisesArray.push(pushPromises(hero.ani.idle, hero.ani.shadow.idle, hero));
+    promisesArray.push(pushPromises(hero.ani.walk, hero.ani.shadow.walk, hero));
+    promisesArray.push(pushPromises(hero.ani.walkback, hero.ani.shadow.walkback, hero));
+    promisesArray.push(pushPromises(hero.ani.walkfront, hero.ani.shadow.walkfront, hero));
+    promisesArray.push(pushPromises(hero.ani.take, hero.ani.shadow.take, hero));
+    promisesArray.push(pushPromises(hero.ani.talk, hero.ani.shadow.talk, hero));
+
+    Promise.all(promisesArray).then(hero => {
+        return hero;
+    })
+}
+
+function pushPromises(sourceArray,targetArray,hero) {
+    const promisesArray = [];
+    for(let i=0; i<sourceArray.length; i++) {
+        promisesArray.push(
+            loadImage(sourceArray[i].src).then(image => {
+                targetArray.push(transformIntoShadows(image));
+            }).then(() => {
+                return hero;
+            })
+        )
+    }
+    return promisesArray;
+}
+
+function loadImage(url) {
+    return new Promise(resolve => {
+        const image = new Image();
+        image.addEventListener('load', () => resolve(image));
+        image.src = url;
     });
+}
+
+function transformIntoShadows(image) {
+    const width = image.width;
+    const height = image.height;
+    const canvasTemp = document.getElementById("canvasTemp");
+    canvasTemp.width = width;
+    canvasTemp.height = height;
+
+    const ctx = canvasTemp.getContext('2d');
+    //ctx.fillStyle = "#FFFFFF";
+    //ctx.fillRect(0, 0, width, height);
+    ctx.drawImage(image, 0, 0, width, height);
+
+    const imageData = ctx.getImageData(0, 0, width-1, height-1);
+    const imageDataPixel = imageData.data;
+
+    for (var i=0, n = imageDataPixel.length; i < n; i+= 4) {
+        imageDataPixel[i] = 0;
+        imageDataPixel[i+1] = 0;
+        imageDataPixel[i+2] = 0;
+    }
+
+    ctx.putImageData(imageData,0,0);
+    image.src = canvasTemp.toDataURL();
+    return image;
 }
 
 function audioLoaded() {

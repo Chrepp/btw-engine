@@ -17,5 +17,6 @@
     "movesToTheFront": false,
     "movesToTheBack": false,
     "currentFrame":0,
-    "img": []
+    "img": [],
+    "isDark": false
 }

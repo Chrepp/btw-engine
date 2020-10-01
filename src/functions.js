@@ -410,6 +410,7 @@ function game() {
             combinations = values[3];
             sounds = values[4];
             hero = values[5];
+
             return true;
         }).catch(reason => {
             console.error(reason);
@@ -525,6 +526,10 @@ function game() {
                 game.currentLoc = startRoom;
                 changeCursor("cursor.png");
                 setInterval(runGame,interval);
+
+                document.getElementById('makeDark').addEventListener("mouseup",() => {
+                    hero.isDark = !hero.isDark;
+                }, true);
             }
         });
     }

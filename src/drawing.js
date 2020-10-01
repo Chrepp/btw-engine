@@ -5,7 +5,7 @@ export function drawBackground(context,locations,game,Talkables,debug) {
 
     var loc = locations[game.currentLoc];
     for(var i=0;i<loc.Items.length;i++) {
-        if(loc.Items[i].type=="background" && loc.Items[i].img) {
+        if(loc.Items[i].type==="background" && loc.Items[i].img) {
             context.drawImage(loc.Items[i].img,loc.Items[i].xPos,loc.Items[i].yPos,loc.Items[i].width,loc.Items[i].height);
         }
     }
@@ -26,7 +26,7 @@ export function drawBackground(context,locations,game,Talkables,debug) {
     // Talkables ################################################### TODO
     for(let i=0;i<Talkables.length;i++) {
         var t = Talkables[i];
-        if(game.currentLoc == "Tobis Zimmer") context.drawImage(t.img,t.pos.x,t.pos.y,t.width,t.height);
+        if(game.currentLoc === "Tobis Zimmer") context.drawImage(t.img,t.pos.x,t.pos.y,t.width,t.height);
     }
 
     // Bewegungsbereich:
@@ -59,7 +59,7 @@ export function drawBackground(context,locations,game,Talkables,debug) {
 export function drawForeground(context,locations,game,mousePos,inventoryOpen,InvRect,Inventory) {
     var loc = locations[game.currentLoc];
     for(let i=0;i<loc.Items.length;i++) {
-        if(loc.Items[i].type=="foreground" && loc.Items[i].img) {
+        if(loc.Items[i].type==="foreground" && loc.Items[i].img) {
             let item = loc.Items[i];
             context.drawImage(item.img,item.xPos,item.yPos,item.width,item.height);
         }
@@ -137,11 +137,11 @@ export function drawHero(context,locations,game,hero,current,dest,heroStep,actio
     hero.lengthOfMove = percentageOfHeroHeight*locations[game.currentLoc].heroHeight*0.1; // 0.1
 
     //Debugger.log(percentageOfHeroHeight+"!!!!!!!!!!");
-    if(!hero.isMoving) { //TODO: Der Text darf nicht über den Rand hängen, wenn der Held zu weit rechts oder links steht.
+    if(!hero.isMoving) {
+        // TODO: Der Text darf nicht über den Rand hängen, wenn der Held zu weit rechts oder links steht.
         context.save();
         context.fillStyle = "#9999ff";
         //context.strokeStyle  = "#7777dd";
-
         //context.font = game.talkFont;
         context.font = "bolder 22px sans-serif";
 
@@ -168,20 +168,20 @@ export function drawHero(context,locations,game,hero,current,dest,heroStep,actio
                 //useAnimationStep++;
             }
         }
-        else if(actionStarted && game.heroMessage != " ") {
+        else if(actionStarted && game.heroMessage !== " ") {
             sx = (heroStep%hero.talkFrames)*hero.sWidth;
             sy = hero.talkRow*hero.sHeight;
         }
         else {
             if(heroStep>=10 && heroStep<=20) imageNumber = 4;
 
-            else if(heroStep == 50) imageNumber = 1;
-            else if(heroStep == 51) imageNumber = 2;
-            else if(heroStep == 52) imageNumber = 3;
+            else if(heroStep === 50) imageNumber = 1;
+            else if(heroStep === 51) imageNumber = 2;
+            else if(heroStep === 52) imageNumber = 3;
 
-            else if(heroStep == 80) imageNumber = 5;
-            else if(heroStep == 81) imageNumber = 6;
-            else if(heroStep == 82) imageNumber = 7;
+            else if(heroStep === 80) imageNumber = 5;
+            else if(heroStep === 81) imageNumber = 6;
+            else if(heroStep === 82) imageNumber = 7;
             else imageNumber = 0;
         } 
     }
@@ -202,18 +202,44 @@ export function drawHero(context,locations,game,hero,current,dest,heroStep,actio
     var yShift = 0.02; // Um soviel weiter unten wird das Bild platziert
     // Hier folgt das eigentliche Zeichnen    hero.img[2][1]
     
-    if(hero.movesToTheBack)       context.drawImage(hero.ani.walkback[heroStep%8],posX,height*yShift,width,height);
-    else if(hero.movesToTheFront) context.drawImage(hero.ani.walkfront[heroStep%8],posX,height*yShift,width,height);
-    else if(hero.isMoving)        {
-        context.drawImage(hero.ani.walk[heroStep%8],posX,height*yShift,width,height);
+    if(hero.movesToTheBack) {
+        if(hero.isDark) {
+            context.drawImage(hero.ani.shadow.walkback[heroStep % 8], posX, height * yShift, width, height);
+        } else {
+            context.drawImage(hero.ani.walkback[heroStep % 8], posX, height * yShift, width, height);
+        }
+    } else if(hero.movesToTheFront) {
+        if(hero.isDark) {
+            context.drawImage(hero.ani.shadow.walkfront[heroStep % 8], posX, height * yShift, width, height);
+        } else {
+            context.drawImage(hero.ani.walkfront[heroStep % 8], posX, height * yShift, width, height);
+        }
+    } else if(hero.isMoving) {
+        if(hero.isDark) {
+            context.drawImage(hero.ani.shadow.walk[heroStep % 8], posX, height * yShift, width, height);
+        } else {
+            context.drawImage(hero.ani.walk[heroStep % 8], posX, height * yShift, width, height);
+        }
     } else if(actionStarted && hero.isUsing && useAnimationStep < 8) {
-        context.drawImage(hero.ani.take[useAnimationStep],posX,height*yShift,width,height);
+        if(hero.isDark) {
+            context.drawImage(hero.ani.shadow.take[useAnimationStep], posX, height * yShift, width, height);
+        } else {
+            context.drawImage(hero.ani.take[useAnimationStep], posX, height * yShift, width, height);
+        }
         useAnimationStep++;
-        //Debugger.log(useAnimationStep);
+    } else if(actionStarted && game.heroMessage !== " " && !hero.isUsing) {
+        if(hero.isDark) {
+            context.drawImage(hero.ani.shadow.talk[heroStep % 8], posX, height * yShift, width, height);
+        } else {
+            context.drawImage(hero.ani.talk[heroStep % 8], posX, height * yShift, width, height);
+        }
+    } else {
+        if(hero.isDark) {
+            context.drawImage(hero.ani.shadow.idle[imageNumber],posX,height*yShift,width,height);
+        } else {
+            context.drawImage(hero.ani.idle[imageNumber],posX,height*yShift,width,height);
+        }
     }
-    //context.drawImage(hero.img[0],sx,sy,posX,height*yShift,width,height);
-    else if(actionStarted && game.heroMessage != " " && !hero.isUsing) context.drawImage(hero.ani.talk[heroStep%8],posX,height*yShift,width,height);
-    else context.drawImage(hero.ani.idle[imageNumber],posX,height*yShift,width,height);
     context.restore();
     // Hier ist der tatsächliche Punkt, an dem man sich befindet:
     context.beginPath();
@@ -230,7 +256,6 @@ export function drawHero(context,locations,game,hero,current,dest,heroStep,actio
     
     return [heroStep,useAnimationStep];
 }
-
 
 function movingHero(hero, current, nextDest, game) {
     hero.isMoving = true;
