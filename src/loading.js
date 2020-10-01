@@ -1,21 +1,15 @@
 import { getLocations, getItems } from "./gameLogic.js";
 
 export async function loadActions() {
-    let now = new Date().getTime(); // force empty cache 
-    let url = "json/actions.json?" + now;
-
-    return await fetch(url)
+    return await fetch(getJsonUrl('actions'))
         .then(response => response.json())
         .catch(error => {
             console.error('Could noch fetch actions. ', error);
         });
 }
 
-export async function loadLocations() {
-    let now = new Date().getTime(); // force empty cache
-    let url = "json/locations.json?" + now;
-    
-    return await fetch(url)
+export async function loadLocations() {    
+    return await fetch(getJsonUrl('locations'))
         .then(response => response.json())
         .then(getLocations)
         .catch(error => {
@@ -24,10 +18,7 @@ export async function loadLocations() {
 }
 
 export async function loadItems() {
-    let now = new Date(); // force empty cache
-    let url = "json/items.json?" + now.getTime();
-
-    return await fetch(url)
+    return await fetch(getJsonUrl('items'))
         .then(response => response.json())
         .then(getItems)
         .catch(error => {
@@ -36,10 +27,7 @@ export async function loadItems() {
 }
 
 export async function loadCombinations() {
-    let now = new Date(); // force empty cache
-    let url = "json/combinations.json?" + now.getTime();
-
-    return await fetch(url)
+    return await fetch(getJsonUrl('combinations'))
         .then(response => response.json())
         .catch(error => {
             console.error('Could noch fetch combinations. ', error);
@@ -47,18 +35,15 @@ export async function loadCombinations() {
 }
 
 export async function loadSounds() {
-    let now = new Date(); // force empty cache
-    let url = "json/sounds.json?" + now.getTime();
-
-    return await fetch(url)
+    return await fetch(getJsonUrl('sounds'))
         .then(response => response.json())
         .then(data => {
-            let fileNames = data;
-            let audioElement = document.createElement("audio");
+            const fileNames = data;
+            const audioElement = document.createElement("audio");
             document.body.appendChild(audioElement);
             const audioType = "mp3";
             const promisesArray = [];
-            let sounds = [];
+            const sounds = [];
 
             for(let i=0; i<42; i++) {
                 sounds[fileNames[i]] = document.createElement("audio");
@@ -84,22 +69,10 @@ export async function loadSounds() {
 }
 
 export async function loadHero() {
-	let now = new Date(); // force empty cache
-    let url = "json/hero.json?" + now.getTime();
-
-    return await fetch(url)
+    return await fetch(getJsonUrl('hero'))
         .then(response => response.json())
         .then(data => {
             const hero = data;
-            hero.img[0] = new Image();
-            hero.img[0].src = "";
-            hero.ani = {};
-            hero.ani.walkfront = [];
-            hero.ani.walkback = [];
-            hero.ani.walk = [];
-            hero.ani.idle = [];
-            hero.ani.talk = [];
-            hero.ani.take = [];
 
             for (let i = 0; i < 8; i++) {
                 let tmp = i + 1;
@@ -127,31 +100,24 @@ export async function loadHero() {
 }
 
 async function generateShadowImages(hero) {
-    hero.ani.shadow = [];
-    hero.ani.shadow.idle = [];
-    hero.ani.shadow.walk = [];
-    hero.ani.shadow.walkback = [];
-    hero.ani.shadow.walkfront = [];
-    hero.ani.shadow.take = [];
-    hero.ani.shadow.talk = [];
-    const promisesArray = [];
+    hero.ani.shadow = {};
+    const promises = [];
+    const animationTypes = ['idle','walk','walkback','walkfront','take','talk'];
 
-    promisesArray.push(pushPromises(hero.ani.idle, hero.ani.shadow.idle, hero));
-    promisesArray.push(pushPromises(hero.ani.walk, hero.ani.shadow.walk, hero));
-    promisesArray.push(pushPromises(hero.ani.walkback, hero.ani.shadow.walkback, hero));
-    promisesArray.push(pushPromises(hero.ani.walkfront, hero.ani.shadow.walkfront, hero));
-    promisesArray.push(pushPromises(hero.ani.take, hero.ani.shadow.take, hero));
-    promisesArray.push(pushPromises(hero.ani.talk, hero.ani.shadow.talk, hero));
-
-    Promise.all(promisesArray).then(hero => {
-        return hero;
+    animationTypes.forEach(type => {
+        hero.ani.shadow[type] = [];
+        promises.push(pushPromises(hero.ani[type], hero.ani.shadow[type], hero));
     })
+
+    Promise.all(promises).then(hero => {
+        return hero;
+    });
 }
 
 function pushPromises(sourceArray,targetArray,hero) {
-    const promisesArray = [];
+    const promises = [];
     for(let i=0; i<sourceArray.length; i++) {
-        promisesArray.push(
+        promises.push(
             loadImage(sourceArray[i].src).then(image => {
                 targetArray.push(transformIntoShadows(image));
             }).then(() => {
@@ -159,7 +125,7 @@ function pushPromises(sourceArray,targetArray,hero) {
             })
         )
     }
-    return promisesArray;
+    return promises;
 }
 
 function loadImage(url) {
@@ -178,20 +144,18 @@ function transformIntoShadows(image) {
     canvasTemp.height = height;
 
     const ctx = canvasTemp.getContext('2d');
-    //ctx.fillStyle = "#FFFFFF";
-    //ctx.fillRect(0, 0, width, height);
     ctx.drawImage(image, 0, 0, width, height);
 
     const imageData = ctx.getImageData(0, 0, width-1, height-1);
     const imageDataPixel = imageData.data;
 
-    for (var i=0, n = imageDataPixel.length; i < n; i+= 4) {
+    for (let i=0; i<imageDataPixel.length; i+=4) {
         imageDataPixel[i] = 0;
         imageDataPixel[i+1] = 0;
         imageDataPixel[i+2] = 0;
     }
 
-    ctx.putImageData(imageData,0,0);
+    ctx.putImageData(imageData, 0, 0);
     image.src = canvasTemp.toDataURL();
     return image;
 }
@@ -199,4 +163,10 @@ function transformIntoShadows(image) {
 function audioLoaded() {
     audioLoadingCounter++;
     if(audioLoadingCounter >= 42) loaded();
+}
+
+function getJsonUrl(name) {
+    const timeForCaching = new Date().getTime();
+    return  "json/" + name + ".json?" + timeForCaching;
+
 }
