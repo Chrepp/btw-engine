@@ -17,8 +17,16 @@
     "movesToTheFront": false,
     "movesToTheBack": false,
     "currentFrame":0,
-    "img": [],
     "isDark": false,
+    "ani": {
+        "walkfront":[],
+        "walkback":[],
+        "walk":[],
+        "idle":[],
+        "talk":[],
+        "take":[]
+    }
+    "img": [],
     "step": 0,
     "useAnimationStep": 0
 }
