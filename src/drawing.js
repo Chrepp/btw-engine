@@ -56,25 +56,26 @@ export function drawBackground(context,locations,game,Talkables,debug) {
     if(debug) context.stroke();
 }
 
-export function drawForeground(context,locations,game,mousePos,inventoryOpen,InvRect,Inventory) {
-    var loc = locations[game.currentLoc];
+export function drawForeground(locations,gameParams,mousePos,InvRect,Inventory) {
+    const context = gameParams.context;
+    const loc = locations[gameParams.currentLoc];
     for(let i=0;i<loc.Items.length;i++) {
         if(loc.Items[i].type==="foreground" && loc.Items[i].img) {
-            let item = loc.Items[i];
+            const item = loc.Items[i];
             context.drawImage(item.img,item.xPos,item.yPos,item.width,item.height);
         }
     }
-    if(locations[game.currentLoc].foregroundImg) context.drawImage(locations[game.currentLoc].foregroundImg,0,0,game.canvasWidth,game.canvasHeight);
+    if(locations[gameParams.currentLoc].foregroundImg) context.drawImage(locations[gameParams.currentLoc].foregroundImg,0,0,gameParams.canvasWidth,gameParams.canvasHeight);
     // Tooltip
-    if(game.mouseMessage!=="") {
+    if(gameParams.mouseMessage!=="") {
         context.fillStyle = "#000000";
-        context.font = game.talkFont;
+        context.font = gameParams.talkFont;
         context.textBaseline = "top";
         context.textAlign = "center";
-        context.fillText(game.mouseMessage,mousePos.x,mousePos.y-20);
+        context.fillText(gameParams.mouseMessage,mousePos.x,mousePos.y-20);
     }
     context.save();
-    if(game.actionMessage !== "") {
+    if(gameParams.actionMessage !== "") {
         context.fillStyle     = "#ffffff";
         context.strokeStyle   = "#555555";
         context.font          = "normal bold 25px sans-serif";
@@ -83,10 +84,10 @@ export function drawForeground(context,locations,game,mousePos,inventoryOpen,Inv
         context.shadowOffsetY = 0;
         context.textBaseline  = "top";
         context.textAlign     = "left";
-        context.fillText(game.actionMessage,50,500);
-        context.strokeText(game.actionMessage,50,500);
+        context.fillText(gameParams.actionMessage,50,500);
+        context.strokeText(gameParams.actionMessage,50,500);
     }
-    if(game.debugMessage !== "") {
+    if(gameParams.debugMessage !== "") {
         context.fillStyle     = "#ffffff";
         context.strokeStyle   = "#555555";
         context.font          = "normal bold 22px sans-serif";
@@ -95,24 +96,24 @@ export function drawForeground(context,locations,game,mousePos,inventoryOpen,Inv
         context.shadowOffsetY = 0;
         context.textBaseline  = "top";
         context.textAlign     = "right";
-        context.fillText(game.debugMessage,850,500);
-        context.strokeText(game.debugMessage,850,500);
+        context.fillText(gameParams.debugMessage,850,500);
+        context.strokeText(gameParams.debugMessage,850,500);
     }
     context.restore();
 
     // Ab hier das Inventar
-    if(inventoryOpen) {
+    if(gameParams.inventoryOpen) {
         context.save();
         context.translate(InvRect.pos.x,InvRect.pos.y);
         context.fillStyle = "rgba(0,0,0,0.7)";
         context.fillRect(0,0,InvRect.width,InvRect.height);
-        var itemSide = 60;
-        var border   = 10;
-        var rows     = 3;
-        var cols     = 8;
+        const itemSide = 60;
+        const border   = 10;
+        const rows     = 3;
+        const cols     = 8;
         let item     = 0;
-        for(var y=border;y<(itemSide+border)*rows;y+=border+itemSide) {
-            for(var x=border;x<(itemSide+border)*cols;x+=border+itemSide) {
+        for(let y=border;y<(itemSide+border)*rows;y+=border+itemSide) {
+            for(let x=border;x<(itemSide+border)*cols;x+=border+itemSide) {
                 if(Inventory[item]) context.drawImage(Inventory[item].invImg,x,y,itemSide,itemSide);
                 else break;
                 item++;
@@ -123,26 +124,28 @@ export function drawForeground(context,locations,game,mousePos,inventoryOpen,Inv
     }
 }
 
-export function drawHero(context,locations,game,hero,current,dest,heroStep,actionStarted,useAnimationStep,nextDest,debug) {
+export function drawHero(locations,gameParams,hero,debug) {
+    const context = gameParams.context;
+    const current = gameParams.current;
+    const dest = gameParams.dest;
     if(current.x !== dest.x || current.y !== dest.y) {
-        hero = movingHero(hero,current,nextDest,game);
+        hero = movingHero(hero,current,gameParams.nextDest,gameParams);
     } else {
         hero.isMoving = false;
     }
     // Höhenverhaltnis berechnen
-    const m = (1-locations[game.currentLoc].dimensionsOfHeroInTheBack)/(locations[game.currentLoc].nearestPoint-locations[game.currentLoc].furthestPoint); // Steigung der Geraden m=(y2-y1)/(x2-x1)
-    var c = 1-m*locations[game.currentLoc].nearestPoint; // Schnittpunkt mit der y-Achse: c=y2-m*x2
+    const m = (1-locations[gameParams.currentLoc].dimensionsOfHeroInTheBack)/(locations[gameParams.currentLoc].nearestPoint-locations[gameParams.currentLoc].furthestPoint); // Steigung der Geraden m=(y2-y1)/(x2-x1)
+    var c = 1-m*locations[gameParams.currentLoc].nearestPoint; // Schnittpunkt mit der y-Achse: c=y2-m*x2
     var percentageOfHeroHeight = m*current.y+c;
     // Die Gehgeschwindigkeit wird auch verhältnismäßig geändert.
-    hero.lengthOfMove = percentageOfHeroHeight*locations[game.currentLoc].heroHeight*0.1; // 0.1
+    hero.lengthOfMove = percentageOfHeroHeight*locations[gameParams.currentLoc].heroHeight*0.1; // 0.1
 
-    //Debugger.log(percentageOfHeroHeight+"!!!!!!!!!!");
     if(!hero.isMoving) {
         // TODO: Der Text darf nicht über den Rand hängen, wenn der Held zu weit rechts oder links steht.
         context.save();
         context.fillStyle = "#9999ff";
         //context.strokeStyle  = "#7777dd";
-        //context.font = game.talkFont;
+        //context.font = gameParams.talkFont;
         context.font = "bolder 22px sans-serif";
 
         context.shadowColor   = "#000000";
@@ -151,8 +154,8 @@ export function drawHero(context,locations,game,hero,current,dest,heroStep,actio
         context.shadowBlur    = 2;
         context.textBaseline = "top";
         context.textAlign ="center";
-        context.fillText(game.heroMessage,current.x,current.y - locations[game.currentLoc].heroHeight*percentageOfHeroHeight);
-        //context.strokeText(game.heroMessage,current.x,current.y - locations[game.currentLoc].heroHeight*percentageOfHeroHeight);
+        context.fillText(gameParams.heroMessage,current.x,current.y - locations[gameParams.currentLoc].heroHeight*percentageOfHeroHeight);
+        //context.strokeText(gameParams.heroMessage,current.x,current.y - locations[gameParams.currentLoc].heroHeight*percentageOfHeroHeight);
         context.restore();
     }
     var sx = 0;
@@ -163,32 +166,32 @@ export function drawHero(context,locations,game,hero,current,dest,heroStep,actio
     if(!hero.isMoving) {
         hero.movesToTheFront = false; // Damit der beim Losgehen nicht für einen Moment nach vorne schaut
         hero.movesToTheBack = false;
-        if(actionStarted && hero.isUsing) {
-            if(useAnimationStep < hero.useFrames) {
-                //useAnimationStep++;
+        if(gameParams.actionStarted && hero.isUsing) {
+            if(hero.useAnimationStep < hero.useFrames) {
+                //hero.useAnimationStep++;
             }
         }
-        else if(actionStarted && game.heroMessage !== " ") {
-            sx = (heroStep%hero.talkFrames)*hero.sWidth;
+        else if(gameParams.actionStarted && gameParams.heroMessage !== " ") {
+            sx = (hero.step % hero.talkFrames)*hero.sWidth;
             sy = hero.talkRow*hero.sHeight;
         }
         else {
-            if(heroStep>=10 && heroStep<=20) imageNumber = 4;
+            if(hero.step>=10 && hero.step<=20) imageNumber = 4;
 
-            else if(heroStep === 50) imageNumber = 1;
-            else if(heroStep === 51) imageNumber = 2;
-            else if(heroStep === 52) imageNumber = 3;
+            else if(hero.step === 50) imageNumber = 1;
+            else if(hero.step === 51) imageNumber = 2;
+            else if(hero.step === 52) imageNumber = 3;
 
-            else if(heroStep === 80) imageNumber = 5;
-            else if(heroStep === 81) imageNumber = 6;
-            else if(heroStep === 82) imageNumber = 7;
+            else if(hero.step === 80) imageNumber = 5;
+            else if(hero.step === 81) imageNumber = 6;
+            else if(hero.step === 82) imageNumber = 7;
             else imageNumber = 0;
         } 
     }
-    var posX   = current.x-locations[game.currentLoc].heroWidth*percentageOfHeroHeight/2;
-    var posY   = current.y-locations[game.currentLoc].heroHeight*percentageOfHeroHeight;
-    var width  = locations[game.currentLoc].heroWidth*percentageOfHeroHeight;
-    var height = locations[game.currentLoc].heroHeight*percentageOfHeroHeight;
+    let posX   = current.x-locations[gameParams.currentLoc].heroWidth*percentageOfHeroHeight/2;
+    const posY   = current.y-locations[gameParams.currentLoc].heroHeight*percentageOfHeroHeight;
+    const width  = locations[gameParams.currentLoc].heroWidth*percentageOfHeroHeight;
+    const height = locations[gameParams.currentLoc].heroHeight*percentageOfHeroHeight;
 
     context.save();
     context.setTransform(1,0,0,1,0,0);
@@ -199,39 +202,38 @@ export function drawHero(context,locations,game,hero,current,dest,heroStep,actio
     }
     else posX = 0;
 
-    var yShift = 0.02; // Um soviel weiter unten wird das Bild platziert
-    // Hier folgt das eigentliche Zeichnen    hero.img[2][1]
-    
+    const yShift = 0.02; // Um soviel weiter unten wird das Bild platziert
+
     if(hero.movesToTheBack) {
         if(hero.isDark) {
-            context.drawImage(hero.ani.shadow.walkback[heroStep % 8], posX, height * yShift, width, height);
+            context.drawImage(hero.ani.shadow.walkback[hero.step % 8], posX, height * yShift, width, height);
         } else {
-            context.drawImage(hero.ani.walkback[heroStep % 8], posX, height * yShift, width, height);
+            context.drawImage(hero.ani.walkback[hero.step % 8], posX, height * yShift, width, height);
         }
     } else if(hero.movesToTheFront) {
         if(hero.isDark) {
-            context.drawImage(hero.ani.shadow.walkfront[heroStep % 8], posX, height * yShift, width, height);
+            context.drawImage(hero.ani.shadow.walkfront[hero.step % 8], posX, height * yShift, width, height);
         } else {
-            context.drawImage(hero.ani.walkfront[heroStep % 8], posX, height * yShift, width, height);
+            context.drawImage(hero.ani.walkfront[hero.step % 8], posX, height * yShift, width, height);
         }
     } else if(hero.isMoving) {
         if(hero.isDark) {
-            context.drawImage(hero.ani.shadow.walk[heroStep % 8], posX, height * yShift, width, height);
+            context.drawImage(hero.ani.shadow.walk[hero.step % 8], posX, height * yShift, width, height);
         } else {
-            context.drawImage(hero.ani.walk[heroStep % 8], posX, height * yShift, width, height);
+            context.drawImage(hero.ani.walk[hero.step % 8], posX, height * yShift, width, height);
         }
-    } else if(actionStarted && hero.isUsing && useAnimationStep < 8) {
+    } else if(gameParams.actionStarted && hero.isUsing && hero.useAnimationStep < 8) {
         if(hero.isDark) {
-            context.drawImage(hero.ani.shadow.take[useAnimationStep], posX, height * yShift, width, height);
+            context.drawImage(hero.ani.shadow.take[hero.useAnimationStep], posX, height * yShift, width, height);
         } else {
-            context.drawImage(hero.ani.take[useAnimationStep], posX, height * yShift, width, height);
+            context.drawImage(hero.ani.take[hero.useAnimationStep], posX, height * yShift, width, height);
         }
-        useAnimationStep++;
-    } else if(actionStarted && game.heroMessage !== " " && !hero.isUsing) {
+        hero.useAnimationStep++;
+    } else if(gameParams.actionStarted && gameParams.heroMessage !== " " && !hero.isUsing) {
         if(hero.isDark) {
-            context.drawImage(hero.ani.shadow.talk[heroStep % 8], posX, height * yShift, width, height);
+            context.drawImage(hero.ani.shadow.talk[hero.step % 8], posX, height * yShift, width, height);
         } else {
-            context.drawImage(hero.ani.talk[heroStep % 8], posX, height * yShift, width, height);
+            context.drawImage(hero.ani.talk[hero.step % 8], posX, height * yShift, width, height);
         }
     } else {
         if(hero.isDark) {
@@ -249,85 +251,68 @@ export function drawHero(context,locations,game,hero,current,dest,heroStep,actio
     context.lineTo(current.x,current.y+10);
     if(debug) context.stroke();
 
-    heroStep++;
-    if(heroStep >= 8) {
-        heroStep = 0;
+    hero.step++;
+    if(hero.step >= 8) {
+        hero.step = 0;
     }
     
-    return [heroStep,useAnimationStep];
+    return [hero.step,hero.useAnimationStep];
 }
 
-function movingHero(hero, current, nextDest, game) {
+function movingHero(hero, current, nextDest, gameParams) {
     hero.isMoving = true;
     
     if(current.x === nextDest.x && current.y === nextDest.y) {
-        game.setNextDest(nextDest);
+        gameParams.setNextDest(nextDest);
     }
 
-    if(game.mPath <= 0) {
+    if(gameParams.mPath <= 0) {
         if(nextDest.x !== current.x) {
-            game.mPath = (nextDest.y - current.y) / (nextDest.x - current.x);
+            gameParams.mPath = (nextDest.y - current.y) / (nextDest.x - current.x);
         }
     }
 
-    const m = game.mPath;
+    const m = gameParams.mPath;
     // Die ultimative Formel!
     var tempX = Math.sqrt((1/(1+m*m))*hero.lengthOfMove*hero.lengthOfMove); 
     var tempY = Math.abs(m*tempX);
 
     if(current.x === nextDest.x && current.y === nextDest.y) {
-        game.setNextDest(nextDest);
+        gameParams.setNextDest(nextDest);
     } else {
-        var slope = (nextDest.y-current.y)/(nextDest.x-current.x);
+        const slope = (nextDest.y-current.y)/(nextDest.x-current.x);
         const m = 1;
-        if(current.x < nextDest.x) { // Reise nach rechts
+        // walk to the right
+        if(current.x < nextDest.x) {
             hero.movesToTheRight = true;
             
-            if(slope > m)  hero.movesToTheFront = true; else hero.movesToTheFront = false;
-            if(slope < -m) hero.movesToTheBack  = true; else hero.movesToTheBack = false;
+            hero.movesToTheFront = slope > m;
+            hero.movesToTheBack = slope < -m;
 
             if(current.x+tempX < nextDest.x) current.x += tempX;
             else current.x = nextDest.x;
         }
-        else if(current.x > nextDest.x) { // Reise nach links
+        // walk to the left
+        else if(current.x > nextDest.x) {
             hero.movesToTheRight = false;
 
-            if(slope < -m) hero.movesToTheFront = true; else hero.movesToTheFront = false;
-            if(slope > m)  hero.movesToTheBack  = true; else hero.movesToTheBack = false;
+            hero.movesToTheFront = slope < -m;
+            hero.movesToTheBack = slope > m;
 
             if(current.x-tempX > nextDest.x) current.x -= tempX;
             else current.x = nextDest.x;
         }
 
-
-        if(current.y < nextDest.y) { // Reise nach unten
-            //if(nextDest.x == current.x) hero.movesToTheFront = true;
+        // walk to the bottom
+        if(current.y < nextDest.y) {
             if(current.y+tempY < nextDest.y) current.y += tempY;
             else current.y = nextDest.y;
         }
-        else if(current.y > nextDest.y) { // Reise nach oben
+        // walk to the top
+        else if(current.y > nextDest.y) {
             if(current.y-tempY > nextDest.y) current.y -= tempY;
             else current.y = nextDest.y;
         }
     }
     return hero;
 }
-
-/**
- * Zwischenziele berechnen
- *
-function setNextDest(Path,game,nextDest) {
-    
-    if(Path[game.nextDestCounter]) {
-        var tempX = Path[game.nextDestCounter].x;
-        var tempY = Path[game.nextDestCounter].y;
-        //Debugger.log("nächste loc: "+tempX+","+tempY);
-        nextDest.x = tempX;
-        nextDest.y = tempY;
-        // RÜCKGABEWEETRTE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        game.mPath = -1;
-        game.nextDestCounter++;
-    }
-    return game;
-}
-*/

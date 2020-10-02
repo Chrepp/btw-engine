@@ -1,52 +1,26 @@
 import { drawBackground, drawHero, drawForeground } from "./drawing.js";
 import { isInRect, setDest, setPath } from "./geometry.js";
 import { loadActions, loadLocations, loadItems, loadCombinations, loadSounds, loadHero } from "./loading.js";
+import { GameState, Point, GameParams } from "./gameLogic.js";
 
-window.addEventListener("load", eventWindowLoaded, false);
-
-function eventWindowLoaded() {game();}
-
-let Debugger = function() {};
-Debugger.log   = function(...message) {try {console.log(...message);} catch(exception){return;}};
-Debugger.error = function(...message) {try {console.error(...message);} catch(exception){return;}};
-
-function Point(x,y) {
-    this.x = x;
-    this.y = y;
-    this.toString = function (){
-        return '(' + x + ',' + y + ')';
-    };
-}
-
-function game() {
+function btwEngine() {
 
     //####################### ENTWICKLUNGS-Variablen ###############################
 
-    let debug     = true;
-    let startRoom = "Flur";
-    let startx    = 700; // Startpunkt
-    let starty    = 500; // Startpunkt
+    const debug     = true;
+    const startRoom = "Flur";
+    const startPoint = new Point(700, 500); // Startpunkt
     const LENGTH_OF_STEP = 10;  // Länge des Schrittes (in px) pro Zeitintervall bei Bewegung des Helden 20
     let interval  = 100; // Länge des Zeitintervalls (in ms) bei Bewegung des Helden (40ms ist ein 25stel von 1s wegen Film und so)
 
     //####################### Globale Variablen (nicht gut) #########################
 
-    let current       = new Point(startx,starty); // Momentane Position
-    let dest          = new Point(startx,starty); // Zielposition
-    let nextDest      = new Point(startx,starty);
     let mousePosition = new Point(0,0);
-
-    let useAnimationStep = 0;
-    let heroStep = 0;
 
     let nextObject = -1;
     let activeItem = -1; // Wenn es leer ist, zeigt sich nur der Cursor
 
-    let actionStarted = false;
-    let inventoryOpen = false;
-
     let actions = [];
-    let path = [];
     let locations = {};
     let items = []; // Alle Gegenstände, mit denen man interagieren kann, sind hier drin - auch Türen...?
     let combinations = [];
@@ -54,9 +28,7 @@ function game() {
     let talkables = [];
     let sounds = [];
     talkables[0] = {};
-    talkables[0].pos = {};
-    talkables[0].pos.x   = 80;
-    talkables[0].pos.y   = 410;
+    talkables[0].pos = new Point(80,410);
     talkables[0].width   = 70;
     talkables[0].height  = 70;
     talkables[0].id      = 0;
@@ -65,169 +37,110 @@ function game() {
     talkables[0].img     = new Image();
     talkables[0].img.src = talkables[0].imgSrc;
 
-    let game = {
-        "heroMessage": "",
-        "mainMessage": "Schmiere dir ein Butterbrot!", // Mitteilungen am oberen Bildschirmrand
-        "mouseMessage": "",
-        "actionMessage": "",
-        "debugMessage": "",
-        "talkFont": "bold 20px sans-serif",
-        "canvasWidth": 1024, // Breite der Spielfläche
-        "canvasHeight": 576, // Höhe der Spielfläche
-        "currentLoc": startRoom,
-        "nextDestCounter": 0,
-        "mPath":-1,
-        "setNextDest": function(nextDest) {
-            if(path[this.nextDestCounter]) {
-                nextDest.x = path[this.nextDestCounter].x;
-                nextDest.y = path[this.nextDestCounter].y;
-
-                Debugger.log("Next destination: " + nextDest.x + "," + nextDest.y);
-
-                this.mPath = -1;
-                this.nextDestCounter++;
-            }
-        }
-    };
-    /*
-    function GameData() {
-        this.rooms = "json/rooms.json";
-        this.actions = "json/actions.json";
-        this.heroSrc = "pix/tobi-sprites.png";
-        this.heroIdleRow = 0;
-        this.heroMoveRow = 1;
-        this.heroTalkRow = 0;
-    }*/
-
+    const gameParams = new GameParams(startRoom, startPoint);
+    const gameState = new GameState(gameStatePlay,gameStateLoading);
     let hero = {};
-    let invRect = {};
-    invRect.pos = {};
-    invRect.pos.x = 200;
-    invRect.pos.y = 100;
-    invRect.width = 624;
-    invRect.height = 376;
-
-    // application states
-    const GAME_STATE_LOAD=0;
-    const GAME_STATE_PLAY=1;
-    let currentGameState=0;
-    let currentGameStateFunction=null;
-
-    // Initialisieren des Canvas
-    let theCanvas = document.getElementById("canvas");
-    let context = theCanvas.getContext("2d");
-    // Die Item-Bilder sind im Array. Die anderen?
-    let background = new Image();
-    background.src = "pix/bg/tobiszimmer.png";
 
     //######################### Funktionen ###########################################################
+
     function runGame() {
-        currentGameStateFunction();
+        gameState.runGame();
     }
 
-    function switchGameState(newState) {
-        currentGameState=newState;
-        switch (currentGameState) {
-            case GAME_STATE_LOAD:
-                 currentGameStateFunction=gameStateLoad;
-                 break;
-            case GAME_STATE_PLAY:
-                 currentGameStateFunction=gameStatePlay;
-                 break;
-        }
-    }
-
-    function gameStateLoad() {
-        context.fillStyle = "#000000";
-        context.fillRect(0,0,game.canvasWidth,game.canvasHeight);
-
-        context.fillStyle = "#ffffff";
-        context.font = "bold 40px sans-serif";
-        context.textAlign ="center";
-        context.fillText("Wird geladen",game.canvasWidth/2,200);
+    function gameStateLoading() {
+        gameParams.context.fillStyle = "#000000";
+        gameParams.context.fillRect(0,0, gameParams.canvasWidth, gameParams.canvasHeight);
+        gameParams.context.fillStyle = "#ffffff";
+        gameParams.context.font = "bold 40px sans-serif";
+        gameParams.context.textAlign ="center";
+        gameParams.context.fillText("Wird geladen",gameParams.canvasWidth/2,200);
     }
 
     function gameStatePlay() {
-        drawBackground(context,locations,game,talkables,debug);
-        let heroReturn = drawHero(context,locations,game,hero,current,dest,heroStep,actionStarted,useAnimationStep,nextDest,debug);
-        heroStep = heroReturn[0];
-        useAnimationStep = heroReturn[1];
-        drawForeground(context,locations,game,mousePosition,inventoryOpen,invRect,inventory);
-        action(); // !
+        drawBackground(gameParams.context,locations,gameParams,talkables,debug);
+        const heroReturn = drawHero(locations,gameParams,hero,debug);
+        hero.step = heroReturn[0];
+        hero.useAnimationStep = heroReturn[1];
+        drawForeground(locations,gameParams,mousePosition,gameParams.invRect,inventory);
+        action();
     }
-
-    let clickNum = 0;
-    let goalTime;
-    let skip = false;
-    let actionType = "";
-    let combiInProgress = null;
-
-    function skipMessage() {skip = true;}
 
     function action() {
         if(!hero.isMoving && nextObject >= 0 && activeItem!==nextObject) {
-            //Debugger.log("characterIsMoving:"+characterIsMoving+", nextObject:"+nextObject+", activeItem:"+activeItem);
-            let using = actionType==="use";
-            let next = {};
-            if(combiInProgress) next = combiInProgress;
-            else next = actions[nextObject]?using?actions[nextObject].use[0]:actions[nextObject].look[0]:null;
-            let date = new Date();
+            const using = gameParams.actionType === "use";
+            let next = null;
+            if(gameParams.combinationInProgress) {
+                next = gameParams.combinationInProgress;
+            } else {
+                if(actions[nextObject]) {
+                    if(using) {
+                        next = actions[nextObject].use[0];
+                    } else {
+                        next = actions[nextObject].look[0];
+                    }
+                }
+            }
+            const date = new Date();
 
-            // Hier wird die Aktionenkette gestartet, falls keine Aktion läuft
-            if(!actionStarted) { 
+            if(!gameParams.actionStarted) {
                 // Ein Item ist aktiv
                 if(activeItem >= 0) {
 
-                    combiInProgress=null;
-                    if(activeItem<nextObject && combinations[activeItem] && combinations[activeItem][nextObject])
-                        combiInProgress=combinations[activeItem][nextObject].action;
-                    if(nextObject<activeItem && combinations[nextObject] && combinations[nextObject][activeItem])
-                        combiInProgress=combinations[nextObject][activeItem].action;
-                    next = combiInProgress;
-                    //Debugger.log(activeItem+"->"+nextObject+"=>");
-                    //Debugger.log(next);
-                    if(!next) nextObject=-1;
+                    gameParams.setCombinationInProgress(null);
+                    if(activeItem<nextObject && combinations[activeItem] && combinations[activeItem][nextObject]) {
+                        gameParams.setCombinationInProgress(combinations[activeItem][nextObject].action);
+                    }
+                    if(nextObject<activeItem && combinations[nextObject] && combinations[nextObject][activeItem]) {
+                        gameParams.setCombinationInProgress(combinations[nextObject][activeItem].action);
+                    }
+                    next = gameParams.combinationInProgress;
+                    if(!next) {
+                        nextObject=-1;
+                    }
                     activeItem=-1;
                     changeCursor("cursor.png");
-                    actionType="use";
+                    gameParams.setActionType("use");
                 }
-                if(next){
-                    actionStarted = true;
+                if(next) {
+                    gameParams.setActionStarted(true);
                     let theTime = date.getTime();
 
-                    goalTime = theTime+next[clickNum].duration;
+                    gameParams.setGoalTime(theTime+next[gameParams.clickNum].duration);
                     doAction(next);
                 }
             }
             else {
                 // Aktionenkette fortsetzen, falls Aktion bereits gestartet
 
-                if(new Date().getTime()>=goalTime || skip) {
-                    skip = false;
+                if(new Date().getTime()>=gameParams.goalTime || gameParams.skipMessage) {
+                    gameParams.setSkipMessage(false);
 
-                    if(next[clickNum] && next[clickNum].sound) {
-                        sounds[next[clickNum].sound].pause();
-                        sounds[next[clickNum].sound].currentTime=0;
+                    if(next[gameParams.clickNum] && next[gameParams.clickNum].sound) {
+                        sounds[next[gameParams.clickNum].sound].pause();
+                        sounds[next[gameParams.clickNum].sound].currentTime=0;
                     }
 
-                    clickNum++;
-                    if(next[clickNum]) {
-                        //Debugger.log("actionStarted:nextAction "+next);
+                    gameParams.setClickNum(gameParams.clickNum + 1);
+                    if(next[gameParams.clickNum]) {
                         let theTime = date.getTime();
-                        goalTime = theTime+next[clickNum].duration;
+                        gameParams.setGoalTime(theTime+next[gameParams.clickNum].duration);
                         doAction(next);
                     }
                     else {
-                        //Debugger.log("actionStarted:ende "+next);
-                        if(using && actions[nextObject].use[1]) actions[nextObject].use.splice(0,1);
-                        else if(actions[nextObject].look[1]) actions[nextObject].look.splice(0,1);
-                        actionStarted = false;
-                        useAnimationStep = 0;
-                        game.heroMessage = "";
-                        game.mainMessage = "";
+                        if(using && actions[nextObject].use[1]) {
+                            actions[nextObject].use.splice(0,1);
+                        } else {
+                            if(actions[nextObject].look[1]) {
+                                actions[nextObject].look.splice(0,1);
+                            }
+                        }
+                        gameParams.setActionStarted(false);
+                        hero.useAnimationStep = 0;
+                        gameParams.heroMessage = "";
+                        gameParams.mainMessage = "";
                         nextObject = -1;
-                        clickNum = 0;
-                        combiInProgress = null;
+                        gameParams.setClickNum(0);
+                        gameParams.setCombinationInProgress(null);
                     }
                 }
             }
@@ -236,7 +149,8 @@ function game() {
 
     function doAction(next) {
         hero.isUsing = false;
-        let loc = locations[game.currentLoc];
+        const clickNum = gameParams.clickNum;
+        let loc = locations[gameParams.currentLoc];
         if(next[clickNum] && next[clickNum].sound) {
             sounds[next[clickNum].sound].play();
         }
@@ -247,7 +161,7 @@ function game() {
         }
         if(next[clickNum].message === "takeItem") {
             hero.isUsing = true;
-            useAnimationStep = 0;
+            hero.useAnimationStep = 0;
             // Nur, wenn es noch nicht im Inventar ist
             if(inventory.indexOf(items[next[clickNum].id])<0) inventory.push(items[next[clickNum].id]);
         }
@@ -266,7 +180,7 @@ function game() {
             }
         }
         else if(next[clickNum].message === "loadRoom") {
-            game.heroMessage = " ";
+            gameParams.heroMessage = " ";
             enterRoom(next[clickNum].room);
         }
         else if(next[clickNum].message === "changePix") {
@@ -278,76 +192,72 @@ function game() {
             }
         }
         else {
-            if(inventoryOpen) game.mainMessage = next[clickNum].message;
-            else game.heroMessage = next[clickNum].message;
+            if(gameParams.inventoryOpen) gameParams.mainMessage = next[clickNum].message;
+            else gameParams.heroMessage = next[clickNum].message;
         }
     }
 
     function enterRoom(room) {
-        let oldRoom = game.currentLoc;
-        game.currentLoc = room;
-        let loc = locations[game.currentLoc];
-        current = new Point(loc.startFrom[oldRoom].x,loc.startFrom[oldRoom].y);
-        dest    = new Point(loc.startFrom[oldRoom].x,loc.startFrom[oldRoom].y);
+        let oldRoom = gameParams.currentLoc;
+        gameParams.currentLoc = room;
+        let loc = locations[gameParams.currentLoc];
+        gameParams.current = new Point(loc.startFrom[oldRoom].x,loc.startFrom[oldRoom].y);
+        gameParams.dest    = new Point(loc.startFrom[oldRoom].x,loc.startFrom[oldRoom].y);
     }
 
     /**
      * Wenn man auf einen Gegenstand linksklickt, sollte man immer an einen
      * bestimmten Punkt beim Gegenstand landen.
      */
-    function checkDest(p,type,loc) {
-        let ItemArray = loc.Items;
-        if(!hero.isMoving && ItemArray) {
-            game.actionMessage = "";
-            let i=0;
-            for(i=0;i<ItemArray.length;i++) {
-                let r = {};
-                r.x = ItemArray[i].xPos;
-                r.y = ItemArray[i].yPos;
-                if(isInRect(p,r,ItemArray[i].width,ItemArray[i].height)) {
+    function checkDest(point,type,loc) {
+        const itemArray = loc.Items;
+        if(!hero.isMoving && itemArray) {
+            gameParams.actionMessage = "";
+            for(let i=0; i < itemArray.length; i++) {
+                const r = new Point(itemArray[i].xPos,itemArray[i].yPos);
+                if(isInRect(point,r,itemArray[i].width,itemArray[i].height)) {
                     if(type==="leftClick") {
-                        actionType = "use";
-                        dest.x = ItemArray[i].dest.x;
-                        dest.y = ItemArray[i].dest.y;
-                        //if(ItemArray[i]["type"] != "exit") game.heroMessage = ItemArray[i]["message"];
-                        game.actionMessage = "Gehe zu "+ItemArray[i].name;
-                        return ItemArray[i].id;
+                        gameParams.setActionType("use");
+                        gameParams.dest.x = itemArray[i].dest.x;
+                        gameParams.dest.y = itemArray[i].dest.y;
+                        //if(ItemArray[i]["type"] != "exit") gameParams.heroMessage = ItemArray[i]["message"];
+                        gameParams.actionMessage = "Gehe zu "+itemArray[i].name;
+                        return itemArray[i].id;
                     }
                     else if(type==="rightClick") {
                         if(activeItem<0) {
-                            actionType = "look";
-                            game.actionMessage = "Schau an "+ItemArray[i].name;
-                            return ItemArray[i].id;
+                            gameParams.setActionType("look");
+                            gameParams.actionMessage = "Schau an "+itemArray[i].name;
+                            return itemArray[i].id;
                         }
                     }
                     else { // Mouseover:
                         // Der Mauszeiger könnte hier ne andere Form bekommen
-                        //game.mouseMessage = ItemArray[i]["name"];
-                        game.actionMessage = "Gehe zu "+ItemArray[i].name;
+                        //gameParams.mouseMessage = ItemArray[i]["name"];
+                        gameParams.actionMessage = "Gehe zu "+itemArray[i].name;
                         return -1;
                     }
                 }
             }
-            for(i=0;i<talkables.length;i++) {
+            for(let i=0;i<talkables.length;i++) {
                 let t = talkables[i];
-                let r = {};
-                r.x = t.pos.x;
-                r.y = t.pos.y;
-                if(isInRect(p,r,t.width,t.height)) {
+                let r = new Point(t.pos.x, t.pos.y);
+                if(isInRect(point,r,t.width,t.height)) {
                     if(type==="leftClick") {
-                        Debugger.log("talk");
+                        console.log("talk");
                     }
                     else if(type==="rightClick") {
 
                     }
                     else {
-                        game.actionMessage = t.name;
+                        gameParams.actionMessage = t.name;
                         return -1;
                     }
                 }
             }
+        } else {
+            gameParams.actionMessage = "Gehe zu";
         }
-        else {game.actionMessage = "Gehe zu";}
         return -1;
     }
 
@@ -357,37 +267,37 @@ function game() {
         let border   = 10;
         let itemSide = 60;
         for(let i=0;i<inventory.length;i++) {
-            if((p.x>=invRect.pos.x+border+(border+itemSide)*i) && (p.x<=invRect.pos.x+border+itemSide+(border+itemSide)*i) &&
-               (p.y>=invRect.pos.y+border) && (p.y<=invRect.pos.x+border+itemSide)) {
+            if((p.x>=gameParams.invRect.pos.x+border+(border+itemSide)*i) && (p.x<=gameParams.invRect.pos.x+border+itemSide+(border+itemSide)*i) &&
+               (p.y>=gameParams.invRect.pos.y+border) && (p.y<=gameParams.invRect.pos.x+border+itemSide)) {
                     if(type === "leftClick") {
                         if(activeItem>=0) return inventory[i].id;
                         else {
-                            actionType = "use";
+                            gameParams.setActionType("use");
                             // Item in die Hand nehmen, um es mit etwas anderem zu benutzen
                             activeItem = inventory[i].id;
-                            //Debugger.log(activeItem);
+                            //console.log(activeItem);
                             changeCursor(inventory[i].invImgSrc);
                             return inventory[i].id;
                         }
                     }
                     else if(type === "rightClick") {
                         if(activeItem<0) {
-                            actionType = "look";
+                            gameParams.setActionType("look");
                             return inventory[i].id;
                         }
                     }
                     else { // Mouseover:
                         // Der Mauszeiger könnte hier ne andere Form bekommen
 
-                        if(!isInRect(p,invRect.pos,invRect.width,invRect.height)) {
-                            //inventoryOpen = false;
+                        if(!isInRect(p,gameParams.invRect.pos,gameParams.invRect.width,gameParams.invRect.height)) {
+                            //gameParams.inventoryOpen = false;
                         }
 
-                        game.actionMessage = inventory[i].name;
+                        gameParams.actionMessage = inventory[i].name;
                         return -1;
                     }
                 }
-                else game.actionMessage = "";
+                else gameParams.actionMessage = "";
         }
         return -1;
     }
@@ -422,40 +332,42 @@ function game() {
         document.getElementById('canvas').style.cursor="url(pix/"+img+"),pointer";
     }
 
-    function leftClick(p) {
-        Debugger.log(p.toString(), " clicked; current=(" + current.x + "," + current.y + ")");
-        if(inventoryOpen) {
-            nextObject = checkInv(p,"leftClick", inventory);
+    function leftClick(clickPosition) {
+        console.log(clickPosition.toString(), " clicked; current=" + gameParams.current.toString());
+        if(gameParams.inventoryOpen) {
+            nextObject = checkInv(clickPosition,"leftClick", inventory);
         } else {
-            let destination = setDest(p, locations[game.currentLoc]);
-            dest.x = destination.x;
-            dest.y = destination.y;
-            nextObject = checkDest(p, "leftClick", locations[game.currentLoc]);
-            path = setPath(current.x, current.y, dest.x, dest.y, locations[game.currentLoc]);
-            path.shift();
-            Debugger.log("path:", path);
-            game.nextDestCounter = 0;
-            game.setNextDest(nextDest);
+            const destination = setDest(clickPosition, locations[gameParams.currentLoc]);
+            gameParams.dest.x = destination.x;
+            gameParams.dest.y = destination.y;
+            nextObject = checkDest(clickPosition, "leftClick", locations[gameParams.currentLoc]);
+            gameParams.path = setPath(gameParams.current, gameParams.dest, locations[gameParams.currentLoc]);
+            gameParams.path.shift();
+            console.log("path:", gameParams.path);
+            gameParams.nextDestCounter = 0;
+            gameParams.setNextDest(gameParams.nextDest);
         }
         return false;
     }
 
     function middleClick() {
-        inventoryOpen = !inventoryOpen;
-        // if(inventoryOpen) inventoryOpen = false;
-        // else inventoryOpen = true;
+        gameParams.setInventoryOpen(!gameParams.inventoryOpen);
         return false;
     }
 
-    function rightClick(p) {
-        if (window.opera) window.alert("Sorry: Diese Funktion ist deaktiviert.");
+    function rightClick(clickPosition) {
         if(activeItem>=0) {
             activeItem = -1;
             nextObject = -1; // Achtung: Hier wird das nächste Objekt gelöscht!
             changeCursor("cursor.png");
+        } else {
+            if(gameParams.inventoryOpen) {
+                nextObject = checkInv(clickPosition,"rightClick",inventory);
+            }
+            else {
+                nextObject = checkDest(clickPosition,"rightClick",locations[gameParams.currentLoc]);
+            }
         }
-        else if(inventoryOpen) nextObject = checkInv(p,"rightClick",inventory);
-        else nextObject = checkDest(p,"rightClick",locations[game.currentLoc]);
         return false;
     }
 
@@ -468,9 +380,10 @@ function game() {
     }
 
     function eventClick(event) {
-        if(!actionStarted) {
-            const canvas = document.getElementById('canvas');
-            const clickPosition = new Point(event.clientX - canvas.offsetLeft, event.clientY - canvas.offsetTop);
+        if(!gameParams.actionStarted) {
+            const x = event.clientX - gameParams.canvas.offsetLeft;
+            const y = event.clientY - gameParams.canvas.offsetTop;
+            const clickPosition = new Point(x, y);
             if (isRightClick(event)) {
                 rightClick(clickPosition);
             } else if(isMiddleClick(event)) {
@@ -481,24 +394,25 @@ function game() {
             return false;
         }
         else {
-            skipMessage();
+            gameParams.setSkipMessage(true);
             return false;
         }
     }
 
     function mouseMove(e) {
-        if(!actionStarted && currentGameState === GAME_STATE_PLAY) {
-            const canvas = document.getElementById('canvas');
-            const currentMousePosition = new Point(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
+        if(!gameParams.actionStarted && gameState.isSetToPlay()) {
+            const x = e.clientX - gameParams.canvas.offsetLeft;
+            const y = e.clientY - gameParams.canvas.offsetTop;
+            const currentMousePosition = new Point(x,y);
 
-            if(inventoryOpen) {
+            if(gameParams.inventoryOpen) {
                 checkInv(currentMousePosition,"",inventory);
             } else if(locations) {
-                checkDest(currentMousePosition,"",locations[game.currentLoc]);
+                checkDest(currentMousePosition,"",locations[gameParams.currentLoc]);
             }
             mousePosition = currentMousePosition;
 
-            game.debugMessage = currentMousePosition.toString();
+            gameParams.debugMessage = currentMousePosition.toString();
         }
     }
 
@@ -511,21 +425,21 @@ function game() {
     }
 
     function initGame() {
-        switchGameState(GAME_STATE_LOAD);
-        let canvas = document.getElementById('canvas');
-        canvas.addEventListener("mouseup", eventClick, true);
-        //canvas.addEventListener("contextmenu", eventClick, true);
-        canvas.oncontextmenu = function(e) {return false;};
-        canvas.addEventListener("mousemove", mouseMove, true);
-        canvas.addEventListener("dblclick", doubleClick, true);
+        gameState.setToLoading();
+        setInterval(runGame,interval);
+        gameParams.canvas = document.getElementById('canvas');
+        gameParams.context = gameParams.canvas.getContext("2d");
+        gameParams.canvas.addEventListener("mouseup", eventClick, true);
+        gameParams.canvas.oncontextmenu = function(e) {return false;};
+        gameParams.canvas.addEventListener("mousemove", mouseMove, true);
+        gameParams.canvas.addEventListener("dblclick", doubleClick, true);
 
         loadGameData().then(gameDataLoaded => {
-            console.log("gameDataLoaded: ", gameDataLoaded)
+            console.log("gameDataLoaded: ", gameDataLoaded);
             if(gameDataLoaded) {
-                switchGameState(GAME_STATE_PLAY);
-                game.currentLoc = startRoom;
+                gameState.setToPlay();
+                gameParams.currentLoc = startRoom;
                 changeCursor("cursor.png");
-                setInterval(runGame,interval);
 
                 document.getElementById('makeDark').addEventListener("mouseup",() => {
                     hero.isDark = !hero.isDark;
@@ -535,3 +449,7 @@ function game() {
     }
     initGame();
 }
+
+window.addEventListener("load", eventWindowLoaded, false);
+
+function eventWindowLoaded() { btwEngine(); }

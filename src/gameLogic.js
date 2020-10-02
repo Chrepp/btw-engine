@@ -30,7 +30,7 @@ export function getLocations(locations) {
             }
         }
     }
-    //Debugger.log(locations["Schlucht"].furthestPoint);
+    //console.log(locations["Schlucht"].furthestPoint);
     return locations;
 }
 
@@ -72,8 +72,96 @@ export function getItems(data) {
         if(data[i].invImgSrc) {
             data[i].invImg = new Image();
             data[i].invImg.src = "pix/"+data[i].invImgSrc;
-            //Debugger.log(data[i].invImgSrc);
+            //console.log(data[i].invImgSrc);
         }
     }
     return data;
+}
+
+
+export function GameState(gameStatePlay,gameStateLoading) {
+    this.GAME_STATE_LOADING=0;
+    this.GAME_STATE_PLAY=1;
+    this.currentGameState = this.GAME_STATE_LOADING;
+    this.runGame = null;
+    this.setToPlay = () => {
+        this.currentGameState = this.GAME_STATE_PLAY;
+        this.runGame = gameStatePlay;
+    }
+    this.setToLoading = () => {
+        this.currentGameState = this.GAME_STATE_LOADING;
+        this.runGame = gameStateLoading;
+    }
+    this.isSetToPlay = () => {
+        return this.currentGameState === this.GAME_STATE_PLAY
+    }
+}
+
+export function Point(x,y) {
+    this.x = x;
+    this.y = y;
+    this.toString = () => {
+        return '(' + x + ',' + y + ')';
+    };
+}
+
+export function GameParams(startRoom,start) {
+    this.heroMessage = "";
+    this.mainMessage = "Schmiere dir ein Butterbrot!";
+    this.mouseMessage = "";
+    this.actionMessage = "";
+    this.debugMessage = "";
+    this.talkFont = "bold 20px sans-serif";
+    this.canvasWidth = 1024;
+    this.canvasHeight = 576;
+    this.currentLoc = startRoom;
+    this.nextDestCounter = 0;
+    this.nextDest = new Point(0,0);
+    this.mPath = -1;
+    this.setNextDest = (nextDest) => {
+        if(this.path[this.nextDestCounter]) {
+            this.nextDest.x = this.path[this.nextDestCounter].x;
+            this.nextDest.y = this.path[this.nextDestCounter].y;
+            this.mPath = -1;
+            this.nextDestCounter++;
+        }
+    };
+    this.canvas = null;
+    this.context = null;
+    this.path = [];
+    this.current = new Point(start.x,start.y);
+    this.dest = new Point(start.x,start.y);
+    this.actionType = "";
+    this.setActionType = (actionType) => {
+        this.actionType = actionType;
+    }
+    this.combinationInProgress = null;
+    this.setCombinationInProgress = (combinationInProgress) => {
+        this.combinationInProgress = combinationInProgress;
+    }
+    this.invRect = {
+        pos: new Point(200,100),
+        width : 624,
+        height: 376
+    }
+    this.skipMessage = false;
+    this.setSkipMessage = (skipMessage) => {
+        this.skipMessage = skipMessage;
+    }
+    this.goalTime = 0;
+    this.setGoalTime = (goalTime) => {
+        this.goalTime = goalTime;
+    }
+    this.clickNum = 0;
+    this.setClickNum = (clickNum) => {
+        this.clickNum = clickNum;
+    }
+    this.actionStarted = false;
+    this.setActionStarted = (actionStarted) => {
+        this.actionStarted = actionStarted;
+    }
+    this.inventoryOpen = false;
+    this.setInventoryOpen = (inventoryOpen) => {
+        this.inventoryOpen = inventoryOpen;
+    }
 }
