@@ -25,7 +25,7 @@
         "idle":[],
         "talk":[],
         "take":[]
-    }
+    },
     "img": [],
     "step": 0,
     "useAnimationStep": 0
