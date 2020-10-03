@@ -52,7 +52,7 @@ export async function loadSounds() {
 
 				const promise = new Promise(resolve => {
                 	sounds[fileNames[i]].addEventListener("canplaythrough",resolve);
-				})
+				});
                 promisesArray.push(promise);
             }
 
@@ -107,7 +107,7 @@ async function generateShadowImages(hero) {
     animationTypes.forEach(type => {
         hero.ani.shadow[type] = [];
         promises.push(pushPromises(hero.ani[type], hero.ani.shadow[type], hero));
-    })
+    });
 
     Promise.all(promises).then(hero => {
         return hero;
@@ -123,7 +123,7 @@ function pushPromises(sourceArray,targetArray,hero) {
             }).then(() => {
                 return hero;
             })
-        )
+        );
     }
     return promises;
 }

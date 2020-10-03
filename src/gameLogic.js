@@ -87,14 +87,14 @@ export function GameState(gameStatePlay,gameStateLoading) {
     this.setToPlay = () => {
         this.currentGameState = this.GAME_STATE_PLAY;
         this.runGame = gameStatePlay;
-    }
+    };
     this.setToLoading = () => {
         this.currentGameState = this.GAME_STATE_LOADING;
         this.runGame = gameStateLoading;
-    }
+    };
     this.isSetToPlay = () => {
-        return this.currentGameState === this.GAME_STATE_PLAY
-    }
+        return this.currentGameState === this.GAME_STATE_PLAY;
+    };
 }
 
 export function Point(x,y) {
@@ -103,9 +103,14 @@ export function Point(x,y) {
     this.toString = () => {
         return '(' + x + ',' + y + ')';
     };
+    this.equals = (otherPoint) => {
+        return this.x === otherPoint.x && this.y === otherPoint.y
+    }
 }
 
-export function GameParams(startRoom,start) {
+export function GameParams() {
+    this.startRoom = "Flur";
+    this.startPoint = new Point(700, 500);
     this.heroMessage = "";
     this.mainMessage = "Schmiere dir ein Butterbrot!";
     this.mouseMessage = "";
@@ -114,7 +119,10 @@ export function GameParams(startRoom,start) {
     this.talkFont = "bold 20px sans-serif";
     this.canvasWidth = 1024;
     this.canvasHeight = 576;
-    this.currentLoc = startRoom;
+    this.currentLoc = "";
+    this.setCurrentLoc = (currentLoc) => {
+        this.currentLoc = currentLoc;
+    }
     this.nextDestCounter = 0;
     this.nextDest = new Point(0,0);
     this.mPath = -1;
@@ -129,39 +137,74 @@ export function GameParams(startRoom,start) {
     this.canvas = null;
     this.context = null;
     this.path = [];
-    this.current = new Point(start.x,start.y);
-    this.dest = new Point(start.x,start.y);
+    this.current = null;
+    this.setCurrent = (current) => {
+        this.current = current;
+    };
+    this.dest = null;
+    this.setDest = (dest) => {
+        this.dest = dest;
+    };
     this.actionType = "";
     this.setActionType = (actionType) => {
         this.actionType = actionType;
-    }
+    };
     this.combinationInProgress = null;
     this.setCombinationInProgress = (combinationInProgress) => {
         this.combinationInProgress = combinationInProgress;
-    }
+    };
     this.invRect = {
         pos: new Point(200,100),
         width : 624,
         height: 376
-    }
+    };
     this.skipMessage = false;
     this.setSkipMessage = (skipMessage) => {
         this.skipMessage = skipMessage;
-    }
+    };
     this.goalTime = 0;
     this.setGoalTime = (goalTime) => {
         this.goalTime = goalTime;
-    }
+    };
     this.clickNum = 0;
     this.setClickNum = (clickNum) => {
         this.clickNum = clickNum;
-    }
+    };
     this.actionStarted = false;
     this.setActionStarted = (actionStarted) => {
         this.actionStarted = actionStarted;
-    }
+    };
     this.inventoryOpen = false;
     this.setInventoryOpen = (inventoryOpen) => {
         this.inventoryOpen = inventoryOpen;
-    }
+    };
+    this.nextObject = -1;
+    this.setNextObject = (nextObject) => {
+        this.nextObject = nextObject;
+    };
+    this.activeItem = -1;
+    this.setActiveItem = (activeItem) => {
+        this.activeItem = activeItem;
+    };
 }
+
+export function GameData() {
+    this.hero = {};
+    this.actions = [];
+    this.locations = {};
+    this.items = [];
+    this.combinations = [];
+    this.inventory = [];
+    this.sounds = [];
+    this.talkables = [{
+        pos: new Point(80,410),
+        width: 70,
+        height: 70,
+        id: 0,
+        name: "Bowly",
+        imgSrc: "pix/bowly.png",
+        img: new Image()
+    }];
+}
+
+

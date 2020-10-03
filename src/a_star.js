@@ -56,8 +56,6 @@ export function a_star(startId, startX, startY, destinationId, destinationX, des
             test+=closed[i].id+"-";
         }
         //console.log(test);
-         
-
 
         //Check if we've reached our destination
         if (current_node.id === destination.id) {
@@ -68,7 +66,6 @@ export function a_star(startId, startX, startY, destinationId, destinationX, des
                 path.unshift(current_node);
             }
             return path;
-
         }
 
         //Remove the current node from our open list
@@ -80,28 +77,49 @@ export function a_star(startId, startX, startY, destinationId, destinationX, des
         test = "";
         for (let n = 0; n < graph[current_node.id].length; n++) {
             if (graph[current_node.id]) {
-                var newId = graph[current_node.id][n];
+                const newId = graph[current_node.id][n];
 
-                var newNodeX = newId == startId ? startX : newId == destinationId ? destinationX : points[newId].x;
-                var newNodeY = newId == startId ? startY : newId == destinationId ? destinationY : points[newId].y;
+                let newNodeX;
+                if(newId === startId) {
+                    newNodeX = startX;
+                } else {
+                    if(newId === destinationId) {
+                        newNodeX = destinationX;
+                    } else {
+                        newNodeX = points[newId].x;
+                    }
+                }
+                let newNodeY;
+                if(newId === startId) {
+                    newNodeY = startY;
+                } else {
+                    if(newId === destinationId) {
+                        newNodeY = destinationY;
+                    } else {
+                        newNodeY = points[newId].y;
+                    }
+                }
 
                 //See if the node is already in our closed list. If so, skip it.
-                var found_in_closed = false;
-                for (var i in closed)
+                let found_in_closed = false;
+                for (let i in closed) {
                     if (closed[i].id == newId) {
                         found_in_closed = true;
                         break;
                     }
-                if (found_in_closed) continue;
+                }
+                if (found_in_closed) {
+                    continue;
+                }
 
                 //See if the node is in our open list. If not, use it.
                 var found_in_open = false;
-                for (let i in open)
+                for (let i in open) {
                     if (open[i].id == newId) {
                         found_in_open = true;
                         break;
                     }
-
+                }
                 if (!found_in_open) {
                     var new_node = new node(newId, newNodeX, newNodeY, closed.length - 1, -1, -1, -1);
 
