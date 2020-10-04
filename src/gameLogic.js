@@ -119,6 +119,10 @@ export function GameParams() {
     this.talkFont = "bold 20px sans-serif";
     this.canvasWidth = 1024;
     this.canvasHeight = 576;
+    this.canvas = null;
+    this.context = null;
+
+    // #######################################
     this.currentLoc = "";
     this.setCurrentLoc = (currentLoc) => {
         this.currentLoc = currentLoc;
@@ -134,8 +138,6 @@ export function GameParams() {
             this.nextDestCounter++;
         }
     };
-    this.canvas = null;
-    this.context = null;
     this.path = [];
     this.current = null;
     this.setCurrent = (current) => {
@@ -145,6 +147,7 @@ export function GameParams() {
     this.setDest = (dest) => {
         this.dest = dest;
     };
+    // ############################################
     this.actionType = "";
     this.setActionType = (actionType) => {
         this.actionType = actionType;

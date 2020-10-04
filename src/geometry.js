@@ -45,7 +45,9 @@ function isInMovingArea(p,loc) {
         line.p2 = {};
         line.p2.x = loc.MovingArea[(i+1)%loc.MovingArea.length].x;
         line.p2.y = loc.MovingArea[(i+1)%loc.MovingArea.length].y;
-        if(linesIntersect(0,p.y,p.x,p.y,line.p1.x,line.p1.y,line.p2.x,line.p2.y) && !isPointOnLine(p,line)) intersectionCount++;
+        if(linesIntersect(0,p.y,p.x,p.y,line.p1.x,line.p1.y,line.p2.x,line.p2.y) && !isPointOnLine(p,line)) {
+            intersectionCount++;
+        }
     }
     return intersectionCount%2!==0;
 }
@@ -276,7 +278,8 @@ export function setDest(clickPosition, loc) {
                 }
             }
         }
-        result = new Point(Math.round(result.x), Math.round(result.y));
+        //result = new Point(Math.round(result.x), Math.round(result.y));
+        result = new Point(result.x, result.y);
         return result;
     }
     else {

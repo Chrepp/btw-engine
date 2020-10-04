@@ -1,145 +1,21 @@
-import { calculateSlope } from "./geometry.js";
-import { Point } from "./gameLogic.js";
-
-export function drawBackground(context,locations,game,Talkables,debug) {
-    context.drawImage(locations[game.currentLoc].backgroundImg,0,0,game.canvasWidth,game.canvasHeight);
-    //context.fillStyle = "#aaaaaa";
-    //context.fillRect(0,0,canvasWidth,canvasHeight);
-
-    var loc = locations[game.currentLoc];
-    for(var i=0;i<loc.Items.length;i++) {
-        if(loc.Items[i].type==="background" && loc.Items[i].img) {
-            context.drawImage(loc.Items[i].img,loc.Items[i].xPos,loc.Items[i].yPos,loc.Items[i].width,loc.Items[i].height);
-        }
-    }
-    context.save();
-    context.fillStyle = "#9999ff";
-    context.strokeStyle  = "#000000";
-
-    context.font = game.talkFont;    context.shadowColor   = "#000000";
-    context.shadowOffsetX = 0;
-    context.shadowOffsetY = 0;
-    //context.shadowBlur    = 3;
-    context.textBaseline = "top";
-    context.textAlign ="center";
-    context.fillText(game.mainMessage,game.canvasWidth/2,20);
-    context.strokeText(game.mainMessage,game.canvasWidth/2,20);
-    context.restore();
-
-    // Talkables ################################################### TODO
-    for(let i=0;i<Talkables.length;i++) {
-        var t = Talkables[i];
-        if(game.currentLoc === "Tobis Zimmer") context.drawImage(t.img,t.pos.x,t.pos.y,t.width,t.height);
-    }
-
-    // Bewegungsbereich:
-    context.fillStyle = "#000000";
-
-    context.strokeStyle = "#000000";
-    context.beginPath();
-    context.moveTo(loc.MovingArea[0].x,loc.MovingArea[0].y);
-    for(let i=0;i<loc.MovingArea.length;i++) {
-        context.lineTo(loc.MovingArea[i].x,loc.MovingArea[i].y);
-    }
-    context.lineTo(loc.MovingArea[0].x,loc.MovingArea[0].y);
-    if(debug) context.stroke();
-
-    // VisibilityGraph:
-    context.strokeStyle = "#ff0000";
-    context.beginPath();
-    for(let i=0;i<loc.VisibilityGraph.length;i++) {
-        if(loc.VisibilityGraph[i]) {
-            var id = loc.VisibilityGraph[i];
-            for(var j=0;j<loc.VisibilityGraph[i].length;j++) {
-                context.moveTo(loc.MovingArea[i].x,loc.MovingArea[i].y);
-                context.lineTo(loc.MovingArea[loc.VisibilityGraph[i][j]].x,loc.MovingArea[loc.VisibilityGraph[i][j]].y);
-            }
-        }
-    }
-    if(debug) context.stroke();
-}
-
-export function drawForeground(locations,gameParams,mousePos,InvRect,Inventory) {
-    const context = gameParams.context;
-    const loc = locations[gameParams.currentLoc];
-    for(let i=0;i<loc.Items.length;i++) {
-        if(loc.Items[i].type==="foreground" && loc.Items[i].img) {
-            const item = loc.Items[i];
-            context.drawImage(item.img,item.xPos,item.yPos,item.width,item.height);
-        }
-    }
-    if(locations[gameParams.currentLoc].foregroundImg) context.drawImage(locations[gameParams.currentLoc].foregroundImg,0,0,gameParams.canvasWidth,gameParams.canvasHeight);
-    // Tooltip
-    if(gameParams.mouseMessage!=="") {
-        context.fillStyle = "#000000";
-        context.font = gameParams.talkFont;
-        context.textBaseline = "top";
-        context.textAlign = "center";
-        context.fillText(gameParams.mouseMessage,mousePos.x,mousePos.y-20);
-    }
-    context.save();
-    if(gameParams.actionMessage !== "") {
-        context.fillStyle     = "#ffffff";
-        context.strokeStyle   = "#555555";
-        context.font          = "normal bold 25px sans-serif";
-        context.shadowColor   = "#000000";
-        context.shadowOffsetX = 0;
-        context.shadowOffsetY = 0;
-        context.textBaseline  = "top";
-        context.textAlign     = "left";
-        context.fillText(gameParams.actionMessage,50,500);
-        context.strokeText(gameParams.actionMessage,50,500);
-    }
-    if(gameParams.debugMessage !== "") {
-        context.fillStyle     = "#ffffff";
-        context.strokeStyle   = "#555555";
-        context.font          = "normal bold 22px sans-serif";
-        context.shadowColor   = "#000000";
-        context.shadowOffsetX = 0;
-        context.shadowOffsetY = 0;
-        context.textBaseline  = "top";
-        context.textAlign     = "right";
-        context.fillText(gameParams.debugMessage,850,500);
-        context.strokeText(gameParams.debugMessage,850,500);
-    }
-    context.restore();
-
-    // Ab hier das Inventar
-    if(gameParams.inventoryOpen) {
-        context.save();
-        context.translate(InvRect.pos.x,InvRect.pos.y);
-        context.fillStyle = "rgba(0,0,0,0.7)";
-        context.fillRect(0,0,InvRect.width,InvRect.height);
-        const itemSide = 60;
-        const border   = 10;
-        const rows     = 3;
-        const cols     = 8;
-        let item     = 0;
-        for(let y=border;y<(itemSide+border)*rows;y+=border+itemSide) {
-            for(let x=border;x<(itemSide+border)*cols;x+=border+itemSide) {
-                if(Inventory[item]) context.drawImage(Inventory[item].invImg,x,y,itemSide,itemSide);
-                else break;
-                item++;
-            }
-            if(!Inventory[item]) break;
-        }
-        context.restore();
-    }
-}
+import { calculateSlope } from "../geometry.js";
+import { Point } from "../gameLogic.js";
 
 export function drawHero(locations, gameParams, hero, debug) {
     const context = gameParams.context;
-    if(gameParams.current.x !== gameParams.dest.x || gameParams.current.y !== gameParams.dest.y) {
+    if(!gameParams.current.equals(gameParams.dest)) {
         [hero,gameParams] = movingHero(hero, gameParams.nextDest, gameParams);
     } else {
         hero.isMoving = false;
     }
     // Höhenverhaltnis berechnen
-    const m = (1-locations[gameParams.currentLoc].dimensionsOfHeroInTheBack)/(locations[gameParams.currentLoc].nearestPoint-locations[gameParams.currentLoc].furthestPoint); // Steigung der Geraden m=(y2-y1)/(x2-x1)
-    var c = 1-m*locations[gameParams.currentLoc].nearestPoint; // Schnittpunkt mit der y-Achse: c=y2-m*x2
-    var percentageOfHeroHeight = m*gameParams.current.y+c;
+    // Steigung der Geraden m=(y2-y1)/(x2-x1)
+    const m = (1-locations[gameParams.currentLoc].dimensionsOfHeroInTheBack) / (locations[gameParams.currentLoc].nearestPoint-locations[gameParams.currentLoc].furthestPoint); 
+    // Schnittpunkt mit der y-Achse: c=y2-m*x2
+    var c = 1-m*locations[gameParams.currentLoc].nearestPoint; 
+    var percentageOfHeroHeight = m * gameParams.current.y + c;
     // Die Gehgeschwindigkeit wird verhältnismäßig geändert.
-    hero.lengthOfMove = percentageOfHeroHeight*locations[gameParams.currentLoc].heroHeight*0.1; // 0.1
+    hero.lengthOfMove = percentageOfHeroHeight * locations[gameParams.currentLoc].heroHeight * 0.1; // 0.1
 
     if(!hero.isMoving) {
         // TODO: Der Text darf nicht über den Rand hängen, wenn der Held zu weit rechts oder links steht.
@@ -249,14 +125,14 @@ function movingHero(hero, nextDest, gameParams) {
 
     if(gameParams.mPath <= 0) {
         if(nextDest.x !== gameParams.current.x) {
-            gameParams.mPath = (nextDest.y - gameParams.current.y) / (nextDest.x - gameParams.current.x);
+            gameParams.mPath = calculateSlope(gameParams.current, nextDest);
         }
     }
 
     const m = gameParams.mPath;
     const temp = new Point();
     // Die ultimative Formel!
-    temp.x = Math.sqrt((1/(1+m*m)) * hero.lengthOfMove*hero.lengthOfMove); 
+    temp.x = Math.sqrt((1 / (1 + Math.pow(m,2))) * hero.lengthOfMove*hero.lengthOfMove); 
     temp.y = Math.abs(m * temp.x);
 
     if(gameParams.current.equals(nextDest)) {

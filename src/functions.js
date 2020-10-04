@@ -1,8 +1,10 @@
-import { drawBackground, drawHero, drawForeground } from "./drawing.js";
+import { drawHero } from "./drawing/drawing.js";
 import { isInRect, setDest, setPath } from "./geometry.js";
 import { loadActions, loadLocations, loadItems, loadCombinations, loadSounds, loadHero } from "./loading.js";
 import { GameState, Point, GameParams, GameData } from "./gameLogic.js";
 import { action } from "./action.js";
+import { Background } from "./drawing/background.js";
+import { Foreground } from "./drawing/foreground.js";
 
 function btwEngine() {
 
@@ -18,7 +20,9 @@ function btwEngine() {
     const gameData = new GameData();
     gameData.talkables[0].img.src = gameData.talkables[0].img.src;
     const gameParams = new GameParams();
-    const gameState = new GameState(gameStatePlay,gameStateLoading);
+    const gameState = new GameState(gameStatePlay, gameStateLoading);
+    const gameBackground = new Background(debug);
+    const gameForeground = new Foreground();
 
     //######################### Funktionen ###########################################################
 
@@ -36,9 +40,9 @@ function btwEngine() {
     }
 
     function gameStatePlay() {
-        drawBackground(gameParams.context,gameData.locations,gameParams,gameData.talkables,debug);
+        gameBackground.draw(gameData.locations,gameParams,gameData.talkables);
         gameData.hero = drawHero(gameData.locations,gameParams,gameData.hero,debug);
-        drawForeground(gameData.locations,gameParams,mousePosition,gameParams.invRect,gameData.inventory);
+        gameForeground.draw(gameData.locations,gameParams,mousePosition,gameParams.invRect,gameData.inventory);
         action(gameParams, gameData);
     }
 
@@ -48,7 +52,7 @@ function btwEngine() {
      * Wenn man auf einen Gegenstand linksklickt, sollte man immer an einen
      * bestimmten Punkt beim Gegenstand landen.
      */
-    function checkDest(point,type,loc) {
+    function checkDest(point, type, loc) {
         const itemArray = loc.Items;
         if(!gameData.hero.isMoving && itemArray) {
             gameParams.actionMessage = "";
@@ -172,6 +176,7 @@ function btwEngine() {
     }
 
     function leftClick(clickPosition) {
+        console.log("gameParams: ", gameParams.current);
         console.log(clickPosition.toString()," clicked; current=" + gameParams.current.toString());
 
         if(gameParams.inventoryOpen) {
@@ -182,7 +187,7 @@ function btwEngine() {
             console.log('dest: ', gameParams.dest);
             gameParams.path = [];
             gameParams.path = setPath(gameParams.current, gameParams.dest, gameData.locations[gameParams.currentLoc]);
-            //gameParams.path.shift();
+            gameParams.path.shift();
             console.log("path: ", gameParams.path);
             gameParams.nextDestCounter = 0;
             gameParams.setNextDest(gameParams.nextDest);
@@ -269,7 +274,7 @@ function btwEngine() {
         gameParams.canvas = document.getElementById('canvas');
         gameParams.context = gameParams.canvas.getContext("2d");
         gameParams.canvas.addEventListener("mouseup", eventClick, true);
-        gameParams.canvas.oncontextmenu = function(e) {return false;};
+        gameParams.canvas.oncontextmenu = function(e) { return false; };
         gameParams.canvas.addEventListener("mousemove", mouseMove, true);
         gameParams.canvas.addEventListener("dblclick", doubleClick, true);
 
