@@ -1,5 +1,6 @@
 import { a_star } from "./a_star.js";
 import { Point } from "./gameLogic.js";
+import { Line } from "./geometry/line.js"
 
 /**
  * Wenn ein Punkt im Graphen zwischen den beiden Nachbarknoten von vertex
@@ -18,11 +19,11 @@ function isVertexConcave(vertex, MovingArea) {
     return cross < 0;
 }
 
-function linesIntersect(aX,aY,bX,bY,cX,cY,dX,dY) {
-    let denominator = ((bX - aX) * (dY - cY)) - ((bY - aY) * (dX - cX));
+function linesIntersect(pointA,pointB,pointC,pointD) {
+    let denominator = ((pointB.x - pointA.x) * (pointD.y - pointC.y)) - ((pointB.y - pointA.y) * (pointD.x - pointC.x));
     if (denominator === 0) return false;
-    let numerator1 = ((aY - cY) * (dX - cX)) - ((aX - cX) * (dY - cY));
-    let numerator2 = ((aY - cY) * (bX - aX)) - ((aX - cX) * (bY - aY));
+    let numerator1 = ((pointA.y - pointC.y) * (pointD.x - pointC.x)) - ((pointA.x - pointC.x) * (pointD.y - pointC.y));
+    let numerator2 = ((pointA.y - pointC.y) * (pointB.x - pointA.x)) - ((pointA.x - pointC.x) * (pointB.y - pointA.y));
     if (numerator1 === 0 || numerator2 === 0) return false;
     let r = numerator1 / denominator;
     let s = numerator2 / denominator;
@@ -35,65 +36,84 @@ function linesIntersect(aX,aY,bX,bY,cX,cY,dX,dY) {
  * Gerade des Graphen schneidet, wird hochgezählt. Ist das Ergebnis
  * ungerade, befindet sich (x,y) in der Fläche.
  */
-function isInMovingArea(p,loc) {
+function isInMovingArea(point, movingArea) {
     let intersectionCount = 0;
-    for(let i=0;i<loc.MovingArea.length;i++) {
-        let line = {};
-        line.p1 = {};
-        line.p1.x = loc.MovingArea[i].x;
-        line.p1.y = loc.MovingArea[i].y;
-        line.p2 = {};
-        line.p2.x = loc.MovingArea[(i+1)%loc.MovingArea.length].x;
-        line.p2.y = loc.MovingArea[(i+1)%loc.MovingArea.length].y;
-        if(linesIntersect(0,p.y,p.x,p.y,line.p1.x,line.p1.y,line.p2.x,line.p2.y) && !isPointOnLine(p,line)) {
+    for(let i=0; i<movingArea.length; i++) {
+
+        const p1 = new Point(movingArea[i].x, movingArea[i].y);
+        const p2 = new Point(movingArea[(i + 1) % movingArea.length].x, movingArea[(i + 1) % movingArea.length].y);
+        const line = new Line(p1, p2);
+
+        if(linesIntersect(new Point(0,point.y),point,line.pointA,line.pointB) && !isPointOnLine(point, line)) {
             intersectionCount++;
         }
     }
-    return intersectionCount%2!==0;
+    return intersectionCount % 2!== 0;
 }
 
-export function isInRect(p,r,width,height) {
-    let b = new Point(r.x + width,r.y + height);
-    return p.x > r.x && p.x < b.x && p.y > r.y && p.y < b.y;
+export function isInRect(point, topLeft, width, height) {
+    const bottomRight = new Point(topLeft.x + width,topLeft.y + height);
+    const isWithinXValues = point.x > topLeft.x && point.x < bottomRight.x;
+    const isWithinYValues = point.y > topLeft.y && point.y < bottomRight.y;
+    return isWithinXValues && isWithinYValues;
 }
 
-function inLineOfSight(aX,aY,bX,bY,firstStep,MovingArea) {
+function calculateMidpoint(pointA, pointB) {
+    const averageOfX = (pointA.x + pointB.x) / 2;
+    const averageOfY = (pointA.y + pointB.y) / 2;
+    return new Point(averageOfX, averageOfY);
+}
+
+function inLineOfSight(pointA, pointB, firstStep, movingArea) {
+    if(pointA.equals(pointB)) {
+        // return true;
+    }
     let isInLineOfSight = true;
     /*
     // Falls die Linie zwischen a und b außerhalb liegt, dann false - ansonsten schleife
-    var m = (bY-aY)/(bX-aX);
-    var c = bY-m*bX;
-    var pX = Math.round(aX+Math.sqrt(200/(1+m*m)));
-    var pY = Math.round(m*pX+c);
+    const m = (pointB.y - pointA.y) / (pointB.x - pointA.x);
+    const c = pointB.y - m * pointB.x;
+    const pX = Math.round(pointA.x + Math.sqrt(200 / (1 + Math.pow(m,2))));
+    const pY = Math.round(m * pX + c);
+
     //console.log(aX+","+aY+"->"+pX+","+pY+" - "+!isInMovingArea(pX,pY));
-    if(!isInMovingArea(pX,pY)) {
-        isInLineOfSight = false;
+
+    if(!isInMovingArea(new Point(pX,pY), movingArea)) {
+        return false;
     }
-    else*/
-        for(let k=0;k<MovingArea.length;k++) {
-            //console.log("Durchgang "+k);
-            // Wahr, wenn sich die Strecke zwischen i und j mit der zwischen k und k+1 kreuzen
-            let cX = MovingArea[k].x;
-            let cY = MovingArea[k].y;
-            let dX = MovingArea[(k+1)%MovingArea.length].x;
-            let dY = MovingArea[(k+1)%MovingArea.length].y;
-            if(linesIntersect(aX,aY,bX,bY,cX,cY,dX,dY)) {
-                isInLineOfSight = false;
-                /*
-                if(firstStep) {
-                    // liegt der Ziel-Punkt direkt auf dem anderen Graphen
-                    var m = (dY-cY)/(dX-cX);
-                    var aAufcd = aY == Math.round(m*aX + (cY-m*cX)); //currentXY oder destXY
-                    var bAufcd = bY == Math.round(m*bX + (cY-m*cX)); // einer der Punkte des visibleGrpah
-                    
-                    //console.log("a: "+aY+"="+Math.round(m*aX + (cY-m*cX))+" - "+aAufcd);
-                    //console.log("b: "+bY+"="+Math.round(m*bX + (cY-m*cX))+" - "+bAufcd);
-                    //if(aAufcd || bAufcd) isInLineOfSight = false; // Falls Start- oder Zielpunkt auf der Schnittgeraden liegen ->
-                }
-                else isInLineOfSight = false;
-                */
+    */
+
+    const pointInBetween = calculateMidpoint(pointA, pointB);
+    if (!isInMovingArea(pointInBetween, movingArea)) {
+        const line = new Line(pointA, pointB);
+        console.log('inLineOfSight' + pointInBetween.toString() + ' not in movingArea - ' + line.toString());
+        console.log('inLineOfSight isPointOnLine: ' + isPointOnLine(pointInBetween,line));
+        //return false;
+    }
+
+    for(let k = 0; k<movingArea.length; k++) {
+        // console.log("Durchgang " + k);
+        // Wahr, wenn sich die Strecke zwischen i und j mit der zwischen k und k+1 kreuzen
+        let pointC = new Point(movingArea[k].x, movingArea[k].y);
+        let pointD = new Point(movingArea[(k + 1) % movingArea.length].x, movingArea[(k + 1) % movingArea.length].y);
+        if(linesIntersect(pointA,pointB,pointC,pointD)) {
+            isInLineOfSight = false;
+            /*
+            if(firstStep) {
+                // liegt der Ziel-Punkt direkt auf dem anderen Graphen
+                var m = (dY-cY)/(dX-cX);
+                var aAufcd = aY == Math.round(m*aX + (cY-m*cX)); //currentXY oder destXY
+                var bAufcd = bY == Math.round(m*bX + (cY-m*cX)); // einer der Punkte des visibleGrpah
+
+                //console.log("a: "+aY+"="+Math.round(m*aX + (cY-m*cX))+" - "+aAufcd);
+                //console.log("b: "+bY+"="+Math.round(m*bX + (cY-m*cX))+" - "+bAufcd);
+                //if(aAufcd || bAufcd) isInLineOfSight = false; // Falls Start- oder Zielpunkt auf der Schnittgeraden liegen ->
             }
+            else isInLineOfSight = false;
+            */
         }
+    }
+    //console.log(pointA.toString() + ' and ' + pointB.toString() + ' inLineOfSight=' + isInLineOfSight);
     return isInLineOfSight;
 }
 
@@ -103,11 +123,9 @@ export function buildVisibilityGraph(MovingArea) {
         VG[i] = [];
         for(let j=0;j<VG.length;j++) {
             if(VG[j]) {
-                let aX = MovingArea[i].x;
-                let aY = MovingArea[i].y;
-                let bX = MovingArea[j].x;
-                let bY = MovingArea[j].y;
-                if(inLineOfSight(aX,aY,bX,bY,false,MovingArea) && i !== j) {
+                const pointA = new Point(MovingArea[i].x, MovingArea[i].y);
+                const pointB = new Point(MovingArea[j].x, MovingArea[j].y);
+                if(inLineOfSight(pointA,pointB,false,MovingArea) && i !== j) {
                     VG[i][VG[i].length] = j;
                     //console.log("Kein Hindernis zwischen "+i+" und "+j);
                     if(VG[j]) {
@@ -129,56 +147,55 @@ export function buildVisibilityGraph(MovingArea) {
  * nächsten ist.
  */
 function getNextPointOnLine(point, line) {
-    let next = new Point(0,0);
-    if(line.m === "Infinity" || line.m === "-Infinity") {
-        next.x = line.p1.x;
+    let next = {};
+    if(line.slope === "Infinity" || line.slope === "-Infinity") {
+        next.x = line.pointA.x;
         next.y = point.y;
-    } else if(line.m === 0) {
+    } else if(line.slope === 0) {
         next.x = point.x;
-        next.y = line.p1.y;
+        next.y = line.pointA.y;
     } else {
         // Nähesten Punkt auf der Geraden zu (x,y) berechnen
-        next.x = (point.y+(point.x/line.m)-line.c) / (line.m+(1/line.m));
-        next.y = line.m * next.x + line.c;
+        next.x = (point.y + (point.x / line.slope) -  line.intercept) / (line.slope + (1 / line.intercept));
+        next.y = line.slope * next.x + line.intercept;
     }
-    return next;
+    return new Point(next.x, next.y);
 }
 
 /**
  * Setzt einen Punkt entlang einer Line um einen Wert weiter ins Feld rein.
  * point: Der Punkt, der geschoben wird.
- * m: slope
+ * slope
  * loc: Aktueller Raum
  * dist: die zu schiebende Entfernung
  */
-function moveIntoMovingArea(point,m,loc,dist) {
+function moveIntoMovingArea(point, slope, movingArea, dist) {
     let tmp = {};
-    if(m == "Infinity" || m == "-Infinity") {
+    if(slope === "Infinity" || slope === "-Infinity") {
         tmp = new Point(point.x, point.y + dist);
-        if(!isInMovingArea(tmp,loc)) {
+        if(!isInMovingArea(tmp, movingArea)) {
             tmp = new Point(point.x,point.y-dist);
-            if(!isInMovingArea(tmp,loc)) {
+            if(!isInMovingArea(tmp, movingArea)) {
                 tmp = new Point(point.x, point.y);
             }
         }
-    }
-    else if(m === 0) {
+    } else if(slope === 0) {
         tmp = new Point(point.x + dist, point.y);
-        if(!isInMovingArea(tmp,loc)) {
-            tmp = new Point(point.x-dist, point.y);
-            if(!isInMovingArea(tmp,loc)) {
+        if(!isInMovingArea(tmp, movingArea)) {
+            tmp = new Point(point.x - dist, point.y);
+            if(!isInMovingArea(tmp, movingArea)) {
                 tmp = new Point(point.x, point.y);
             }
         }
     }
     else {
-        let c = point.y - m * point.x;
+        let c = point.y - slope * point.x;
         // Die eine Seite der Kante
-        tmp = new Point(point.x + Math.sqrt(dist*dist/(1+m*m)), m*tmp.x+c);
-        if(!isInMovingArea(tmp,loc)) {
+        tmp = new Point(point.x + Math.sqrt(Math.pow(dist,2) / (1+Math.pow(slope,2))), slope * tmp.x + c);
+        if(!isInMovingArea(tmp, movingArea)) {
             // Die andere Seite der Kante
-            tmp = new Point(point.x - Math.sqrt(dist*dist/(1+m*m)),m*tmp.x+c);
-            if(!isInMovingArea(tmp,loc)) {
+            tmp = new Point(point.x - Math.sqrt(Math.pow(dist,2) / (1+Math.pow(slope,2))),slope * tmp.x + c);
+            if(!isInMovingArea(tmp, movingArea)) {
                 tmp = new Point(point.x, point.y);
             }
         }
@@ -186,100 +203,72 @@ function moveIntoMovingArea(point,m,loc,dist) {
     return tmp;
 }
 
-function isPointOnLine(p,line) {
-    let m = (line.p2.y-line.p1.y)/(line.p2.x-line.p1.x);
-    let c = line.p1.y-m*line.p1.x;
-
-    let pOnLine = p.y === m*p.x+c;
-    let pBetweenPoints =
-        ((p.y <= line.p1.y && p.y >= line.p2.y) ||  (p.y >= line.p1.y && p.y <= line.p2.y)) &&
-        ((p.x <= line.p1.x && p.x >= line.p2.x) ||  (p.x >= line.p1.x && p.x <= line.p2.x));
-    
-    return pOnLine && pBetweenPoints;
+function inRange(num, a, b) {
+    const min = Math.min.apply(Math, [a, b]);
+    const max = Math.max.apply(Math, [a, b]);
+    return num > min && num < max;
 }
 
-function Line() {
-    this.p1 = 0;
-    this.p2 = 0;
-    this.m = 0;
-    this.c = 0;
+function isPointOnLine(p, line) {
+    const isOneOfThePoints = p.equals(line.pointA) || p.equals(line.pointB);
+    if(isOneOfThePoints) {
+        return true;
+    }
+    const isOnStraightLine = p.y === line.slope * p.x + line.intercept;
+    const xInRange = inRange(p.x, line.pointA.x, line.pointB.x);
+    const yInRange = inRange(p.y, line.pointA.y, line.pointB.y);
+    const isBetweenPointsOfLine = xInRange && yInRange;
+    return isOnStraightLine && isBetweenPointsOfLine;
 }
 
 /**
  * Sets the coordinates for the next end goal the hero wants to go to.
  */
-export function setDest(clickPosition, loc) {
-    if(!isInMovingArea(clickPosition, loc)) {
+export function setDest(clickPosition, movingArea) {
+    if(!isInMovingArea(clickPosition, movingArea)) {
         let distance = 10000;
         let result = clickPosition;
         
-        for(let i=0; i < loc.MovingArea.length; i++) {
-            let distanceTemp = 0;
-            let next = {}; // Nähester Punkt auf der Kante zu clickPosition
-            let tmp;
-            let edge = new Line(); // Aktuelle Kante in der Schleife
-            edge.p1 = extractPoint(loc.MovingArea[i]);
-            if(edge.p1 == null) {
-                console.error('loc.MovingArea['+i+'] is not a point.')
-            }
-            edge.p2 = extractPoint(loc.MovingArea[(i+1)%loc.MovingArea.length]);
-            if(edge.p2 == null) {
-                console.error('loc.MovingArea['+(i+1)%loc.MovingArea.length+'] is not a point.')
-            }
-            edge.m = calculateSlope(edge.p1, edge.p2);
-            edge.c = edge.p1.y-edge.m*edge.p1.x; // Schnittpunkt der Kante mit der y-Achse: c=y1-m*x1
-            
-            next = getNextPointOnLine(clickPosition, edge);
-            distanceTemp = calculateDistance(clickPosition, next);
+        for(let i=0; i < movingArea.length; i++) {
+            const edge = new Line(extractPoint(movingArea[i]), extractPoint(movingArea[(i+1)%movingArea.length]));
+            // Point on the edge next to clickPosition
+            const next = getNextPointOnLine(clickPosition, edge);
+            console.log('next on line; point: ' +  clickPosition.toString() + ', ' + edge.toString());
+            console.log('next: ' + next);
+            const distanceTemp = calculateDistance(clickPosition, next);
             
             // Nur wenn der Punkt (next) auf der Strecke (zwischen p1 und p2) liegt, sollen x und y geändert werden
             if(isPointOnLine(next, edge)) {
                 if(distanceTemp < distance) {
-                    const mTmp = (1/edge.m)* - 1;
-                    tmp = moveIntoMovingArea(next, mTmp, loc, 2);
-                    result = new Point(tmp.x, tmp.y);
+                    const slopeTmp = (1 / edge.slope) * - 1;
+                    result = moveIntoMovingArea(next, slopeTmp, movingArea, 2);
                     distance = distanceTemp;
                 }
-                
             } else {
                 //console.log(distanceTemp+"<"+distance+"("+x+"|"+y+") next:("+nextX+"|"+nextY+") ");
-                const distanceTo1stPoint = calculateDistance(clickPosition, edge.p1);
-                const distanceTo2ndPoint = calculateDistance(clickPosition, edge.p2);
-                
+                const distanceTo1stPoint = calculateDistance(clickPosition, edge.pointA);
                 if (distanceTo1stPoint < distance) {
                     distance = distanceTo1stPoint;
-
                     let neighbor;
                     if(i === 0) {
-                        neighbor = loc.MovingArea[loc.MovingArea.length-1]
+                        neighbor = movingArea[movingArea.length-1];
                     } else {
-                        neighbor = loc.MovingArea[i-1]
+                        neighbor = movingArea[i-1];
                     }
-                    
-                    const middle = new Point((neighbor.x+edge.p2.x)/2,(neighbor.y+edge.p2.y)/2);
-                    const line = {};                    
-                    line.m = calculateSlope(edge.p1, middle);
-                    line.c = edge.p1.y-line.m*edge.p1.x;
-                    
-                    tmp = moveIntoMovingArea(edge.p1,line.m,loc,10);
-                    result = new Point(tmp.x, tmp.y);
+                    const line = new Line(edge.pointA, calculateMidpoint(neighbor, edge.pointB));
+                    result = moveIntoMovingArea(edge.pointA, line.slope, movingArea,10);
                 }
+
+                const distanceTo2ndPoint = calculateDistance(clickPosition, edge.pointB);
                 if (distanceTo2ndPoint < distance) {
                     distance = distanceTo2ndPoint;
-                    
-                    const neighbor = loc.MovingArea[(i+2)%loc.MovingArea.length];
-                    const middle = new Point((neighbor.x+edge.p1.x)/2, (neighbor.y+edge.p1.y)/2);
-                    const line = {};
-                    line.m = calculateSlope(edge.p2, middle);
-                    line.c = edge.p2.y-line.m*edge.p2.x;
-                    
-                    tmp = moveIntoMovingArea(edge.p2,line.m,loc,10);
-                    result = new Point(tmp.x,tmp.y);
+                    const neighbor = movingArea[(i+2)%movingArea.length];
+                    const line = new Line(edge.pointB, calculateMidpoint(neighbor, edge.pointA));
+                    result = moveIntoMovingArea(edge.pointB, line.slope, movingArea,10);
                 }
             }
         }
         //result = new Point(Math.round(result.x), Math.round(result.y));
-        result = new Point(result.x, result.y);
         return result;
     }
     else {
@@ -293,14 +282,11 @@ function calculateDistance(point1, point2) {
     return Math.sqrt(Math.pow(differenceBetweenXValues, 2) + Math.pow(differenceBetweenYValues, 2));
 }
 
-export function calculateSlope(point1, point2) {
-    return (point2.y - point1.y) / (point2.x - point1.x);
-}
-
 function extractPoint(point) {
     if(point.x && point.y) {
-        return new Point(point.x,point.y)
+        return new Point(point.x, point.y)
     } else {
+        console.error('Could not extract point from ' + point.x + ',' + point.y);
         return null;
     }
 }
@@ -315,9 +301,8 @@ export function setPath(current, dest ,loc) {
     VisibilityGraph[currentId] = [];
     for(let j=0;j<VisibilityGraph.length-1;j++) {
         if(VisibilityGraph[j]) {
-            let bX = loc.MovingArea[j].x;
-            let bY = loc.MovingArea[j].y;
-            if(inLineOfSight(current.x,current.y,bX,bY,true,loc.MovingArea)) {
+            const pointB = new Point(loc.MovingArea[j].x,loc.MovingArea[j].y);
+            if(inLineOfSight(current,pointB,true,loc.MovingArea)) {
                 VisibilityGraph[currentId][VisibilityGraph[currentId].length] = j;
                 if(VisibilityGraph[j]) {
                     let hasElem = false;
@@ -336,7 +321,8 @@ export function setPath(current, dest ,loc) {
         if(VisibilityGraph[j]) {
             let bX = j===currentId ? current.x : loc.MovingArea[j].x;
             let bY = j===currentId ? current.y : loc.MovingArea[j].y;
-            if(inLineOfSight(dest.x,dest.y,bX,bY,false,loc.MovingArea)) {
+            const pointB = new Point(bX, bY);
+            if(inLineOfSight(dest,pointB,false,loc.MovingArea)) {
                 VisibilityGraph[destId][VisibilityGraph[destId].length] = j;
                 if(VisibilityGraph[j]) {
                     let hasElem = false;

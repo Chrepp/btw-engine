@@ -1,4 +1,4 @@
-import { calculateSlope } from "../geometry.js";
+import { calculateSlope } from "../geometry/line.js";
 import { Point } from "../gameLogic.js";
 
 export function drawHero(locations, gameParams, hero, debug) {

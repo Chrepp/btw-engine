@@ -183,11 +183,11 @@ function btwEngine() {
             gameParams.setNextObject(checkInv(clickPosition,"leftClick"));
         } else {
             gameParams.setNextObject(checkDest(clickPosition, "leftClick", gameData.locations[gameParams.currentLoc]));
-            gameParams.dest = setDest(clickPosition, gameData.locations[gameParams.currentLoc]);
+            gameParams.dest = setDest(clickPosition, gameData.locations[gameParams.currentLoc].MovingArea);
             console.log('dest: ', gameParams.dest);
             gameParams.path = [];
             gameParams.path = setPath(gameParams.current, gameParams.dest, gameData.locations[gameParams.currentLoc]);
-            gameParams.path.shift();
+            //gameParams.path.shift();
             console.log("path: ", gameParams.path);
             gameParams.nextDestCounter = 0;
             gameParams.setNextDest(gameParams.nextDest);
@@ -203,13 +203,13 @@ function btwEngine() {
     function rightClick(clickPosition) {
         if(gameParams.activeItem >= 0) {
             gameParams.setActiveItem(-1);
-            gameParams.setNextObject(-1); // Achtung: Hier wird das nächste Objekt gelöscht!
+            // Delete next object
+            gameParams.setNextObject(-1);
             changeCursor("cursor.png");
         } else {
             if(gameParams.inventoryOpen) {
                 gameParams.setNextObject(checkInv(clickPosition,"rightClick"));
-            }
-            else {
+            } else {
                 gameParams.setNextObject(checkDest(clickPosition,"rightClick", gameData.locations[gameParams.currentLoc]));
             }
         }
