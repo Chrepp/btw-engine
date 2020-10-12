@@ -104,27 +104,20 @@ function linesIntersect(lineA, lineB) {
 }
 
 /**
- * Prüft, ob die Koordinaten innerhalb der Bewegungsfläche sind.
- * Jedes Mal, wenn die Gerade von (0,y) zu (x,y) sich mit einer anderen
- * Gerade des Graphen schneidet, wird hochgezählt. Ist das Ergebnis
- * ungerade, befindet sich (x,y) in der Fläche.
+ * Creates a horizontal line from the left to the point. Returns true when the number
+ * of intersections with the moving area is not even.
  */
 export function isInMovingArea(point, movingArea) {
-    if(point.x.isNaN || point.y.isNaN) {
-        console.error("isInMovingArea? ", point.toString())
-    }
-
     const lineA = new Line(new Point(0, point.y), point);
     let intersectionCount = 0;
     for(let i=0; i < movingArea.length; i++) {
         const p1 = new Point(movingArea[i].x, movingArea[i].y);
         const p2 = new Point(movingArea[(i + 1) % movingArea.length].x, movingArea[(i + 1) % movingArea.length].y);
-        const lineB = new Line(p1, p2);
-        const intersect = linesIntersect(lineA, lineB);
-        const isOnLine = isPointOnLine(point, lineB);
-
-        if(intersect && !isOnLine) {
-            console.log("isInMovingArea: intersection between " + lineB.toString() + " and " + lineB.toString())
+        const edge = new Line(p1, p2);
+        if(isPointOnLine(point, edge)) {
+            return true;
+        }
+        if(linesIntersect(lineA, edge)) {
             intersectionCount++;
         }
     }
@@ -161,14 +154,16 @@ function inLineOfSight(pointA, pointB, movingArea) {
 
         if(!pointAOnLine && !pointBOnLine && !linesConnected) {
             if(linesIntersect(line, lineOfMovingArea)) {
-                isInLineOfSight = false;
+               return false;
             }
         }
     }
 
     if(isInLineOfSight) {
         const pointInBetween = calculateMidpoint(pointA, pointB);
-        if (!isInMovingArea(pointInBetween, movingArea)) {
+        const pointNotInside = !isInMovingArea(pointInBetween, movingArea);
+
+        if (pointNotInside) {
             return false;
         }
     }
@@ -233,11 +228,10 @@ function getNextPointOnLine(point, line) {
  * dist: die zu schiebende Entfernung
  */
 function moveIntoMovingArea(point, slope, movingArea, dist) {
-    console.log("moveIntoMovingArea point=" + point.toString());
     let tmp = {};
 
     // slope is a vertical line
-    if (slope === "Infinity" || slope === "-Infinity") {
+    if (slope === Infinity || slope === -Infinity) {
         tmp = new Point(point.x, point.y + dist);
         if (!isInMovingArea(tmp, movingArea)) {
             tmp = new Point(point.x, point.y - dist);
@@ -258,12 +252,8 @@ function moveIntoMovingArea(point, slope, movingArea, dist) {
         } else {
             // it's a real graph
             let c = point.y - slope * point.x;
-
-            // Die eine Seite der Kante
             tmp = new Point(point.x + Math.sqrt(Math.pow(dist, 2) / (1 + Math.pow(slope, 2))), slope * tmp.x + c);
             if (!isInMovingArea(tmp, movingArea)) {
-
-                // Die andere Seite der Kante
                 tmp = new Point(point.x - Math.sqrt(Math.pow(dist, 2) / (1 + Math.pow(slope, 2))), slope * tmp.x + c);
                 if (!isInMovingArea(tmp, movingArea)) {
                     tmp = new Point(point.x, point.y);
@@ -273,7 +263,6 @@ function moveIntoMovingArea(point, slope, movingArea, dist) {
 
         }
     }
-    console.log("tmp: " + tmp.toString());
     return tmp;
 }
 
@@ -346,7 +335,6 @@ export function setDest(clickPosition, movingArea) {
             }
             new Line(clickPosition, next).draw();
         }
-        //result = new Point(Math.round(result.x), Math.round(result.y));
         return result;
     } else {
         return clickPosition;
@@ -405,12 +393,7 @@ export function setPath(current, dest, movingArea, VisibilityGraph) {
         }
     }
 
-    console.log("VisibilityGraph: ", VisibilityGraph);
-    console.log("movingArea: ", movingArea);
-
     const path = a_star(currentId, current.x, current.y, destId, dest.x, dest.y, VisibilityGraph, movingArea);
-
-    console.log('path: ', path)
 
     if(path.length === 0) {
         console.error('Empty path for current=' + current.toString() + ', dest='+ dest.toString());
