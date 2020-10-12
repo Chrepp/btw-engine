@@ -1,4 +1,5 @@
 import { buildVisibilityGraph } from "./geometry.js";
+import { Point } from "./geometry/point.js";
 
 export function getLocations(locations) {
     for(let i in locations) {
@@ -30,7 +31,6 @@ export function getLocations(locations) {
             }
         }
     }
-    //console.log(locations["Schlucht"].furthestPoint);
     return locations;
 }
 
@@ -95,17 +95,6 @@ export function GameState(gameStatePlay,gameStateLoading) {
     this.isSetToPlay = () => {
         return this.currentGameState === this.GAME_STATE_PLAY;
     };
-}
-
-export function Point(x,y) {
-    this.x = x;
-    this.y = y;
-    this.toString = () => {
-        return '(' + x + ',' + y + ')';
-    };
-    this.equals = (otherPoint) => {
-        return this.x === otherPoint.x && this.y === otherPoint.y
-    }
 }
 
 export function GameParams() {

@@ -1,5 +1,5 @@
 import { calculateSlope } from "../geometry/line.js";
-import { Point } from "../gameLogic.js";
+import { Point } from "../geometry/point.js";
 
 export function drawHero(locations, gameParams, hero, debug) {
     const context = gameParams.context;
@@ -130,10 +130,11 @@ function movingHero(hero, nextDest, gameParams) {
     }
 
     const m = gameParams.mPath;
-    const temp = new Point();
+
     // Die ultimative Formel!
-    temp.x = Math.sqrt((1 / (1 + Math.pow(m,2))) * hero.lengthOfMove*hero.lengthOfMove); 
-    temp.y = Math.abs(m * temp.x);
+    const tempX = Math.sqrt((1 / (1 + Math.pow(m,2))) * hero.lengthOfMove * hero.lengthOfMove);
+    const tempY = Math.abs(m * tempX);
+    const temp = new Point(tempX, tempY);
 
     if(gameParams.current.equals(nextDest)) {
         gameParams.setNextDest(nextDest);

@@ -1,7 +1,8 @@
 import { drawHero } from "./drawing/drawing.js";
 import { isInRect, setDest, setPath } from "./geometry.js";
+import { Point } from "./geometry/point.js";
 import { loadActions, loadLocations, loadItems, loadCombinations, loadSounds, loadHero } from "./loading.js";
-import { GameState, Point, GameParams, GameData } from "./gameLogic.js";
+import { GameState, GameParams, GameData } from "./gameLogic.js";
 import { action } from "./action.js";
 import { Background } from "./drawing/background.js";
 import { Foreground } from "./drawing/foreground.js";
@@ -156,7 +157,6 @@ function btwEngine() {
         const promisesArray = [promiseActions,promiseLocations,promiseItems,promiseCombinations,promiseSounds,promiseHero];
         
         return await Promise.all(promisesArray).then(values => {
-            console.log('values',values);
             gameData.actions = values[0];
             gameData.locations = values[1];
             gameData.items = values[2];
@@ -176,19 +176,18 @@ function btwEngine() {
     }
 
     function leftClick(clickPosition) {
-        console.log("gameParams: ", gameParams.current);
-        console.log(clickPosition.toString()," clicked; current=" + gameParams.current.toString());
+        const currentLocation = gameData.locations[gameParams.currentLoc];
+        console.log("clickPosition=" + clickPosition.toString() + ", current=" + gameParams.current.toString());
 
         if(gameParams.inventoryOpen) {
             gameParams.setNextObject(checkInv(clickPosition,"leftClick"));
         } else {
-            gameParams.setNextObject(checkDest(clickPosition, "leftClick", gameData.locations[gameParams.currentLoc]));
-            gameParams.dest = setDest(clickPosition, gameData.locations[gameParams.currentLoc].MovingArea);
-            console.log('dest: ', gameParams.dest);
+            gameParams.setNextObject(checkDest(clickPosition, "leftClick", currentLocation));
+            gameParams.dest = setDest(clickPosition, currentLocation.MovingArea);
+            console.log('dest=         ' + gameParams.dest.toString());
             gameParams.path = [];
-            gameParams.path = setPath(gameParams.current, gameParams.dest, gameData.locations[gameParams.currentLoc]);
+            gameParams.path = setPath(gameParams.current, gameParams.dest, currentLocation.MovingArea, currentLocation.VisibilityGraph);
             //gameParams.path.shift();
-            console.log("path: ", gameParams.path);
             gameParams.nextDestCounter = 0;
             gameParams.setNextDest(gameParams.nextDest);
         }
@@ -279,7 +278,6 @@ function btwEngine() {
         gameParams.canvas.addEventListener("dblclick", doubleClick, true);
 
         loadGameData().then(gameDataLoaded => {
-            console.log("gameDataLoaded: ", gameDataLoaded);
             if(gameDataLoaded) {
                 gameParams.setCurrentLoc(gameParams.startRoom);
                 gameParams.setCurrent(gameParams.startPoint);

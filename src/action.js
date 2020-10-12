@@ -1,4 +1,4 @@
-import { Point } from "./gameLogic.js";
+import { Point } from "./geometry/point.js";
 
 export function action(gameParams, gameData) {
 	let hero = gameData.hero;

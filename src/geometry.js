@@ -1,5 +1,5 @@
 import { a_star } from "./a_star.js";
-import { Point } from "./gameLogic.js";
+import { Point } from "./geometry/point.js";
 import { Line } from "./geometry/line.js"
 
 /**
@@ -7,27 +7,100 @@ import { Line } from "./geometry/line.js"
  * außerhalb der MovingArea liegt, gilt er als konkav X)
  * Bildet Graphen zwischen den beiden Nachbarknoten
  */
-function isVertexConcave(vertex, MovingArea) {
-    const next = (vertex+1)%MovingArea.length;
-    const previous = vertex===0?MovingArea.length-1:(vertex-1);
-    const thisPoint = new Point(MovingArea[vertex].x, MovingArea[vertex].y);
-    const previousPoint = new Point(MovingArea[previous].x, MovingArea[previous].y);
-    const nextPoint = new Point(MovingArea[next].x, MovingArea[next].y);
+function isVertexConcave(id, movingArea) {
+    const nextId = (id + 1) % movingArea.length;
+    const previous = id !== 0 ? (id - 1) : movingArea.length - 1;
+    const thisPoint = new Point(movingArea[id].x, movingArea[id].y);
+    const previousPoint = new Point(movingArea[previous].x, movingArea[previous].y);
+    const nextPoint = new Point(movingArea[nextId].x, movingArea[nextId].y);
     const leftPoint = new Point(thisPoint.x - previousPoint.x,thisPoint.y - previousPoint.y);
     const rightPoint = new Point(nextPoint.x - thisPoint.x,nextPoint.y - thisPoint.y);
     const cross = (leftPoint.x * rightPoint.y) - (leftPoint.y * rightPoint.x);
     return cross < 0;
 }
 
-function linesIntersect(pointA,pointB,pointC,pointD) {
-    let denominator = ((pointB.x - pointA.x) * (pointD.y - pointC.y)) - ((pointB.y - pointA.y) * (pointD.x - pointC.x));
-    if (denominator === 0) return false;
-    let numerator1 = ((pointA.y - pointC.y) * (pointD.x - pointC.x)) - ((pointA.x - pointC.x) * (pointD.y - pointC.y));
-    let numerator2 = ((pointA.y - pointC.y) * (pointB.x - pointA.x)) - ((pointA.x - pointC.x) * (pointB.y - pointA.y));
-    if (numerator1 === 0 || numerator2 === 0) return false;
-    let r = numerator1 / denominator;
-    let s = numerator2 / denominator;
+function linesIntersectOld(lineA, lineB) {
+    const pointA = lineA.pointA;
+    const pointB = lineA.pointB;
+    const pointC = lineB.pointA;
+    const pointD = lineB.pointB;
+    const denominator = ((pointB.x - pointA.x) * (pointD.y - pointC.y)) - ((pointB.y - pointA.y) * (pointD.x - pointC.x));
+    const numerator1  = ((pointA.y - pointC.y) * (pointD.x - pointC.x)) - ((pointA.x - pointC.x) * (pointD.y - pointC.y));
+    const numerator2  = ((pointA.y - pointC.y) * (pointB.x - pointA.x)) - ((pointA.x - pointC.x) * (pointB.y - pointA.y));
+/*
+    if(!denominator || !numerator1 || !numerator2) {
+        console.error("linesIntersect")
+        console.log("denominator " + denominator)
+        console.log("numerator1 " + numerator1)
+        console.log("numerator2 " + numerator2)
+    }
+*/
+    if (denominator === 0 || numerator1 === 0 || numerator2 === 0) {
+        return false;
+    }
+    const r = numerator1 / denominator;
+    const s = numerator2 / denominator;
+
+    lineA.draw('#00ffff');
+    lineB.draw('#00ffff');
+
     return (r > 0 && r < 1) && (s > 0 && s < 1);
+}
+
+function intersectionWithInfinity(x, line) {
+    if(line.slope === Infinity || line.slope === -Infinity) {
+        return new Point(-1, -1);
+    }
+    const y = line.slope * x + line.intercept;
+    return new Point(x, y);
+}
+
+function intersectionWithZero(y, line) {
+    if(line.slope === 0) {
+        return new Point(-1, -1);
+    }
+    if(line.slope === Infinity || line.slope === -Infinity) {
+        return new Point(line.start.x, y);
+    } else {
+        const x = (y - line.intercept) / line.slope;
+        return new Point(x, y);
+    }
+}
+
+function linesIntersect(lineA, lineB) {
+    let intersection;
+    if(lineA.slope === Infinity || lineA.slope === -Infinity) {
+        intersection = intersectionWithInfinity(lineA.start.x, lineB);
+    } else if(lineB.slope === Infinity || lineB.slope === -Infinity) {
+        intersection = intersectionWithInfinity(lineB.start.x, lineA);
+    } else if(lineA.slope === 0) {
+        intersection = intersectionWithZero(lineA.start.y, lineB);
+    } else if(lineB.slope === 0) {
+        intersection = intersectionWithZero(lineB.start.y, lineA);
+    } else {
+
+        // Line AB represented as a1x + b1y = c1
+        const a1 = lineA.end.y - lineA.start.y;
+        const b1 = lineA.start.x - lineA.end.x;
+        const c1 = a1 * (lineA.start.x) + b1 * (lineA.start.y);
+
+        // Line CD represented as a2x + b2y = c2
+        const a2 = lineB.end.y - lineB.start.y;
+        const b2 = lineB.start.x - lineB.end.x;
+        const c2 = a2 * (lineB.start.x) + b2 * (lineB.start.y);
+
+        const determinant = a1 * b2 - a2 * b1;
+
+        if (determinant === 0) {
+            return false;
+        } else {
+            const x = ((b2 * c1) - (b1 * c2)) / determinant;
+            const y = ((a1 * c2) - (a2 * c1)) / determinant;
+            intersection = new Point(x, y);
+        }
+    }
+
+    return isPointOnLine(intersection, lineA) && isPointOnLine(intersection, lineB);
 }
 
 /**
@@ -36,19 +109,26 @@ function linesIntersect(pointA,pointB,pointC,pointD) {
  * Gerade des Graphen schneidet, wird hochgezählt. Ist das Ergebnis
  * ungerade, befindet sich (x,y) in der Fläche.
  */
-function isInMovingArea(point, movingArea) {
-    let intersectionCount = 0;
-    for(let i=0; i<movingArea.length; i++) {
+export function isInMovingArea(point, movingArea) {
+    if(point.x.isNaN || point.y.isNaN) {
+        console.error("isInMovingArea? ", point.toString())
+    }
 
+    const lineA = new Line(new Point(0, point.y), point);
+    let intersectionCount = 0;
+    for(let i=0; i < movingArea.length; i++) {
         const p1 = new Point(movingArea[i].x, movingArea[i].y);
         const p2 = new Point(movingArea[(i + 1) % movingArea.length].x, movingArea[(i + 1) % movingArea.length].y);
-        const line = new Line(p1, p2);
+        const lineB = new Line(p1, p2);
+        const intersect = linesIntersect(lineA, lineB);
+        const isOnLine = isPointOnLine(point, lineB);
 
-        if(linesIntersect(new Point(0,point.y),point,line.pointA,line.pointB) && !isPointOnLine(point, line)) {
+        if(intersect && !isOnLine) {
+            console.log("isInMovingArea: intersection between " + lineB.toString() + " and " + lineB.toString())
             intersectionCount++;
         }
     }
-    return intersectionCount % 2!== 0;
+    return intersectionCount % 2 !== 0;
 }
 
 export function isInRect(point, topLeft, width, height) {
@@ -64,76 +144,61 @@ function calculateMidpoint(pointA, pointB) {
     return new Point(averageOfX, averageOfY);
 }
 
-function inLineOfSight(pointA, pointB, firstStep, movingArea) {
+function inLineOfSight(pointA, pointB, movingArea) {
     if(pointA.equals(pointB)) {
-        // return true;
+        return true;
     }
+    const line = new Line(pointA, pointB);
     let isInLineOfSight = true;
-    /*
-    // Falls die Linie zwischen a und b außerhalb liegt, dann false - ansonsten schleife
-    const m = (pointB.y - pointA.y) / (pointB.x - pointA.x);
-    const c = pointB.y - m * pointB.x;
-    const pX = Math.round(pointA.x + Math.sqrt(200 / (1 + Math.pow(m,2))));
-    const pY = Math.round(m * pX + c);
 
-    //console.log(aX+","+aY+"->"+pX+","+pY+" - "+!isInMovingArea(pX,pY));
+    for(let k = 0; k < movingArea.length; k++) {
+        const pointC = new Point(movingArea[k].x, movingArea[k].y);
+        const pointD = new Point(movingArea[(k + 1) % movingArea.length].x, movingArea[(k + 1) % movingArea.length].y);
+        const lineOfMovingArea = new Line(pointC, pointD);
+        const pointAOnLine = isPointOnLine(pointA, lineOfMovingArea);
+        const pointBOnLine = isPointOnLine(pointB, lineOfMovingArea);
+        const linesConnected = line.connectedTo(lineOfMovingArea);
 
-    if(!isInMovingArea(new Point(pX,pY), movingArea)) {
-        return false;
-    }
-    */
-
-    const pointInBetween = calculateMidpoint(pointA, pointB);
-    if (!isInMovingArea(pointInBetween, movingArea)) {
-        const line = new Line(pointA, pointB);
-        console.log('inLineOfSight' + pointInBetween.toString() + ' not in movingArea - ' + line.toString());
-        console.log('inLineOfSight isPointOnLine: ' + isPointOnLine(pointInBetween,line));
-        //return false;
-    }
-
-    for(let k = 0; k<movingArea.length; k++) {
-        // console.log("Durchgang " + k);
-        // Wahr, wenn sich die Strecke zwischen i und j mit der zwischen k und k+1 kreuzen
-        let pointC = new Point(movingArea[k].x, movingArea[k].y);
-        let pointD = new Point(movingArea[(k + 1) % movingArea.length].x, movingArea[(k + 1) % movingArea.length].y);
-        if(linesIntersect(pointA,pointB,pointC,pointD)) {
-            isInLineOfSight = false;
-            /*
-            if(firstStep) {
-                // liegt der Ziel-Punkt direkt auf dem anderen Graphen
-                var m = (dY-cY)/(dX-cX);
-                var aAufcd = aY == Math.round(m*aX + (cY-m*cX)); //currentXY oder destXY
-                var bAufcd = bY == Math.round(m*bX + (cY-m*cX)); // einer der Punkte des visibleGrpah
-
-                //console.log("a: "+aY+"="+Math.round(m*aX + (cY-m*cX))+" - "+aAufcd);
-                //console.log("b: "+bY+"="+Math.round(m*bX + (cY-m*cX))+" - "+bAufcd);
-                //if(aAufcd || bAufcd) isInLineOfSight = false; // Falls Start- oder Zielpunkt auf der Schnittgeraden liegen ->
+        if(!pointAOnLine && !pointBOnLine && !linesConnected) {
+            if(linesIntersect(line, lineOfMovingArea)) {
+                isInLineOfSight = false;
             }
-            else isInLineOfSight = false;
-            */
         }
     }
-    //console.log(pointA.toString() + ' and ' + pointB.toString() + ' inLineOfSight=' + isInLineOfSight);
+
+    if(isInLineOfSight) {
+        const pointInBetween = calculateMidpoint(pointA, pointB);
+        if (!isInMovingArea(pointInBetween, movingArea)) {
+            return false;
+        }
+    }
+
     return isInLineOfSight;
 }
 
-export function buildVisibilityGraph(MovingArea) {
-    let VG = [];
-    for(let i=0;i<MovingArea.length;i++) if(isVertexConcave(i,MovingArea)) {
-        VG[i] = [];
-        for(let j=0;j<VG.length;j++) {
-            if(VG[j]) {
-                const pointA = new Point(MovingArea[i].x, MovingArea[i].y);
-                const pointB = new Point(MovingArea[j].x, MovingArea[j].y);
-                if(inLineOfSight(pointA,pointB,false,MovingArea) && i !== j) {
-                    VG[i][VG[i].length] = j;
-                    //console.log("Kein Hindernis zwischen "+i+" und "+j);
-                    if(VG[j]) {
-                        let hasElem = false;
-                        for(let l=0;l<VG[j].length;l++) {
-                            if(VG[j][l] === i) hasElem = true;
+export function buildVisibilityGraph(movingArea) {
+    const VG = [];
+    for(let i = 0; i < movingArea.length; i++) {
+        if(isVertexConcave(i, movingArea)) {
+            VG[i] = [];
+            for(let j = 0; j < VG.length; j++) {
+                if(VG[j]) {
+                    const pointA = new Point(movingArea[i].x, movingArea[i].y);
+                    const pointB = new Point(movingArea[j].x, movingArea[j].y);
+
+                    if(i !== j && ((Math.abs(i - j) === 1) || inLineOfSight(pointA, pointB, movingArea))) {
+                        VG[i][VG[i].length] = j;
+                        if(VG[j]) {
+                            let hasElem = false;
+                            for(let l=0; l<VG[j].length; l++) {
+                                if(VG[j][l] === i) {
+                                    hasElem = true;
+                                }
+                            }
+                            if(!hasElem) {
+                                VG[j][VG[j].length] = i;
+                            }
                         }
-                        if(!hasElem) VG[j][VG[j].length] = i;
                     }
                 }
             }
@@ -143,20 +208,18 @@ export function buildVisibilityGraph(MovingArea) {
 }
 
 /**
- * Gibt den Punkt zurück, an dem eine Gerade einem gegebenen Punkt am
- * nächsten ist.
+ * Calculates the point where a given point is next to the line
  */
 function getNextPointOnLine(point, line) {
     let next = {};
-    if(line.slope === "Infinity" || line.slope === "-Infinity") {
+    if(line.slope === Infinity || line.slope === -Infinity) {
         next.x = line.pointA.x;
         next.y = point.y;
     } else if(line.slope === 0) {
         next.x = point.x;
         next.y = line.pointA.y;
     } else {
-        // Nähesten Punkt auf der Geraden zu (x,y) berechnen
-        next.x = (point.y + (point.x / line.slope) -  line.intercept) / (line.slope + (1 / line.intercept));
+        next.x = (point.y + (point.x / line.slope) -  line.intercept) / (line.slope + (1 / line.slope));
         next.y = line.slope * next.x + line.intercept;
     }
     return new Point(next.x, next.y);
@@ -166,57 +229,72 @@ function getNextPointOnLine(point, line) {
  * Setzt einen Punkt entlang einer Line um einen Wert weiter ins Feld rein.
  * point: Der Punkt, der geschoben wird.
  * slope
- * loc: Aktueller Raum
+ * movingArea
  * dist: die zu schiebende Entfernung
  */
 function moveIntoMovingArea(point, slope, movingArea, dist) {
+    console.log("moveIntoMovingArea point=" + point.toString());
     let tmp = {};
-    if(slope === "Infinity" || slope === "-Infinity") {
+
+    // slope is a vertical line
+    if (slope === "Infinity" || slope === "-Infinity") {
         tmp = new Point(point.x, point.y + dist);
-        if(!isInMovingArea(tmp, movingArea)) {
-            tmp = new Point(point.x,point.y-dist);
-            if(!isInMovingArea(tmp, movingArea)) {
+        if (!isInMovingArea(tmp, movingArea)) {
+            tmp = new Point(point.x, point.y - dist);
+            if (!isInMovingArea(tmp, movingArea)) {
                 tmp = new Point(point.x, point.y);
             }
         }
-    } else if(slope === 0) {
-        tmp = new Point(point.x + dist, point.y);
-        if(!isInMovingArea(tmp, movingArea)) {
-            tmp = new Point(point.x - dist, point.y);
-            if(!isInMovingArea(tmp, movingArea)) {
-                tmp = new Point(point.x, point.y);
+    } else {
+        // slope is a horizontal line
+        if (slope === 0) {
+            tmp = new Point(point.x + dist, point.y);
+            if (!isInMovingArea(tmp, movingArea)) {
+                tmp = new Point(point.x - dist, point.y);
+                if (!isInMovingArea(tmp, movingArea)) {
+                    tmp = new Point(point.x, point.y);
+                }
             }
+        } else {
+            // it's a real graph
+            let c = point.y - slope * point.x;
+
+            // Die eine Seite der Kante
+            tmp = new Point(point.x + Math.sqrt(Math.pow(dist, 2) / (1 + Math.pow(slope, 2))), slope * tmp.x + c);
+            if (!isInMovingArea(tmp, movingArea)) {
+
+                // Die andere Seite der Kante
+                tmp = new Point(point.x - Math.sqrt(Math.pow(dist, 2) / (1 + Math.pow(slope, 2))), slope * tmp.x + c);
+                if (!isInMovingArea(tmp, movingArea)) {
+                    tmp = new Point(point.x, point.y);
+                }
+            }
+
+
         }
     }
-    else {
-        let c = point.y - slope * point.x;
-        // Die eine Seite der Kante
-        tmp = new Point(point.x + Math.sqrt(Math.pow(dist,2) / (1+Math.pow(slope,2))), slope * tmp.x + c);
-        if(!isInMovingArea(tmp, movingArea)) {
-            // Die andere Seite der Kante
-            tmp = new Point(point.x - Math.sqrt(Math.pow(dist,2) / (1+Math.pow(slope,2))),slope * tmp.x + c);
-            if(!isInMovingArea(tmp, movingArea)) {
-                tmp = new Point(point.x, point.y);
-            }
-        }
-    }
+    console.log("tmp: " + tmp.toString());
     return tmp;
 }
 
 function inRange(num, a, b) {
     const min = Math.min.apply(Math, [a, b]);
     const max = Math.max.apply(Math, [a, b]);
-    return num > min && num < max;
+    return num >= min && num <= max;
 }
 
-function isPointOnLine(p, line) {
-    const isOneOfThePoints = p.equals(line.pointA) || p.equals(line.pointB);
+function isPointOnLine(point, line) {
+    const isOneOfThePoints = point.equals(line.pointA) || point.equals(line.pointB);
     if(isOneOfThePoints) {
         return true;
     }
-    const isOnStraightLine = p.y === line.slope * p.x + line.intercept;
-    const xInRange = inRange(p.x, line.pointA.x, line.pointB.x);
-    const yInRange = inRange(p.y, line.pointA.y, line.pointB.y);
+    if (line.slope === Infinity || line.slope === -Infinity) {
+        return point.x === line.start.x && inRange(point.y, line.start.y, line.end.y);
+    }
+    const tmp = line.slope * point.x + line.intercept;
+    const isOnStraightLine = parseFloat(point.y).toFixed(4) === parseFloat(tmp).toFixed(4);
+    const xInRange = inRange(point.x, line.pointA.x, line.pointB.x);
+    const yInRange = inRange(point.y, line.pointA.y, line.pointB.y);
     const isBetweenPointsOfLine = xInRange && yInRange;
     return isOnStraightLine && isBetweenPointsOfLine;
 }
@@ -233,8 +311,7 @@ export function setDest(clickPosition, movingArea) {
             const edge = new Line(extractPoint(movingArea[i]), extractPoint(movingArea[(i+1)%movingArea.length]));
             // Point on the edge next to clickPosition
             const next = getNextPointOnLine(clickPosition, edge);
-            console.log('next on line; point: ' +  clickPosition.toString() + ', ' + edge.toString());
-            console.log('next: ' + next);
+            //console.log('next on line; next: ' +  next.toString() + ', ' + edge.toString());
             const distanceTemp = calculateDistance(clickPosition, next);
             
             // Nur wenn der Punkt (next) auf der Strecke (zwischen p1 und p2) liegt, sollen x und y geändert werden
@@ -267,11 +344,11 @@ export function setDest(clickPosition, movingArea) {
                     result = moveIntoMovingArea(edge.pointB, line.slope, movingArea,10);
                 }
             }
+            new Line(clickPosition, next).draw();
         }
         //result = new Point(Math.round(result.x), Math.round(result.y));
         return result;
-    }
-    else {
+    } else {
         return clickPosition;
     }
 }
@@ -291,72 +368,58 @@ function extractPoint(point) {
     }
 }
 
-export function setPath(current, dest ,loc) {
-    const VisibilityGraph = loc.VisibilityGraph;
-    //console.log("Berechne Pfad nach ("+destX+","+destY+")");
-    // currentXY und destXY müssen dem VisibilityGraph hinzugefügt werden.
+function addToVisibilityGraph(id, pointA, pointB, movingArea, visibilityGraph, j) {
+    if(inLineOfSight(pointA, pointB, movingArea)) {
+        visibilityGraph[id][visibilityGraph[id].length] = j;
+        if(needsReverseConnection(visibilityGraph[j], id)) {
+            visibilityGraph[j][visibilityGraph[j].length] = id;
+        }
+        new Line(pointA, pointB).draw('#990000');
+    }
+    return visibilityGraph;
+}
 
-    // joinVisibilityGraph(currentId);
-    let currentId = VisibilityGraph.length;
+export function setPath(current, dest, movingArea, VisibilityGraph) {
+    // Add current to VisibilityGraph
+    const currentId = VisibilityGraph.length;
     VisibilityGraph[currentId] = [];
-    for(let j=0;j<VisibilityGraph.length-1;j++) {
+    for(let j=0; j < currentId; j++) {
         if(VisibilityGraph[j]) {
-            const pointB = new Point(loc.MovingArea[j].x,loc.MovingArea[j].y);
-            if(inLineOfSight(current,pointB,true,loc.MovingArea)) {
-                VisibilityGraph[currentId][VisibilityGraph[currentId].length] = j;
-                if(VisibilityGraph[j]) {
-                    let hasElem = false;
-                    for(let l=0;l<VisibilityGraph[j].length;l++) {
-                        if(VisibilityGraph[j][l] === currentId) hasElem = true;
-                    }
-                    if(!hasElem) VisibilityGraph[j][VisibilityGraph[j].length] = currentId;
-                }
-            }
+            const pointB = new Point(movingArea[j].x, movingArea[j].y);
+            VisibilityGraph = addToVisibilityGraph(currentId, current, pointB, movingArea, VisibilityGraph, j);
         }
     }
-    //joinVisibilityGraph(destId);
-    let destId = VisibilityGraph.length;
-    VisibilityGraph[destId] = [];
-    for(let j=0; j < VisibilityGraph.length - 1; j++) {
-        if(VisibilityGraph[j]) {
-            let bX = j===currentId ? current.x : loc.MovingArea[j].x;
-            let bY = j===currentId ? current.y : loc.MovingArea[j].y;
-            const pointB = new Point(bX, bY);
-            if(inLineOfSight(dest,pointB,false,loc.MovingArea)) {
-                VisibilityGraph[destId][VisibilityGraph[destId].length] = j;
-                if(VisibilityGraph[j]) {
-                    let hasElem = false;
-                    for(let l=0; l < VisibilityGraph[j].length; l++) {
-                        if(VisibilityGraph[j][l] === destId) hasElem = true;
-                    }
-                    if(!hasElem) VisibilityGraph[j][VisibilityGraph[j].length] = destId;
-                }
-            }
-        }
-    }
-    /*
-    var test = "Graph:";
-    for(var v=0;v<VisibilityGraph.length;v++) {
-        if(VisibilityGraph[v]) test+="{"+v+": "+VisibilityGraph[v]+"}";
-    }
-    console.log(test);
-    */
-    // A* A* A* A* A* A* A* A* A* A* A*
-    const path = a_star(currentId,current.x,current.y,destId,dest.x,dest.y,VisibilityGraph,loc.MovingArea);
-    if(path === []) {
-        console.error('Epmty path for current=' + current.toString() + ', dest='+ dest.toString());
-        console.log('VisibilityGraph: ', VisibilityGraph)
-    }
-    /*
-    var test = "";
-    for(var p=0;p<path.length-1;p++) {
-        test+=" "+path[p].id+": ("+path[p].g+", "+path[p].h+", "+path[p].f+")->";
-    }
-    test+=" "+path[path.length-1].id+":("+path[path.length-1].g+", "+path[path.length-1].h+", "+path[path.length-1].f+")";
-    console.log(test);
-    */
 
-    // Temporäre Knoten (start und ziel) wieder entfernen
+    // Add dest to VisibilityGraph
+    const destId = VisibilityGraph.length;
+    VisibilityGraph[destId] = [];
+    for(let j=0; j < destId; j++) {
+        if(VisibilityGraph[j]) {
+            let pointB;
+            if(j === currentId) {
+                pointB = new Point(current.x, current.y);
+            } else {
+                pointB = new Point(movingArea[j].x, movingArea[j].y);
+            }
+            VisibilityGraph = addToVisibilityGraph(destId, dest, pointB, movingArea, VisibilityGraph, j);
+        }
+    }
+
+    console.log("VisibilityGraph: ", VisibilityGraph);
+    console.log("movingArea: ", movingArea);
+
+    const path = a_star(currentId, current.x, current.y, destId, dest.x, dest.y, VisibilityGraph, movingArea);
+
+    console.log('path: ', path)
+
+    if(path.length === 0) {
+        console.error('Empty path for current=' + current.toString() + ', dest='+ dest.toString());
+        console.log('VisibilityGraph: ', VisibilityGraph);
+        console.log('currentId: ' + currentId + ', current: ' + current.toString() + ', isInMovingArea: ' + isInMovingArea(current, movingArea));
+        console.log('destId: ' + destId + ', dest: ' + dest.toString() + ', isInMovingArea: ' + isInMovingArea(dest, movingArea));
+    }
+
+    // Remove temporary points (current and dest)
     VisibilityGraph.length -= 2;
     for(let i=0; i < VisibilityGraph.length; i++) {
         if(VisibilityGraph[i]) {
@@ -370,4 +433,16 @@ export function setPath(current, dest ,loc) {
         }
     }
     return path;
+}
+
+function needsReverseConnection(visibilityGraphElement, id) {
+    if(!visibilityGraphElement) {
+        return false;
+    }
+    for(let l=0; l < visibilityGraphElement.length; l++) {
+        if(visibilityGraphElement[l] === id) {
+            return false;
+        }
+    }
+    return true;
 }
