@@ -2,7 +2,7 @@
   "name": "btw-engine",
   "version": "0.1.0",
   "devDependencies": {
-    "grunt": "^1.3.0",
+    "grunt": "^1.5.2",
     "grunt-contrib-connect": "^3.0.0",
     "grunt-contrib-jshint": "^2.1.0",
     "grunt-contrib-qunit": "^4.0.0",
